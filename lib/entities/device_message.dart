@@ -1,30 +1,37 @@
+import 'package:json_annotation/json_annotation.dart';
+import 'package:provider_test/entities/dev_power_summary.dart';
+
+part 'device_message.g.dart';
+
+@JsonSerializable(includeIfNull: false)
 class DevMessage {
+  var msgType;
+  int? requestID;
+  String? sessionID;
+  int? devId;
   int? devModel;
+  int? devType;
+  String? data;
+  String? dataExt;
+  String? dataIdx;
+  String? dataClass;
+  bool? dataActual;
+  bool? success;
+  String? successMsg;
+  int? faultCode;
+  String? faultMsg;
+  bool? requiredAck;
+  int? ackID;
+  List<DevPowerSummary>? messageList;
   String? devSerial;
   int? devModelId;
   String? instr;
-  String? msgType;
-  String? sessionID;
-  int? requestID;
   String? loggerSerial;
 
-  Map<String, dynamic> toJson() => _$MessageToJson(this);
+  DevMessage();
 
-  @override
-  String toString() {
-    return 'Message{subDevSerial: $devSerial, subDevModelId: $devModelId, instr: $instr, msgType: $msgType, sessionID: $sessionID, requestID: $requestID, devModel: $devModel, loggerSerial: $loggerSerial}';
-  }
+  Map<String, dynamic> toJson() => _$DevMessageToJson(this);
 
-//   Message(this.subDevSerial);
-
+  factory DevMessage.fromJson(Map<String, dynamic> json) =>
+      _$DevMessageFromJson(json);
 }
-
-Map<String, dynamic> _$MessageToJson(DevMessage instance) => <String, dynamic>{
-      'devSerial': instance.devSerial,
-      'devModelId': instance.devModelId,
-      'instr': instance.instr,
-      'msgType': instance.msgType,
-      'sessionID': instance.sessionID,
-      'requestID': instance.requestID,
-      'devModel': instance.devModel,
-    };

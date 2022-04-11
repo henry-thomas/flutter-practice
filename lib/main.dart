@@ -2,8 +2,9 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:provider_test/entities/device_message.dart';
-import 'package:provider_test/providers/WsManager.dart';
+import 'package:provider_test/api/api_controller.dart';
+import 'package:provider_test/providers/websocket/ps_manager.dart';
+import 'package:provider_test/providers/websocket/ws_manager.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 void main() {
@@ -20,7 +21,13 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider.value(
           value: WsManager(),
-        )
+        ),
+        ChangeNotifierProvider.value(
+          value: PowerServiceManager(),
+        ),
+        ChangeNotifierProvider.value(
+          value: ApiController(),
+        ),
       ],
       child: MaterialApp(
         title: 'Flutter Demo',
@@ -34,7 +41,7 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatelessWidget {
-  static String loggerSerial = "SLV216362637";
+  static String loggerSerial = "MP-1623061258731";
   static String devModel = "12";
   static String jwt =
       "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiIxIiwic2NlIjoibW9iaWxlIn0.Ck6mBE_yOAAqUF-woDko6l4oZQ_Gowe34oeCC5D8iQX8o86CFgyYUGgjJ4lxo3PgdT5P1y4I3v__X6nFZf5-R31ggXArNWC5ZPWVmwfSZNO0_cXepRq89NlW9meca5Ie7XopkQOO_eiJ2SlXQeF_MU0ChOJLPbAyb5S_lrhFDpFYwwMPZmW4lowO-c69qG6PNB5-5bbuYKeUWQP7BkkHNUhmL9x3mBR3JZb4MDOWHnH484H3dYpDpi0M21OTHKkF1wtOdvCFh9C1Kjm8vGE3tLDV3IcLAiPOLvb1bRSqw8dDPE-C0jWauuqZqy8BmSqOAd4pWZEL2SkQ8PaS_0PUmw";
@@ -61,7 +68,8 @@ class MyHomePage extends StatelessWidget {
 
   void _processMessage(BuildContext context, Map<String, dynamic> msg,
       WebSocketChannel channel) {
-    Provider.of<WsManager>(context, listen: false).processMessage(msg, channel);
+    Provider.of<WsManager>(context, listen: false)
+        .processMessage(msg, channel, context);
   }
 
   static int reqId = 0;

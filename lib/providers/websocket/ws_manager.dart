@@ -3,8 +3,12 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:provider_test/api/api_controller.dart';
+import 'package:provider_test/api/api_service.dart';
 import 'package:provider_test/entities/device_message.dart';
 import 'package:provider_test/main.dart';
+import 'package:provider_test/providers/websocket/ps_manager.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 class WsManager extends ChangeNotifier {
@@ -33,7 +37,7 @@ class WsManager extends ChangeNotifier {
 
   void onConnectionInit(channel) {
     Timer.periodic(Duration(milliseconds: 1000), (timer) {
-      // requestBcMsg(channel);
+      requestBcMsg(channel);
     });
 
     DevMessage webSocketMsg = DevMessage();
@@ -54,18 +58,20 @@ class WsManager extends ChangeNotifier {
     channel.sink.add(encodedWebSocketMsg);
   }
 
-  void processMessage(Map<String, dynamic> data, WebSocketChannel channel) {
+  void processMessage(Map<String, dynamic> data, WebSocketChannel channel,
+      BuildContext context) {
     var msgType = data['msgType'];
     switch (msgType) {
       case "connectionInit": //BroadcastData
         onConnectionInit(channel);
+        _login(context);
         break;
       case 0: //BroadcastData
-        debugPrint(jsonEncode(data['messageList']));
+        if (data['devModel'] == 12) {
+          _processPsMessage(context, data);
+        }
         break;
       case 1: // ResponseMessage
-        debugPrint(jsonEncode(data['messageList']));
-
         break;
       case 2: // EventMessage
 
@@ -84,8 +90,6 @@ class WsManager extends ChangeNotifier {
         break;
       default:
     }
-
-    print(data);
   }
 
   void incrementCounter() {
@@ -98,5 +102,15 @@ class WsManager extends ChangeNotifier {
       _random = Random().nextInt(999);
       notifyListeners();
     });
+  }
+
+  void _processPsMessage(BuildContext context, Map<String, dynamic> msg) {
+    Provider.of<PowerServiceManager>(context, listen: false)
+        .onPsMessageReceived(msg);
+  }
+
+  void _login(BuildContext context) {
+    Provider.of<ApiController>(context, listen: false)
+        .login(ApiController.USERNAME, ApiController.PASSWORD);
   }
 }
