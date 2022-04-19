@@ -64,7 +64,6 @@ class WsManager extends ChangeNotifier {
     switch (msgType) {
       case "connectionInit": //BroadcastData
         onConnectionInit(channel);
-        _login(context);
         break;
       case 0: //BroadcastData
         if (data['devModel'] == 12) {
@@ -107,10 +106,5 @@ class WsManager extends ChangeNotifier {
   void _processPsMessage(BuildContext context, Map<String, dynamic> msg) {
     Provider.of<PowerServiceManager>(context, listen: false)
         .onPsMessageReceived(msg);
-  }
-
-  void _login(BuildContext context) {
-    Provider.of<ApiController>(context, listen: false)
-        .login(ApiController.USERNAME, ApiController.PASSWORD);
   }
 }

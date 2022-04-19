@@ -44,7 +44,7 @@ class MyHomePage extends StatelessWidget {
   static String loggerSerial = "MP-1623061258731";
   static String devModel = "12";
   static String jwt =
-      "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiIxIiwic2NlIjoibW9iaWxlIn0.Ck6mBE_yOAAqUF-woDko6l4oZQ_Gowe34oeCC5D8iQX8o86CFgyYUGgjJ4lxo3PgdT5P1y4I3v__X6nFZf5-R31ggXArNWC5ZPWVmwfSZNO0_cXepRq89NlW9meca5Ie7XopkQOO_eiJ2SlXQeF_MU0ChOJLPbAyb5S_lrhFDpFYwwMPZmW4lowO-c69qG6PNB5-5bbuYKeUWQP7BkkHNUhmL9x3mBR3JZb4MDOWHnH484H3dYpDpi0M21OTHKkF1wtOdvCFh9C1Kjm8vGE3tLDV3IcLAiPOLvb1bRSqw8dDPE-C0jWauuqZqy8BmSqOAd4pWZEL2SkQ8PaS_0PUmw";
+      "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiIxIiwic2NlIjoibW9iaWxlIn0.fMb0gvTNuicGeccoT39psw7KHm6Zw_rw2bA0lK0_kCUwUAL977vNtS74X87l1BTt38oPT0PrVinxgfI157Xrr2IsVNP40PWl4Iqzt2XjoXCBVmhhc94ZCDp4iq7KswdHMWvO-CGY5Cmdx3xDheJcAyuvoMrifmkFLfPIU9f-KGBJVQRsTjdD-yLWUBZSOhusHBe4uz867ClSDLTAszwmZC-MtTuzut51ND7SsEo18GsmTXQfqnAYDi8sh2Hu2KHfWTZNMd1cPlh2aAq1SFsjccMzSdK84bXLdy88Pg6zkdHC05Lhpvm0ncICWbhxRq-0tVDZoqLsS6mrlbacXb8Ylg";
   static String url = 'ws://192.168.100.18:8084/SolarMDApi/mobile?token=' +
       jwt +
       '&loggerSerial=' +
@@ -70,6 +70,15 @@ class MyHomePage extends StatelessWidget {
       WebSocketChannel channel) {
     Provider.of<WsManager>(context, listen: false)
         .processMessage(msg, channel, context);
+  }
+
+  void _login(BuildContext context) {
+    Provider.of<ApiController>(context, listen: false)
+        .login(ApiController.USERNAME, ApiController.PASSWORD, context);
+  }
+
+  void _initPsManager(BuildContext context) {
+    Provider.of<PowerServiceManager>(context, listen: false).init(context);
   }
 
   static int reqId = 0;
@@ -112,7 +121,8 @@ class MyHomePage extends StatelessWidget {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => _startRandom(context),
+        // onPressed: () => _startRandom(context),
+        onPressed: () => {_login(context), _initPsManager(context)},
         tooltip: 'Increment',
         child: const Icon(Icons.add),
       ),
