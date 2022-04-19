@@ -96,7 +96,6 @@ class MyHomePage extends StatelessWidget {
               stream: channel.stream,
               builder: (context, snapshot) {
                 var data = jsonDecode(snapshot.data.toString());
-
                 try {
                   _processMessage(context, data, channel);
                 } catch (e) {

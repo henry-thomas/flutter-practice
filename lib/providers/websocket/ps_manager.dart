@@ -10,13 +10,16 @@ class PowerServiceManager extends ChangeNotifier {
   //<powerType, <powerList>>
   Map<String?, List<DevPowerSummary>> powerTypeMap = new HashMap();
 
-  void _getPowerTypes(BuildContext context) {
-    Provider.of<ApiController>(context, listen: false).getPowerTypes();
+  Future<List?> _getPowerTypes(BuildContext context) async {
+    var powerTypes = await Provider.of<ApiController>(context, listen: false)
+        .getPowerTypes();
+    return powerTypes;
   }
 
   //This is called after power types are recieved, only once on page load.
   void init(BuildContext context) {
-    _getPowerTypes(context);
+    var getPowerTypes = _getPowerTypes(context);
+
   }
 
   void onPsMessageReceived(Map<String, dynamic> msg) {
