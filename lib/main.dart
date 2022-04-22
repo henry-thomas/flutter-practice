@@ -58,33 +58,31 @@ class MyHomePage extends StatelessWidget {
 
   final String title;
 
-  void _incrementCounter(BuildContext context) {
-    Provider.of<WsManager>(context, listen: false).incrementCounter();
-  }
-
-  void _startRandom(BuildContext context) {
-    Provider.of<WsManager>(context, listen: false).startRandom();
-  }
-
   void _processMessage(BuildContext context, Map<String, dynamic> msg,
       WebSocketChannel channel) {
     Provider.of<WsManager>(context, listen: false)
         .processMessage(msg, channel, context);
   }
 
+//Calling the login method in API controller, passing the state of this
+//widget. We can later get the JWT from API controller class.
   void _login(BuildContext context) {
     Provider.of<ApiController>(context, listen: false)
         .login(ApiController.USERNAME, ApiController.PASSWORD, context);
-  }
-
-  void _initPsManager(BuildContext context) {
-    Provider.of<PowerServiceManager>(context, listen: false).init(context);
   }
 
   static int reqId = 0;
   @override
   Widget build(BuildContext context) {
     var counter = Provider.of<WsManager>(context).getRandom;
+
+    //This is how we get the values form a provider/
+    var powerTypeMap =
+        Provider.of<PowerServiceManager>(context).getPowerTypeMap;
+
+    //This should be called from the login page, ofcourse.
+    //This is how we call a method from a provider.
+    _login(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -122,7 +120,9 @@ class MyHomePage extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         // onPressed: () => _startRandom(context),
-        onPressed: () => {_login(context), _initPsManager(context)},
+        onPressed: () {
+          debugPrint(powerTypeMap.toString());
+        },
         tooltip: 'Increment',
         child: const Icon(Icons.add),
       ),

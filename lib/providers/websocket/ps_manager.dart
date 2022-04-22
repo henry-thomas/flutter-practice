@@ -10,7 +10,11 @@ import 'package:provider_test/entities/power_type.dart';
 
 class PowerServiceManager extends ChangeNotifier {
   //<powerType, <powerList>>
-  Map<String?, List<DevPowerSummary>> powerTypeMap = new HashMap();
+  final Map<String?, List<DevPowerSummary>> _powerTypeMap = new HashMap();
+
+  Map<String?, List<DevPowerSummary>> get getPowerTypeMap {
+    return _powerTypeMap;
+  }
 
   Future<List<PowerType>?> _getPowerTypes(BuildContext context) async {
     var powerTypes = await Provider.of<ApiController>(context, listen: false)
@@ -28,17 +32,18 @@ class PowerServiceManager extends ChangeNotifier {
   void init(BuildContext context) async {
     List<PowerType>? powerTypeList = await _getPowerTypes(context);
     List<DevPowerSummary>? powerList = await _getPowerList(context);
-    if (powerTypeList != null) {
-      for (var i = 0; i < powerTypeList.length; i++) {
-        PowerType pType = powerTypeList[i];
-        if (powerTypeMap[pType.powerType] == null) {
-          powerTypeMap[pType.powerType] = [];
-        }
+    for (var i = 0; i < powerTypeList!.length; i++) {
+      PowerType pType = powerTypeList[i];
+      if (_powerTypeMap[pType.powerType] == null) {
+        _powerTypeMap[pType.powerType] = [];
+      }
 
-        // for(var j = 0; )
+      for (var j = 0; j < powerList!.length; j++) {
+        if (powerList[j].powerName == powerTypeList[i].powerName) {
+          _powerTypeMap[pType.powerType]!.add(powerList[j]);
+        }
       }
     }
-    print(powerTypeMap);
   }
 
   void onPsMessageReceived(Map<String, dynamic> msg) {
@@ -50,11 +55,11 @@ class PowerServiceManager extends ChangeNotifier {
         String? powerType = powerList[i].powerType;
 
         if (powerType != null) {
-          if (!powerTypeMap.containsKey(powerType)) {
+          if (!_powerTypeMap.containsKey(powerType)) {
             Map<String?, List<DevPowerSummary>> entry = {powerType: []};
-            powerTypeMap.addAll(entry);
+            _powerTypeMap.addAll(entry);
           }
-          powerTypeMap[powerType]?.add(powerList[i]);
+          _powerTypeMap[powerType]?.add(powerList[i]);
         }
       }
     }

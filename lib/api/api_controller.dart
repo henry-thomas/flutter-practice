@@ -24,6 +24,10 @@ class ApiController extends ChangeNotifier {
   static String jwt = "";
   ApiService service = ApiService();
 
+  void _initPsManager(BuildContext context) {
+    Provider.of<PowerServiceManager>(context, listen: false).init(context);
+  }
+
   Future<List<dynamic>?> _getPowerTypes() async {
     ApiResponse? response = await service.getPowerTypes();
     if (response != null) {
@@ -50,6 +54,7 @@ class ApiController extends ChangeNotifier {
     if (loginResponse != null) {
       if (loginResponse.success == true) {
         jwt = loginResponse.data?["jwt"];
+        _initPsManager(context);
       }
     }
   }
