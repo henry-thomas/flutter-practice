@@ -43,10 +43,8 @@ class MyApp extends StatelessWidget {
 class MyHomePage extends StatelessWidget {
   static String loggerSerial = "MP-1623061258731";
   static String devModel = "12";
-  static String jwt =
-      "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiIxIiwic2NlIjoibW9iaWxlIn0.fMb0gvTNuicGeccoT39psw7KHm6Zw_rw2bA0lK0_kCUwUAL977vNtS74X87l1BTt38oPT0PrVinxgfI157Xrr2IsVNP40PWl4Iqzt2XjoXCBVmhhc94ZCDp4iq7KswdHMWvO-CGY5Cmdx3xDheJcAyuvoMrifmkFLfPIU9f-KGBJVQRsTjdD-yLWUBZSOhusHBe4uz867ClSDLTAszwmZC-MtTuzut51ND7SsEo18GsmTXQfqnAYDi8sh2Hu2KHfWTZNMd1cPlh2aAq1SFsjccMzSdK84bXLdy88Pg6zkdHC05Lhpvm0ncICWbhxRq-0tVDZoqLsS6mrlbacXb8Ylg";
   static String url = 'ws://192.168.100.18:8084/SolarMDApi/mobile?token=' +
-      jwt +
+      ApiController.jwt +
       '&loggerSerial=' +
       loggerSerial +
       '&deviceModel=' +
