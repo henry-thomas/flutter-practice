@@ -10,6 +10,7 @@ import 'package:provider_test/entities/device_message.dart';
 import 'package:provider_test/main.dart';
 import 'package:provider_test/providers/websocket/ps_manager.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
+import 'package:provider_test/screens/dashboardScreen/dashboard_page_view.dart';
 
 class WsManager extends ChangeNotifier {
   var _count = 0;
@@ -30,7 +31,7 @@ class WsManager extends ChangeNotifier {
     webSocketMsg.msgType = "devInstruction";
     webSocketMsg.devModel = 12;
     webSocketMsg.devModelId = 12;
-    webSocketMsg.loggerSerial = MyHomePage.loggerSerial;
+    webSocketMsg.loggerSerial ="SLV216362637";
 
     sendWsMessage(webSocketMsg, channel);
   }
@@ -45,7 +46,7 @@ class WsManager extends ChangeNotifier {
     webSocketMsg.msgType = "conConfig";
     webSocketMsg.devModel = 12;
     webSocketMsg.devModelId = 12;
-    webSocketMsg.loggerSerial = MyHomePage.loggerSerial;
+    webSocketMsg.loggerSerial = "SLV216362637";
 
     sendWsMessage(webSocketMsg, channel);
   }
@@ -61,8 +62,10 @@ class WsManager extends ChangeNotifier {
   void processMessage(Map<String, dynamic> data, WebSocketChannel channel,
       BuildContext context) {
     var msgType = data['msgType'];
+    DevMessage devMessage = DevMessage.fromJson(data);
     switch (msgType) {
       case "connectionInit": //BroadcastData
+        // startRandom();
         onConnectionInit(channel);
         break;
       case 0: //BroadcastData
@@ -70,7 +73,8 @@ class WsManager extends ChangeNotifier {
           _processPsMessage(context, data);
         }
         break;
-      case 1: // ResponseMessage
+      case 1:
+        // ResponseMessage
         break;
       case 2: // EventMessage
 
@@ -89,18 +93,8 @@ class WsManager extends ChangeNotifier {
         break;
       default:
     }
-  }
+    // notifyListeners();
 
-  void incrementCounter() {
-    _count += 1;
-    notifyListeners();
-  }
-
-  void startRandom() {
-    Timer.periodic(Duration(milliseconds: 1000), (timer) {
-      _random = Random().nextInt(999);
-      notifyListeners();
-    });
   }
 
   void _processPsMessage(BuildContext context, Map<String, dynamic> msg) {

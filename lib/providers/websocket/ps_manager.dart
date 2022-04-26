@@ -1,6 +1,4 @@
 import 'dart:collection';
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:provider_test/api/api_controller.dart';
@@ -10,7 +8,21 @@ import 'package:provider_test/entities/power_type.dart';
 
 class PowerServiceManager extends ChangeNotifier {
   //<powerType, <powerList>>
-  final Map<String?, List<DevPowerSummary>> _powerTypeMap = new HashMap();
+  final Map<String?, List<DevPowerSummary>> _powerTypeMap = HashMap();
+  double _batPower = 0;
+  // double _gridPower = 0;
+  // double _pvPower = 0;
+
+  // double get getPvPower {
+  //   return _pvPower;
+  // }
+
+  double get getBatPower {
+    return _batPower;
+  }
+  // double get getGridPower {
+  //   return _gridPower;
+  // }
 
   Map<String?, List<DevPowerSummary>> get getPowerTypeMap {
     return _powerTypeMap;
@@ -62,6 +74,61 @@ class PowerServiceManager extends ChangeNotifier {
           _powerTypeMap[powerType]?.add(powerList[i]);
         }
       }
+
     }
+
+    calcPowerTotals();
+  }
+
+  void calcPowerTotals(){
+
+
+    // double totPv = 0;
+    // for(int i = 0; i<_powerTypeMap["pv"]!.length; i++){
+    //   totPv += _powerTypeMap["pv"]![i].powerW as double;
+    // }
+    // if (totPv >0) {
+    //   _pvPower = totPv;
+    // }
+
+
+    double totStCharge = 0;
+    for(int i = 0; i<_powerTypeMap["stCharge"]!.length; i++){
+      totStCharge += _powerTypeMap["stCharge"]![i].powerW as double;
+    }
+
+    double totDisCharge = 0;
+    for(int i = 0; i<_powerTypeMap["stDischarge"]!.length; i++){
+      totStCharge += _powerTypeMap["stDischarge"]![i].powerW as double;
+    }
+
+    if(totStCharge >= totDisCharge){
+      _batPower = totStCharge - totDisCharge;
+      //means bat charging
+    }else{
+      _batPower = totDisCharge - totStCharge;
+    }
+
+    // if (_powerTypeMap["gridImport"]!.length != null) {
+    //   double gridImport = 0;
+    //   for(int i = 0; i<_powerTypeMap["gridImport"]!.length; i++){
+    //     totStCharge += _powerTypeMap["gridImport"]![i].powerW as double;
+    //   }
+    //
+    //   double gridExport = 0;
+    //   for(int i = 0; i<_powerTypeMap["gridExport"]!.length; i++){
+    //     totStCharge += _powerTypeMap["gridExport"]![i].powerW as double;
+    //   }
+    //
+    //   if(gridImport >= gridExport){
+    //     _gridPower = gridImport - gridExport;
+    //     //means bat charging
+    //   }else{
+    //     _gridPower = gridExport - gridImport;
+    //   }
+    // }
+
+
+
   }
 }
