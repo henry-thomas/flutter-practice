@@ -12,6 +12,8 @@ class PowerServiceManager extends ChangeNotifier {
   //<powerType, <powerList>>
   final Map<String?, List<DevPowerSummary>> _powerTypeMap = new HashMap();
 
+  int count = 0;
+
   Map<String?, List<DevPowerSummary>> get getPowerTypeMap {
     return _powerTypeMap;
   }
@@ -63,5 +65,7 @@ class PowerServiceManager extends ChangeNotifier {
         }
       }
     }
+    count++;
+    notifyListeners();
   }
 }

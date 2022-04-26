@@ -16,12 +16,23 @@ class WsManager extends ChangeNotifier {
   var _random = 0;
   int requestId = 0;
 
-  int get getRandom {
-    return _random;
-  }
+  static String loggerSerial = "SLV216362637";
+  static String devModel = "12";
+  static String jwt =
+      "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiIxIiwic2NlIjoibW9iaWxlIn0.Vcxby9gFQBg7nVq3CP67hMcq2eeKA1OreipFrNQkGfv5R8emjS8Td8sjK91LncWCTF9qubsX_LzggkcuXhc6E8NJFKD36NOHMZdDrkw8N-RE1BDUvjsBXsacxFNI6aauX8jFkiGuQH6yRggVDc5Q5mb3dCnidrKDzdjkUSgRfoe0IGE1i-sF88yW8P7uyCfheB7fHAPXX9Fuyon6IPpM0eDJVDoe0aQC9zYZObfQrxueVetcqo3N9QY8Xrfbz08xn1yPZpTZfhcJ3dGhCJM6Wsz2yehlfCFVjc2kYTAAH0eobEyIY7AYyvjYkpGvcDR-GLG7EPaJeQf06vclJiEI0A";
+  static String url = 'ws://192.168.100.18:8084/SolarMDApi/mobile?token=' +
+      jwt +
+      '&loggerSerial=' +
+      loggerSerial +
+      '&deviceModel=' +
+      devModel;
 
-  int get getCounter {
-    return _count;
+  static final channel = WebSocketChannel.connect(Uri.parse(url));
+
+  var stream = channel.stream;
+
+  void initWsManager(BuildContext context) async {
+    stream.listen((event) => {processMessage(jsonDecode(event), context)});
   }
 
   void requestBcMsg(channel) {
@@ -30,7 +41,7 @@ class WsManager extends ChangeNotifier {
     webSocketMsg.msgType = "devInstruction";
     webSocketMsg.devModel = 12;
     webSocketMsg.devModelId = 12;
-    webSocketMsg.loggerSerial = MyHomePage.loggerSerial;
+    webSocketMsg.loggerSerial = ApiController.SELECTED_LOGGER;
 
     sendWsMessage(webSocketMsg, channel);
   }
@@ -45,7 +56,7 @@ class WsManager extends ChangeNotifier {
     webSocketMsg.msgType = "conConfig";
     webSocketMsg.devModel = 12;
     webSocketMsg.devModelId = 12;
-    webSocketMsg.loggerSerial = MyHomePage.loggerSerial;
+    webSocketMsg.loggerSerial = ApiController.SELECTED_LOGGER;
 
     sendWsMessage(webSocketMsg, channel);
   }
@@ -58,8 +69,7 @@ class WsManager extends ChangeNotifier {
     channel.sink.add(encodedWebSocketMsg);
   }
 
-  void processMessage(Map<String, dynamic> data, WebSocketChannel channel,
-      BuildContext context) {
+  void processMessage(Map<String, dynamic> data, BuildContext context) {
     var msgType = data['msgType'];
     switch (msgType) {
       case "connectionInit": //BroadcastData
@@ -67,7 +77,7 @@ class WsManager extends ChangeNotifier {
         break;
       case 0: //BroadcastData
         if (data['devModel'] == 12) {
-          _processPsMessage(context, data);
+          _processPsMessage(data, context);
         }
         break;
       case 1: // ResponseMessage
@@ -103,7 +113,7 @@ class WsManager extends ChangeNotifier {
     });
   }
 
-  void _processPsMessage(BuildContext context, Map<String, dynamic> msg) {
+  void _processPsMessage(Map<String, dynamic> msg, BuildContext context) {
     Provider.of<PowerServiceManager>(context, listen: false)
         .onPsMessageReceived(msg);
   }

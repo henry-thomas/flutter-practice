@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:provider_test/api/api_controller.dart';
+import 'package:provider_test/entities/device_message.dart';
 import 'package:provider_test/providers/websocket/ps_manager.dart';
 import 'package:provider_test/providers/websocket/ws_manager.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
@@ -41,25 +42,16 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatelessWidget {
-  static String loggerSerial = "MP-1623061258731";
-  static String devModel = "12";
-  static String url = 'ws://192.168.100.18:8084/SolarMDApi/mobile?token=' +
-      ApiController.jwt +
-      '&loggerSerial=' +
-      loggerSerial +
-      '&deviceModel=' +
-      devModel;
-
-  static final channel = WebSocketChannel.connect(Uri.parse(url));
-
   const MyHomePage({Key? key, required this.title}) : super(key: key);
 
   final String title;
+  static var isWsInit = false;
 
-  void _processMessage(BuildContext context, Map<String, dynamic> msg,
-      WebSocketChannel channel) {
-    Provider.of<WsManager>(context, listen: false)
-        .processMessage(msg, channel, context);
+  void _initWsManager(BuildContext context) {
+    if (!isWsInit) {
+      Provider.of<WsManager>(context, listen: false).initWsManager(context);
+      isWsInit = true;
+    }
   }
 
 //Calling the login method in API controller, passing the state of this
@@ -72,7 +64,9 @@ class MyHomePage extends StatelessWidget {
   static int reqId = 0;
   @override
   Widget build(BuildContext context) {
-    var counter = Provider.of<WsManager>(context).getRandom;
+    _login(context);
+
+    var counter = Provider.of<PowerServiceManager>(context).count;
 
     //This is how we get the values form a provider/
     var powerTypeMap =
@@ -80,7 +74,6 @@ class MyHomePage extends StatelessWidget {
 
     //This should be called from the login page, ofcourse.
     //This is how we call a method from a provider.
-    _login(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -97,29 +90,32 @@ class MyHomePage extends StatelessWidget {
               '$counter',
               style: Theme.of(context).textTheme.headline4,
             ),
-            StreamBuilder(
-              stream: channel.stream,
-              builder: (context, snapshot) {
-                var data = jsonDecode(snapshot.data.toString());
-                try {
-                  _processMessage(context, data, channel);
-                } catch (e) {
-                  // ignore: avoid_print
-                  print(e);
-                }
+            // StreamBuilder(
+            //   stream: channel.stream,
+            //   builder: (context, snapshot) {
+            //     if (snapshot.hasData) {
+            //       var data = jsonDecode(snapshot.data.toString());
+            //       try {
+            //         _processMessage(context, data, channel);
+            //       } catch (e) {
+            //         // ignore: avoid_print
+            //         print(e);
+            //       }
+            //     }
 
-                return const Text(
-                  '',
-                );
-              },
-            ),
+            //     return const Text(
+            //       '',
+            //     );
+            //   },
+            // ),
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
         // onPressed: () => _startRandom(context),
         onPressed: () {
-          debugPrint(powerTypeMap.toString());
+          // debugPrint(powerTypeMap.toString());
+          _initWsManager(context);
         },
         tooltip: 'Increment',
         child: const Icon(Icons.add),
