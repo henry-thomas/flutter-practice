@@ -1,9 +1,6 @@
-import 'package:provider_test/flutterFlow/flutter_flow_animations.dart';
 import 'package:provider_test/flutterFlow/flutter_flow_theme.dart';
 import 'package:flutter/material.dart';
 import 'login_components.dart';
-
-
 
 class LoginPageWidget extends StatefulWidget {
   const LoginPageWidget({Key? key}) : super(key: key);
@@ -18,36 +15,14 @@ class _LoginPageWidgetState extends State<LoginPageWidget>
   TextEditingController? passwordController;
   bool? passwordVisibility;
   final scaffoldKey = GlobalKey<ScaffoldState>();
-  // final animationsMap = {
-  //   'imageOnPageLoadAnimation': AnimationInfo(
-  //     curve: Curves.bounceOut,
-  //     trigger: AnimationTrigger.onPageLoad,
-  //     duration: 1000,
-  //     fadeIn: true,
-  //     // initialState: AnimationState(
-  //     //   offset: const Offset(-100, 0),
-  //     //   scale: 1,
-  //     //   opacity: 0,
-  //     // ),
-  //     // finalState: AnimationState(
-  //     //   offset: const Offset(0, 0),
-  //     //   scale: 1,
-  //     //   opacity: 1,
-  //     // ),
-  //   ),
-  // };
 
   @override
   void initState() {
     super.initState();
-
-
-
     emailAddressController = TextEditingController();
     passwordController = TextEditingController();
     passwordVisibility = false;
   }
-
 
   @override
   Widget build(BuildContext context) {

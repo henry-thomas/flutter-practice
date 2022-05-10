@@ -15,10 +15,11 @@ import 'package:provider_test/screens/dashboardScreen/dashboard_page_view.dart';
 
 class ApiController extends ChangeNotifier {
 
+  // static const BASE_URL = "http://cweb1.mypower24.co.za/SolarMDApi/";
   static const BASE_URL = "http://192.168.100.18:8084/SolarMDApi/";
   // static const USERNAME = "kostadin";
   // static const PASSWORD = "1234";
-  static const SELECTED_LOGGER = "SLV216362637";
+  static const SELECTED_LOGGER = "SLV209980540";
   static const START_DATE = "20220401";
   static const END_DATE = "20220419";
   static const PAGE = 1;
@@ -27,9 +28,7 @@ class ApiController extends ChangeNotifier {
   static String jwt = "";
   ApiService service = ApiService();
 
-  void _initPsManager(BuildContext context) {
-    Provider.of<PowerServiceManager>(context, listen: false).init(context);
-  }
+
 
   Future<List<dynamic>?> _getPowerTypes() async {
     ApiResponse? response = await service.getPowerTypes();
@@ -57,7 +56,7 @@ class ApiController extends ChangeNotifier {
     if (loginResponse != null) {
       if (loginResponse.success == true) {
         jwt = loginResponse.data?["jwt"];
-        _initPsManager(context);
+
         Navigator.push(context, MaterialPageRoute(builder: (context) {
           return  DashboardWidget();
         }));

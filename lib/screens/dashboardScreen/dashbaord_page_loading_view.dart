@@ -152,6 +152,7 @@ class _DashboardLoadingWidgetState extends State<DashboardLoadingWidget> {
                               ),
                             ),
                           ),
+
                           Padding(
                             padding:
                             const EdgeInsetsDirectional.fromSTEB(10, 0, 0, 0),

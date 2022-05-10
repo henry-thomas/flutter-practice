@@ -1,21 +1,18 @@
 import 'package:dropdown_button2/dropdown_button2.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
-import 'package:provider_test/entities/dev_power_summary.dart';
 import 'package:provider_test/flutterFlow/flutter_flow_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider_test/providers/websocket/ps_manager.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-import 'dashboardComponents/add_logger_view.dart';
 import 'dashbaord_page_loading_view.dart';
 import 'package:provider_test/screens/loginScreen/login_page_view.dart';
 import 'package:provider_test/screens/dashboardScreen/dashboardComponents/battery_view.dart';
-import 'dart:convert';
 import 'package:provider/provider.dart';
-import 'package:provider_test/api/api_controller.dart';
 import 'package:provider_test/providers/websocket/ws_manager.dart';
-import 'package:web_socket_channel/web_socket_channel.dart';
+
+import 'dashboardAnimation/dashboard_animation_controller.dart';
+import 'dashboardAnimation/dashboard_animation_provider.dart';
 
 class DashboardWidget extends StatefulWidget {
   const DashboardWidget({Key? key}) : super(key: key);
@@ -28,42 +25,39 @@ class _DashboardWidgetState extends State<DashboardWidget> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   _DashboardWidgetState({
+    Key? key,
     this.fabLocation = FloatingActionButtonLocation.endDocked,
     this.shape = const CircularNotchedRectangle(),
   });
 
-  static String loggerSerial = ApiController.SELECTED_LOGGER;
-  static String devModel = "12";
-  static String url = 'ws://192.168.100.18:8084/SolarMDApi/mobile?token=' +
-      ApiController.jwt +
-      '&loggerSerial=' +
-      loggerSerial +
-      '&deviceModel=' +
-      devModel;
-
-
-
-  static final channel = WebSocketChannel.connect(Uri.parse(url));
-
-  void _processMessage(BuildContext context, Map<String, dynamic> msg,
-      WebSocketChannel channel) {
-    Provider.of<WsManager>(context, listen: true)
-        .processMessage(msg, channel, context);
+  void _initWs(BuildContext context) {
+    Provider.of<WsManager>(context, listen: false).initWs(context);
   }
 
   final FloatingActionButtonLocation? fabLocation;
   final NotchedShape shape;
   static final List<FloatingActionButtonLocation> centerLocations =
-  <FloatingActionButtonLocation>[
+      <FloatingActionButtonLocation>[
     FloatingActionButtonLocation.centerDocked,
     FloatingActionButtonLocation.centerFloat,
   ];
-  // final String _currentPage = 'dashboard';
+
+  bool isInit = false;
+
+  bool _initPsManager(BuildContext context) {
+    if (!isInit) {
+      isInit = true;
+      Provider.of<PowerServiceManager>(context, listen: false).init(context);
+      return true;
+    }
+
+    return false;
+  }
+
   final bool _showFab = true;
   final bool _showNotch = true;
   final FloatingActionButtonLocation _fabLocation =
       FloatingActionButtonLocation.endDocked;
-
 
   String? selectedValue;
   List<String> items = [
@@ -72,9 +66,30 @@ class _DashboardWidgetState extends State<DashboardWidget> {
 
   PageController? pageViewController;
 
+
   @override
   Widget build(BuildContext context) {
-    double batPower = context.watch<PowerServiceManager>().getBatPower;
+    // animation providers
+    final pvtoBatProvider = Provider.of<DashboardAnimationProvider>(context);
+    final pvToBatDotPosition = pvtoBatProvider.pvToBatAnimationPositionVal;
+    final psManager = Provider.of<PowerServiceManager>(context);
+
+    _initWs(context);
+    _initPsManager(context);
+    String batPower =
+        ((Provider.of<PowerServiceManager>(context).getBatPower) / 1000)
+            .toStringAsFixed(3);
+    String pvPower =
+        ((Provider.of<PowerServiceManager>(context).getPvPower) / 1000)
+            .toStringAsFixed(2);
+    String loadPower = ((Provider.of<PowerServiceManager>(context)
+                .getLoadPower
+                .powerW as double) /
+            1000)
+        .toStringAsFixed(2);
+    String gridPower =
+        ((Provider.of<PowerServiceManager>(context).getGridPower) / 1000)
+            .toStringAsFixed(2);
     // String gridPower = Provider.of<PowerServiceManager>(context).getGridPower.toStringAsFixed(2);
     // int random = Provider.of<WsManager>(context).getRandom;
 
@@ -82,7 +97,6 @@ class _DashboardWidgetState extends State<DashboardWidget> {
       floatingActionButton: _showFab
           ? FloatingActionButton(
               onPressed: () {
-                channel.sink.close();
                 // AddLoggerView.addLoggerDialog(context, setState);
               },
               backgroundColor:
@@ -108,6 +122,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                 onPressed: () {},
               ),
               if (centerLocations.contains(fabLocation)) const Spacer(),
+              const DashbaordAnimationController(),
               IconButton(
                 tooltip: 'Charts',
                 icon: Icon(
@@ -118,8 +133,8 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                 onPressed: () {
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
                     return const DashboardLoadingWidget(
-                      // selectedSerial: loggerSerial,
-                    );
+                        // selectedSerial: loggerSerial,
+                        );
                   }));
                 },
               ),
@@ -143,7 +158,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
       appBar: AppBar(
         backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
         iconTheme:
-        IconThemeData(color: FlutterFlowTheme.of(context).tertiaryColor),
+            IconThemeData(color: FlutterFlowTheme.of(context).tertiaryColor),
         automaticallyImplyLeading: true,
         title: Text(
           "loggerDescription",
@@ -173,12 +188,12 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                 ),
                 items: items
                     .map((item) => DropdownMenuItem<String>(
-                  value: item,
-                  child: Text(
-                    item,
-                    style: FlutterFlowTheme.of(context).bodyText1,
-                  ),
-                ))
+                          value: item,
+                          child: Text(
+                            item,
+                            style: FlutterFlowTheme.of(context).bodyText1,
+                          ),
+                        ))
                     .toList(),
                 value: selectedValue,
                 onChanged: (value) {
@@ -222,49 +237,47 @@ class _DashboardWidgetState extends State<DashboardWidget> {
         elevation: 16,
         child: SingleChildScrollView(
             child: Column(
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                Padding(
-                  padding: const EdgeInsetsDirectional.fromSTEB(0, 50, 0, 0),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.max,
-                    // mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsetsDirectional.fromSTEB(20, 20, 20, 20),
-                        child: InkWell(
-                          child: Container(
-                            width: 30,
-                            height: 30,
-                            clipBehavior: Clip.antiAlias,
-                            decoration: const BoxDecoration(
-                              shape: BoxShape.circle,
-                            ),
-                            child: Image.asset(
-                              'assets/images/userIcon.png',
-                            ),
-                          ),
-                          onTap: () {},
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            Padding(
+              padding: const EdgeInsetsDirectional.fromSTEB(0, 50, 0, 0),
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                // mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Padding(
+                    padding:
+                        const EdgeInsetsDirectional.fromSTEB(20, 20, 20, 20),
+                    child: InkWell(
+                      child: Container(
+                        width: 30,
+                        height: 30,
+                        clipBehavior: Clip.antiAlias,
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                        ),
+                        child: Image.asset(
+                          'assets/images/userIcon.png',
                         ),
                       ),
-                      Text(
-                        "SolarMdData().usernameGlobal",
-                        style: FlutterFlowTheme.of(context).bodyText1,
-                      ),
-
-                    ],
+                      onTap: () {},
+                    ),
                   ),
-                ),
-
-                Column(
-                  mainAxisSize: MainAxisSize.max,
-                  // children: initLoggerList(context),
-                ),
-              ],
-            )),
+                  Text(
+                    "SolarMdData().usernameGlobal",
+                    style: FlutterFlowTheme.of(context).bodyText1,
+                  ),
+                ],
+              ),
+            ),
+            Column(
+              mainAxisSize: MainAxisSize.max,
+              // children: initLoggerList(context),
+            ),
+          ],
+        )),
       ),
-
       body: SafeArea(
         child: GestureDetector(
           onTap: () => FocusScope.of(context).unfocus(),
@@ -273,12 +286,14 @@ class _DashboardWidgetState extends State<DashboardWidget> {
               mainAxisSize: MainAxisSize.max,
               children: [
                 LinearProgressIndicator(
-                  value: 0.2,//linearProgress.value,
+                  value: 0.2,
+                  //linearProgress.value,
                   // A value of 0.0 means no progress and 1.0 means that progress is complete.
                   valueColor: AlwaysStoppedAnimation<Color>(
                       FlutterFlowTheme.of(context)
                           .primaryColor!
-                          .withOpacity( 0.2)), //linerAnimOpacity
+                          .withOpacity(0.2)),
+                  //linerAnimOpacity
                   backgroundColor: Colors.grey.withOpacity(0.0),
                 ),
                 Container(
@@ -297,7 +312,8 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                         mainAxisSize: MainAxisSize.max,
                         children: [
                           Padding(
-                            padding: const EdgeInsetsDirectional.fromSTEB(0, 5, 0, 0),
+                            padding: const EdgeInsetsDirectional.fromSTEB(
+                                0, 5, 0, 0),
                             child: Row(
                               mainAxisSize: MainAxisSize.max,
                               children: [
@@ -319,9 +335,9 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                                     style: FlutterFlowTheme.of(context)
                                         .bodyText1
                                         .override(
-                                      fontFamily: 'Poppins',
-                                      fontSize: 12,
-                                    ),
+                                          fontFamily: 'Poppins',
+                                          fontSize: 12,
+                                        ),
                                   ),
                                 ),
                                 Padding(
@@ -332,11 +348,11 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                                     style: FlutterFlowTheme.of(context)
                                         .bodyText1
                                         .override(
-                                      fontFamily: 'Poppins',
-                                      color: FlutterFlowTheme.of(context)
-                                          .secondaryText,
-                                      fontSize: 12,
-                                    ),
+                                          fontFamily: 'Poppins',
+                                          color: FlutterFlowTheme.of(context)
+                                              .secondaryText,
+                                          fontSize: 12,
+                                        ),
                                   ),
                                 ),
                               ],
@@ -345,13 +361,14 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                         ],
                       ),
                       Padding(
-                        padding: const EdgeInsetsDirectional.fromSTEB(0, 0, 0, 0),
+                        padding:
+                            const EdgeInsetsDirectional.fromSTEB(0, 0, 0, 0),
                         child: Row(
                           mainAxisSize: MainAxisSize.max,
                           children: [
                             Padding(
-                              padding:
-                              const EdgeInsetsDirectional.fromSTEB(45, 0, 0, 0),
+                              padding: const EdgeInsetsDirectional.fromSTEB(
+                                  45, 0, 0, 0),
                               child: Image.asset(
                                 'assets/images/Rectangle_22-9-7-7.png',
                                 width: 40,
@@ -360,69 +377,30 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                               ),
                             ),
                             LinearPercentIndicator(
-                                percent: 0.0,//batteryLevel,
+                                percent: 0.0,
+                                //batteryLevel,
                                 width: 140,
                                 lineHeight: 15,
                                 animation: false,
-                                progressColor: Colors.green, //batteryLevelColor,
+                                progressColor: Colors.green,
+                                //batteryLevelColor,
                                 backgroundColor: const Color(0x7DFFFFFF),
                                 center: Text(
                                   'batteryStorage%',
                                   style: FlutterFlowTheme.of(context)
                                       .bodyText1
                                       .override(
-                                    fontFamily: 'Poppins',
-                                    color: FlutterFlowTheme.of(context)
-                                        .primaryText,
-                                    fontSize: 10,
-                                  ),
+                                        fontFamily: 'Poppins',
+                                        color: FlutterFlowTheme.of(context)
+                                            .primaryText,
+                                        fontSize: 10,
+                                      ),
                                 ),
                                 barRadius: const Radius.circular(10)),
                             const Padding(
                               padding:
-                              EdgeInsetsDirectional.fromSTEB(10, 0, 0, 0),
+                                  EdgeInsetsDirectional.fromSTEB(10, 0, 0, 0),
                             ),
-                            StreamBuilder(
-                              stream: channel.stream,
-                              builder: (context, snapshot) {
-                                var data = jsonDecode(snapshot.data.toString());
-                                try {
-                                  _processMessage(context, data, channel);
-
-                                } catch (e) {
-                                  // ignore: avoid_print
-                                  print(e);
-                                }
-
-                                return const Text(
-                                  '',
-                                );
-                              },
-                            ),
-                            // StreamBuilder(
-                            //   stream: _channel.stream,
-                            //   builder: (context, snapshot) {
-                            //     var data = jsonDecode(snapshot.data.toString());
-                            //
-                            //     try {
-                            //       if (data['msgType'] == "connectionInit") {
-                            //         Message msg = Message();
-                            //         msg.msgType = "conConfig";
-                            //         msg.devModel = 12;
-                            //         _channel.sink.add(jsonEncode(msg.toJson()));
-                            //       } else {
-                            //         processMessage(data);
-                            //       }
-                            //     } catch (e) {
-                            //       print(e);
-                            //     }
-                            //
-                            //     return Text(
-                            //       '',
-                            //       style: FlutterFlowTheme.of(context).bodyText1,
-                            //     );
-                            //   },
-                            // ),
                             Row(
                               mainAxisSize: MainAxisSize.max,
                               mainAxisAlignment: MainAxisAlignment.end,
@@ -459,8 +437,8 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                         child: Stack(
                           children: [
                             Padding(
-                              padding:
-                              const EdgeInsetsDirectional.fromSTEB(0, 0, 0, 50),
+                              padding: const EdgeInsetsDirectional.fromSTEB(
+                                  0, 0, 0, 50),
                               child: PageView(
                                 controller: pageViewController ??=
                                     PageController(initialPage: 0),
@@ -470,47 +448,48 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                                     mainAxisSize: MainAxisSize.max,
                                     children: [
                                       Padding(
-                                        padding: const EdgeInsetsDirectional.fromSTEB(
-                                            0, 10, 0, 0),
+                                        padding: const EdgeInsetsDirectional
+                                            .fromSTEB(0, 10, 0, 0),
                                         child: Row(
                                           mainAxisSize: MainAxisSize.max,
                                           mainAxisAlignment:
-                                          MainAxisAlignment.spaceEvenly,
+                                              MainAxisAlignment.spaceEvenly,
                                           children: [
                                             Container(
                                               width: 140,
                                               height: 30,
                                               decoration: BoxDecoration(
                                                 color:
-                                                FlutterFlowTheme.of(context)
-                                                    .primaryBackground,
+                                                    FlutterFlowTheme.of(context)
+                                                        .primaryBackground,
                                               ),
                                               alignment:
-                                              const AlignmentDirectional(0, 0),
+                                                  const AlignmentDirectional(
+                                                      0, 0),
                                               child: Row(
                                                 mainAxisSize: MainAxisSize.max,
                                                 mainAxisAlignment:
-                                                MainAxisAlignment.start,
+                                                    MainAxisAlignment.start,
                                                 children: [
                                                   Padding(
                                                     padding:
-                                                    const EdgeInsetsDirectional
-                                                        .fromSTEB(
-                                                        0, 0, 10, 0),
+                                                        const EdgeInsetsDirectional
+                                                                .fromSTEB(
+                                                            0, 0, 10, 0),
                                                     child: FaIcon(
                                                       FontAwesomeIcons
                                                           .solarPanel,
                                                       color:
-                                                      FlutterFlowTheme.of(
-                                                          context)
-                                                          .tertiaryColor,
+                                                          FlutterFlowTheme.of(
+                                                                  context)
+                                                              .tertiaryColor,
                                                       size: 15,
                                                     ),
                                                   ),
                                                   Text(
                                                     'Daily PV',
                                                     style: FlutterFlowTheme.of(
-                                                        context)
+                                                            context)
                                                         .bodyText1,
                                                   ),
                                                 ],
@@ -521,11 +500,12 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                                               height: 30,
                                               decoration: BoxDecoration(
                                                 color:
-                                                FlutterFlowTheme.of(context)
-                                                    .primaryBackground,
+                                                    FlutterFlowTheme.of(context)
+                                                        .primaryBackground,
                                               ),
                                               alignment:
-                                              const AlignmentDirectional(0, 0),
+                                                  const AlignmentDirectional(
+                                                      0, 0),
                                               child: Row(
                                                 mainAxisSize: MainAxisSize.max,
                                                 children: [
@@ -534,31 +514,32 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                                                     height: 29,
                                                     decoration: BoxDecoration(
                                                       color: FlutterFlowTheme
-                                                          .of(context)
+                                                              .of(context)
                                                           .primaryBackground,
                                                     ),
-                                                    alignment: const AlignmentDirectional(
-                                                        -0.050000000000000044,
-                                                        -0.050000000000000044),
+                                                    alignment:
+                                                        const AlignmentDirectional(
+                                                            -0.050000000000000044,
+                                                            -0.050000000000000044),
                                                     child: Text(
-                                                      "$batPower",
+                                                      "00.00",
                                                       style:
-                                                      FlutterFlowTheme.of(
-                                                          context)
-                                                          .bodyText1,
+                                                          FlutterFlowTheme.of(
+                                                                  context)
+                                                              .bodyText1,
                                                     ),
                                                   ),
                                                   Text(
                                                     'kWh',
                                                     style: FlutterFlowTheme.of(
-                                                        context)
+                                                            context)
                                                         .bodyText1
                                                         .override(
-                                                      fontFamily: 'Poppins',
-                                                      color: FlutterFlowTheme
-                                                          .of(context)
-                                                          .secondaryText,
-                                                    ),
+                                                          fontFamily: 'Poppins',
+                                                          color: FlutterFlowTheme
+                                                                  .of(context)
+                                                              .secondaryText,
+                                                        ),
                                                   ),
                                                 ],
                                               ),
@@ -567,47 +548,48 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                                         ),
                                       ),
                                       Padding(
-                                        padding: const EdgeInsetsDirectional.fromSTEB(
-                                            0, 10, 0, 0),
+                                        padding: const EdgeInsetsDirectional
+                                            .fromSTEB(0, 10, 0, 0),
                                         child: Row(
                                           mainAxisSize: MainAxisSize.max,
                                           mainAxisAlignment:
-                                          MainAxisAlignment.spaceEvenly,
+                                              MainAxisAlignment.spaceEvenly,
                                           children: [
                                             Container(
                                               width: 140,
                                               height: 30,
                                               decoration: BoxDecoration(
                                                 color:
-                                                FlutterFlowTheme.of(context)
-                                                    .primaryBackground,
+                                                    FlutterFlowTheme.of(context)
+                                                        .primaryBackground,
                                               ),
                                               alignment:
-                                              const AlignmentDirectional(0, 0),
+                                                  const AlignmentDirectional(
+                                                      0, 0),
                                               child: Row(
                                                 mainAxisSize: MainAxisSize.max,
                                                 mainAxisAlignment:
-                                                MainAxisAlignment.start,
+                                                    MainAxisAlignment.start,
                                                 children: [
                                                   Padding(
                                                     padding:
-                                                    const EdgeInsetsDirectional
-                                                        .fromSTEB(
-                                                        0, 0, 10, 0),
+                                                        const EdgeInsetsDirectional
+                                                                .fromSTEB(
+                                                            0, 0, 10, 0),
                                                     child: Icon(
                                                       Icons
                                                           .offline_bolt_outlined,
                                                       color:
-                                                      FlutterFlowTheme.of(
-                                                          context)
-                                                          .tertiaryColor,
+                                                          FlutterFlowTheme.of(
+                                                                  context)
+                                                              .tertiaryColor,
                                                       size: 20,
                                                     ),
                                                   ),
                                                   Text(
                                                     'Daily Grid',
                                                     style: FlutterFlowTheme.of(
-                                                        context)
+                                                            context)
                                                         .bodyText1,
                                                   ),
                                                 ],
@@ -618,11 +600,12 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                                               height: 30,
                                               decoration: BoxDecoration(
                                                 color:
-                                                FlutterFlowTheme.of(context)
-                                                    .primaryBackground,
+                                                    FlutterFlowTheme.of(context)
+                                                        .primaryBackground,
                                               ),
                                               alignment:
-                                              const AlignmentDirectional(0, 0),
+                                                  const AlignmentDirectional(
+                                                      0, 0),
                                               child: Row(
                                                 mainAxisSize: MainAxisSize.max,
                                                 children: [
@@ -631,31 +614,32 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                                                     height: 29,
                                                     decoration: BoxDecoration(
                                                       color: FlutterFlowTheme
-                                                          .of(context)
+                                                              .of(context)
                                                           .primaryBackground,
                                                     ),
-                                                    alignment: const AlignmentDirectional(
-                                                        -0.050000000000000044,
-                                                        -0.050000000000000044),
+                                                    alignment:
+                                                        const AlignmentDirectional(
+                                                            -0.050000000000000044,
+                                                            -0.050000000000000044),
                                                     child: Text(
-                                                      "dailyGrid",
+                                                      "00.00",
                                                       style:
-                                                      FlutterFlowTheme.of(
-                                                          context)
-                                                          .bodyText1,
+                                                          FlutterFlowTheme.of(
+                                                                  context)
+                                                              .bodyText1,
                                                     ),
                                                   ),
                                                   Text(
                                                     'kWh',
                                                     style: FlutterFlowTheme.of(
-                                                        context)
+                                                            context)
                                                         .bodyText1
                                                         .override(
-                                                      fontFamily: 'Poppins',
-                                                      color: FlutterFlowTheme
-                                                          .of(context)
-                                                          .secondaryText,
-                                                    ),
+                                                          fontFamily: 'Poppins',
+                                                          color: FlutterFlowTheme
+                                                                  .of(context)
+                                                              .secondaryText,
+                                                        ),
                                                   ),
                                                 ],
                                               ),
@@ -664,46 +648,47 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                                         ),
                                       ),
                                       Padding(
-                                        padding: const EdgeInsetsDirectional.fromSTEB(
-                                            0, 10, 0, 0),
+                                        padding: const EdgeInsetsDirectional
+                                            .fromSTEB(0, 10, 0, 0),
                                         child: Row(
                                           mainAxisSize: MainAxisSize.max,
                                           mainAxisAlignment:
-                                          MainAxisAlignment.spaceEvenly,
+                                              MainAxisAlignment.spaceEvenly,
                                           children: [
                                             Container(
                                               width: 140,
                                               height: 30,
                                               decoration: BoxDecoration(
                                                 color:
-                                                FlutterFlowTheme.of(context)
-                                                    .primaryBackground,
+                                                    FlutterFlowTheme.of(context)
+                                                        .primaryBackground,
                                               ),
                                               alignment:
-                                              const AlignmentDirectional(0, 0),
+                                                  const AlignmentDirectional(
+                                                      0, 0),
                                               child: Row(
                                                 mainAxisSize: MainAxisSize.max,
                                                 mainAxisAlignment:
-                                                MainAxisAlignment.start,
+                                                    MainAxisAlignment.start,
                                                 children: [
                                                   Padding(
                                                     padding:
-                                                    const EdgeInsetsDirectional
-                                                        .fromSTEB(
-                                                        0, 0, 10, 0),
+                                                        const EdgeInsetsDirectional
+                                                                .fromSTEB(
+                                                            0, 0, 10, 0),
                                                     child: FaIcon(
                                                       FontAwesomeIcons.house,
                                                       color:
-                                                      FlutterFlowTheme.of(
-                                                          context)
-                                                          .tertiaryColor,
+                                                          FlutterFlowTheme.of(
+                                                                  context)
+                                                              .tertiaryColor,
                                                       size: 15,
                                                     ),
                                                   ),
                                                   Text(
                                                     'Daily Load',
                                                     style: FlutterFlowTheme.of(
-                                                        context)
+                                                            context)
                                                         .bodyText1,
                                                   ),
                                                 ],
@@ -714,11 +699,12 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                                               height: 30,
                                               decoration: BoxDecoration(
                                                 color:
-                                                FlutterFlowTheme.of(context)
-                                                    .primaryBackground,
+                                                    FlutterFlowTheme.of(context)
+                                                        .primaryBackground,
                                               ),
                                               alignment:
-                                              const AlignmentDirectional(0, 0),
+                                                  const AlignmentDirectional(
+                                                      0, 0),
                                               child: Row(
                                                 mainAxisSize: MainAxisSize.max,
                                                 children: [
@@ -727,31 +713,32 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                                                     height: 29,
                                                     decoration: BoxDecoration(
                                                       color: FlutterFlowTheme
-                                                          .of(context)
+                                                              .of(context)
                                                           .primaryBackground,
                                                     ),
-                                                    alignment: const AlignmentDirectional(
-                                                        -0.050000000000000044,
-                                                        -0.050000000000000044),
+                                                    alignment:
+                                                        const AlignmentDirectional(
+                                                            -0.050000000000000044,
+                                                            -0.050000000000000044),
                                                     child: Text(
-                                                      "dailyLoad",
+                                                      "00.00",
                                                       style:
-                                                      FlutterFlowTheme.of(
-                                                          context)
-                                                          .bodyText1,
+                                                          FlutterFlowTheme.of(
+                                                                  context)
+                                                              .bodyText1,
                                                     ),
                                                   ),
                                                   Text(
                                                     'kWh',
                                                     style: FlutterFlowTheme.of(
-                                                        context)
+                                                            context)
                                                         .bodyText1
                                                         .override(
-                                                      fontFamily: 'Poppins',
-                                                      color: FlutterFlowTheme
-                                                          .of(context)
-                                                          .secondaryText,
-                                                    ),
+                                                          fontFamily: 'Poppins',
+                                                          color: FlutterFlowTheme
+                                                                  .of(context)
+                                                              .secondaryText,
+                                                        ),
                                                   ),
                                                 ],
                                               ),
@@ -760,47 +747,48 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                                         ),
                                       ),
                                       Padding(
-                                        padding: const EdgeInsetsDirectional.fromSTEB(
-                                            0, 10, 0, 0),
+                                        padding: const EdgeInsetsDirectional
+                                            .fromSTEB(0, 10, 0, 0),
                                         child: Row(
                                           mainAxisSize: MainAxisSize.max,
                                           mainAxisAlignment:
-                                          MainAxisAlignment.spaceEvenly,
+                                              MainAxisAlignment.spaceEvenly,
                                           children: [
                                             Container(
                                               width: 140,
                                               height: 30,
                                               decoration: BoxDecoration(
                                                 color:
-                                                FlutterFlowTheme.of(context)
-                                                    .primaryBackground,
+                                                    FlutterFlowTheme.of(context)
+                                                        .primaryBackground,
                                               ),
                                               alignment:
-                                              const AlignmentDirectional(0, 0),
+                                                  const AlignmentDirectional(
+                                                      0, 0),
                                               child: Row(
                                                 mainAxisSize: MainAxisSize.max,
                                                 mainAxisAlignment:
-                                                MainAxisAlignment.start,
+                                                    MainAxisAlignment.start,
                                                 children: [
                                                   Padding(
                                                     padding:
-                                                    const EdgeInsetsDirectional
-                                                        .fromSTEB(
-                                                        0, 0, 0, 0),
+                                                        const EdgeInsetsDirectional
+                                                                .fromSTEB(
+                                                            0, 0, 0, 0),
                                                     child: Icon(
                                                       Icons
                                                           .battery_charging_full_outlined,
                                                       color:
-                                                      FlutterFlowTheme.of(
-                                                          context)
-                                                          .tertiaryColor,
+                                                          FlutterFlowTheme.of(
+                                                                  context)
+                                                              .tertiaryColor,
                                                       size: 20,
                                                     ),
                                                   ),
                                                   Text(
                                                     'Time until ',
                                                     style: FlutterFlowTheme.of(
-                                                        context)
+                                                            context)
                                                         .bodyText1,
                                                   ),
                                                 ],
@@ -811,11 +799,12 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                                               height: 30,
                                               decoration: BoxDecoration(
                                                 color:
-                                                FlutterFlowTheme.of(context)
-                                                    .primaryBackground,
+                                                    FlutterFlowTheme.of(context)
+                                                        .primaryBackground,
                                               ),
                                               alignment:
-                                              const AlignmentDirectional(0, 0),
+                                                  const AlignmentDirectional(
+                                                      0, 0),
                                               child: Row(
                                                 mainAxisSize: MainAxisSize.max,
                                                 children: [
@@ -824,39 +813,40 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                                                     height: 29,
                                                     decoration: BoxDecoration(
                                                       color: FlutterFlowTheme
-                                                          .of(context)
+                                                              .of(context)
                                                           .primaryBackground,
                                                     ),
-                                                    alignment: const AlignmentDirectional(
-                                                        -0.050000000000000044,
-                                                        -0.050000000000000044),
+                                                    alignment:
+                                                        const AlignmentDirectional(
+                                                            -0.050000000000000044,
+                                                            -0.050000000000000044),
                                                     child: Text(
                                                       "00.00",
                                                       style:
-                                                      FlutterFlowTheme.of(
-                                                          context)
-                                                          .bodyText1
-                                                          .override(
-                                                        fontFamily:
-                                                        'Poppins',
-                                                        color: FlutterFlowTheme.of(
-                                                            context)
-                                                            .primaryText,
-                                                        fontSize: 12,
-                                                      ),
+                                                          FlutterFlowTheme.of(
+                                                                  context)
+                                                              .bodyText1
+                                                              .override(
+                                                                fontFamily:
+                                                                    'Poppins',
+                                                                color: FlutterFlowTheme.of(
+                                                                        context)
+                                                                    .primaryText,
+                                                                fontSize: 12,
+                                                              ),
                                                     ),
                                                   ),
                                                   Text(
                                                     '',
                                                     style: FlutterFlowTheme.of(
-                                                        context)
+                                                            context)
                                                         .bodyText1
                                                         .override(
-                                                      fontFamily: 'Poppins',
-                                                      color: FlutterFlowTheme
-                                                          .of(context)
-                                                          .secondaryText,
-                                                    ),
+                                                          fontFamily: 'Poppins',
+                                                          color: FlutterFlowTheme
+                                                                  .of(context)
+                                                              .secondaryText,
+                                                        ),
                                                   ),
                                                 ],
                                               ),
@@ -888,92 +878,92 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                                       mainAxisSize: MainAxisSize.max,
                                       children: [
                                         Padding(
-                                          padding:
-                                          const EdgeInsetsDirectional.fromSTEB(
-                                              0, 10, 0, 0),
+                                          padding: const EdgeInsetsDirectional
+                                              .fromSTEB(0, 10, 0, 0),
                                           child: Row(
                                             mainAxisSize: MainAxisSize.max,
                                             mainAxisAlignment:
-                                            MainAxisAlignment.center,
+                                                MainAxisAlignment.center,
                                             children: [
                                               Padding(
-                                                padding: const EdgeInsetsDirectional
-                                                    .fromSTEB(0, 0, 70, 0),
+                                                padding:
+                                                    const EdgeInsetsDirectional
+                                                        .fromSTEB(0, 0, 70, 0),
                                                 child: Text(
                                                   'Enviromental Benefits',
                                                   textAlign: TextAlign.center,
                                                   style: FlutterFlowTheme.of(
-                                                      context)
+                                                          context)
                                                       .bodyText1
                                                       .override(
-                                                    fontFamily: 'Poppins',
-                                                    color:
-                                                    FlutterFlowTheme.of(
-                                                        context)
-                                                        .secondaryText,
-                                                    fontSize: 17,
-                                                  ),
+                                                        fontFamily: 'Poppins',
+                                                        color:
+                                                            FlutterFlowTheme.of(
+                                                                    context)
+                                                                .secondaryText,
+                                                        fontSize: 17,
+                                                      ),
                                                 ),
                                               ),
                                             ],
                                           ),
                                         ),
                                         Padding(
-                                          padding:
-                                          const EdgeInsetsDirectional.fromSTEB(
-                                              0, 5, 0, 0),
+                                          padding: const EdgeInsetsDirectional
+                                              .fromSTEB(0, 5, 0, 0),
                                           child: Row(
                                             mainAxisSize: MainAxisSize.max,
                                             mainAxisAlignment:
-                                            MainAxisAlignment.start,
+                                                MainAxisAlignment.start,
                                             children: [
                                               Container(
                                                 width: 140,
                                                 height: 30,
                                                 decoration: BoxDecoration(
                                                   color: FlutterFlowTheme.of(
-                                                      context)
+                                                          context)
                                                       .primaryBackground,
                                                 ),
                                                 alignment:
-                                                const AlignmentDirectional(0, 0),
+                                                    const AlignmentDirectional(
+                                                        0, 0),
                                                 child: Row(
                                                   mainAxisSize:
-                                                  MainAxisSize.max,
+                                                      MainAxisSize.max,
                                                   mainAxisAlignment:
-                                                  MainAxisAlignment.start,
+                                                      MainAxisAlignment.start,
                                                   children: [
                                                     Padding(
                                                       padding:
-                                                      const EdgeInsetsDirectional
-                                                          .fromSTEB(
-                                                          10, 0, 0, 0),
+                                                          const EdgeInsetsDirectional
+                                                                  .fromSTEB(
+                                                              10, 0, 0, 0),
                                                       child: FaIcon(
                                                         FontAwesomeIcons
                                                             .cloudMeatball,
                                                         color:
-                                                        FlutterFlowTheme.of(
-                                                            context)
-                                                            .tertiaryColor,
+                                                            FlutterFlowTheme.of(
+                                                                    context)
+                                                                .tertiaryColor,
                                                         size: 18,
                                                       ),
                                                     ),
                                                     Padding(
                                                       padding:
-                                                      const EdgeInsetsDirectional
-                                                          .fromSTEB(
-                                                          5, 0, 0, 0),
+                                                          const EdgeInsetsDirectional
+                                                                  .fromSTEB(
+                                                              5, 0, 0, 0),
                                                       child: Text(
                                                         ' CO2 reduced',
                                                         style:
-                                                        FlutterFlowTheme.of(
-                                                            context)
-                                                            .bodyText1
-                                                            .override(
-                                                          fontFamily:
-                                                          'Poppins',
-                                                          fontSize: 14,
-                                                        ),
+                                                            FlutterFlowTheme.of(
+                                                                    context)
+                                                                .bodyText1
+                                                                .override(
+                                                                  fontFamily:
+                                                                      'Poppins',
+                                                                  fontSize: 14,
+                                                                ),
                                                       ),
                                                     ),
                                                   ],
@@ -986,55 +976,57 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                                                   color: Color(0x00FFFFFF),
                                                 ),
                                                 alignment:
-                                                const AlignmentDirectional(0, 0),
+                                                    const AlignmentDirectional(
+                                                        0, 0),
                                                 child: Row(
                                                   mainAxisSize:
-                                                  MainAxisSize.max,
+                                                      MainAxisSize.max,
                                                   mainAxisAlignment:
-                                                  MainAxisAlignment.start,
+                                                      MainAxisAlignment.start,
                                                   children: [
                                                     Container(
                                                       width: 60,
                                                       height: 29,
-                                                      decoration: const BoxDecoration(
+                                                      decoration:
+                                                          const BoxDecoration(
                                                         color:
-                                                        Color(0x00FFFFFF),
+                                                            Color(0x00FFFFFF),
                                                       ),
                                                       alignment:
-                                                      const AlignmentDirectional(
-                                                          -1,
-                                                          -0.050000000000000044),
+                                                          const AlignmentDirectional(
+                                                              -1,
+                                                              -0.050000000000000044),
                                                       child: Text(
                                                         "c02Reduced",
                                                         style:
-                                                        FlutterFlowTheme.of(
-                                                            context)
-                                                            .bodyText1
-                                                            .override(
-                                                          fontFamily:
-                                                          'Poppins',
-                                                          fontSize: 18,
-                                                        ),
+                                                            FlutterFlowTheme.of(
+                                                                    context)
+                                                                .bodyText1
+                                                                .override(
+                                                                  fontFamily:
+                                                                      'Poppins',
+                                                                  fontSize: 18,
+                                                                ),
                                                       ),
                                                     ),
                                                     Padding(
                                                       padding:
-                                                      const EdgeInsetsDirectional
-                                                          .fromSTEB(
-                                                          0, 0, 0, 4),
+                                                          const EdgeInsetsDirectional
+                                                                  .fromSTEB(
+                                                              0, 0, 0, 4),
                                                       child: Text(
                                                         'kg',
                                                         style:
-                                                        FlutterFlowTheme.of(
-                                                            context)
-                                                            .bodyText1
-                                                            .override(
-                                                          fontFamily:
-                                                          'Poppins',
-                                                          color: const Color(
-                                                              0xFF3999D2),
-                                                          fontSize: 18,
-                                                        ),
+                                                            FlutterFlowTheme.of(
+                                                                    context)
+                                                                .bodyText1
+                                                                .override(
+                                                                  fontFamily:
+                                                                      'Poppins',
+                                                                  color: const Color(
+                                                                      0xFF3999D2),
+                                                                  fontSize: 18,
+                                                                ),
                                                       ),
                                                     ),
                                                   ],
@@ -1044,60 +1036,60 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                                           ),
                                         ),
                                         Padding(
-                                          padding:
-                                          const EdgeInsetsDirectional.fromSTEB(
-                                              0, 5, 0, 0),
+                                          padding: const EdgeInsetsDirectional
+                                              .fromSTEB(0, 5, 0, 0),
                                           child: Row(
                                             mainAxisSize: MainAxisSize.max,
                                             mainAxisAlignment:
-                                            MainAxisAlignment.start,
+                                                MainAxisAlignment.start,
                                             children: [
                                               Container(
                                                 width: 140,
                                                 height: 30,
                                                 decoration: BoxDecoration(
                                                   color: FlutterFlowTheme.of(
-                                                      context)
+                                                          context)
                                                       .primaryBackground,
                                                 ),
                                                 alignment:
-                                                const AlignmentDirectional(0, 0),
+                                                    const AlignmentDirectional(
+                                                        0, 0),
                                                 child: Row(
                                                   mainAxisSize:
-                                                  MainAxisSize.max,
+                                                      MainAxisSize.max,
                                                   mainAxisAlignment:
-                                                  MainAxisAlignment.start,
+                                                      MainAxisAlignment.start,
                                                   children: [
                                                     Padding(
                                                       padding:
-                                                      const EdgeInsetsDirectional
-                                                          .fromSTEB(
-                                                          10, 0, 0, 0),
+                                                          const EdgeInsetsDirectional
+                                                                  .fromSTEB(
+                                                              10, 0, 0, 0),
                                                       child: Icon(
                                                         Icons.electric_car,
                                                         color:
-                                                        FlutterFlowTheme.of(
-                                                            context)
-                                                            .tertiaryColor,
+                                                            FlutterFlowTheme.of(
+                                                                    context)
+                                                                .tertiaryColor,
                                                         size: 18,
                                                       ),
                                                     ),
                                                     Padding(
                                                       padding:
-                                                      const EdgeInsetsDirectional
-                                                          .fromSTEB(
-                                                          7, 0, 0, 0),
+                                                          const EdgeInsetsDirectional
+                                                                  .fromSTEB(
+                                                              7, 0, 0, 0),
                                                       child: Text(
                                                         'Electric car ',
                                                         style:
-                                                        FlutterFlowTheme.of(
-                                                            context)
-                                                            .bodyText1
-                                                            .override(
-                                                          fontFamily:
-                                                          'Poppins',
-                                                          fontSize: 14,
-                                                        ),
+                                                            FlutterFlowTheme.of(
+                                                                    context)
+                                                                .bodyText1
+                                                                .override(
+                                                                  fontFamily:
+                                                                      'Poppins',
+                                                                  fontSize: 14,
+                                                                ),
                                                       ),
                                                     ),
                                                   ],
@@ -1110,55 +1102,57 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                                                   color: Color(0x00FFFFFF),
                                                 ),
                                                 alignment:
-                                                const AlignmentDirectional(0, 0),
+                                                    const AlignmentDirectional(
+                                                        0, 0),
                                                 child: Row(
                                                   mainAxisSize:
-                                                  MainAxisSize.max,
+                                                      MainAxisSize.max,
                                                   mainAxisAlignment:
-                                                  MainAxisAlignment.start,
+                                                      MainAxisAlignment.start,
                                                   children: [
                                                     Container(
                                                       width: 60,
                                                       height: 29,
-                                                      decoration: const BoxDecoration(
+                                                      decoration:
+                                                          const BoxDecoration(
                                                         color:
-                                                        Color(0x00FFFFFF),
+                                                            Color(0x00FFFFFF),
                                                       ),
                                                       alignment:
-                                                      const AlignmentDirectional(
-                                                          -1,
-                                                          -0.050000000000000044),
+                                                          const AlignmentDirectional(
+                                                              -1,
+                                                              -0.050000000000000044),
                                                       child: Text(
                                                         "electricCar",
                                                         style:
-                                                        FlutterFlowTheme.of(
-                                                            context)
-                                                            .bodyText1
-                                                            .override(
-                                                          fontFamily:
-                                                          'Poppins',
-                                                          fontSize: 18,
-                                                        ),
+                                                            FlutterFlowTheme.of(
+                                                                    context)
+                                                                .bodyText1
+                                                                .override(
+                                                                  fontFamily:
+                                                                      'Poppins',
+                                                                  fontSize: 18,
+                                                                ),
                                                       ),
                                                     ),
                                                     Padding(
                                                       padding:
-                                                      const EdgeInsetsDirectional
-                                                          .fromSTEB(
-                                                          0, 0, 0, 4),
+                                                          const EdgeInsetsDirectional
+                                                                  .fromSTEB(
+                                                              0, 0, 0, 4),
                                                       child: Text(
                                                         'km',
                                                         style:
-                                                        FlutterFlowTheme.of(
-                                                            context)
-                                                            .bodyText1
-                                                            .override(
-                                                          fontFamily:
-                                                          'Poppins',
-                                                          color: const Color(
-                                                              0xFF3999D2),
-                                                          fontSize: 18,
-                                                        ),
+                                                            FlutterFlowTheme.of(
+                                                                    context)
+                                                                .bodyText1
+                                                                .override(
+                                                                  fontFamily:
+                                                                      'Poppins',
+                                                                  color: const Color(
+                                                                      0xFF3999D2),
+                                                                  fontSize: 18,
+                                                                ),
                                                       ),
                                                     ),
                                                   ],
@@ -1168,61 +1162,61 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                                           ),
                                         ),
                                         Padding(
-                                          padding:
-                                          const EdgeInsetsDirectional.fromSTEB(
-                                              0, 5, 0, 0),
+                                          padding: const EdgeInsetsDirectional
+                                              .fromSTEB(0, 5, 0, 0),
                                           child: Row(
                                             mainAxisSize: MainAxisSize.max,
                                             mainAxisAlignment:
-                                            MainAxisAlignment.start,
+                                                MainAxisAlignment.start,
                                             children: [
                                               Container(
                                                 width: 140,
                                                 height: 30,
                                                 decoration: BoxDecoration(
                                                   color: FlutterFlowTheme.of(
-                                                      context)
+                                                          context)
                                                       .primaryBackground,
                                                 ),
                                                 alignment:
-                                                const AlignmentDirectional(0, 0),
+                                                    const AlignmentDirectional(
+                                                        0, 0),
                                                 child: Row(
                                                   mainAxisSize:
-                                                  MainAxisSize.max,
+                                                      MainAxisSize.max,
                                                   mainAxisAlignment:
-                                                  MainAxisAlignment.start,
+                                                      MainAxisAlignment.start,
                                                   children: [
                                                     Padding(
                                                       padding:
-                                                      const EdgeInsetsDirectional
-                                                          .fromSTEB(
-                                                          10, 0, 0, 0),
+                                                          const EdgeInsetsDirectional
+                                                                  .fromSTEB(
+                                                              10, 0, 0, 0),
                                                       child: FaIcon(
                                                         FontAwesomeIcons
                                                             .handHoldingDroplet,
                                                         color:
-                                                        FlutterFlowTheme.of(
-                                                            context)
-                                                            .tertiaryColor,
+                                                            FlutterFlowTheme.of(
+                                                                    context)
+                                                                .tertiaryColor,
                                                         size: 18,
                                                       ),
                                                     ),
                                                     Padding(
                                                       padding:
-                                                      const EdgeInsetsDirectional
-                                                          .fromSTEB(
-                                                          1, 0, 0, 0),
+                                                          const EdgeInsetsDirectional
+                                                                  .fromSTEB(
+                                                              1, 0, 0, 0),
                                                       child: Text(
                                                         ' Water Saved',
                                                         style:
-                                                        FlutterFlowTheme.of(
-                                                            context)
-                                                            .bodyText1
-                                                            .override(
-                                                          fontFamily:
-                                                          'Poppins',
-                                                          fontSize: 14,
-                                                        ),
+                                                            FlutterFlowTheme.of(
+                                                                    context)
+                                                                .bodyText1
+                                                                .override(
+                                                                  fontFamily:
+                                                                      'Poppins',
+                                                                  fontSize: 14,
+                                                                ),
                                                       ),
                                                     ),
                                                   ],
@@ -1235,55 +1229,57 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                                                   color: Color(0x00FFFFFF),
                                                 ),
                                                 alignment:
-                                                const AlignmentDirectional(0, 0),
+                                                    const AlignmentDirectional(
+                                                        0, 0),
                                                 child: Row(
                                                   mainAxisSize:
-                                                  MainAxisSize.max,
+                                                      MainAxisSize.max,
                                                   mainAxisAlignment:
-                                                  MainAxisAlignment.start,
+                                                      MainAxisAlignment.start,
                                                   children: [
                                                     Container(
                                                       width: 60,
                                                       height: 29,
-                                                      decoration: const BoxDecoration(
+                                                      decoration:
+                                                          const BoxDecoration(
                                                         color:
-                                                        Color(0x00FFFFFF),
+                                                            Color(0x00FFFFFF),
                                                       ),
                                                       alignment:
-                                                      const AlignmentDirectional(
-                                                          -1,
-                                                          -0.050000000000000044),
+                                                          const AlignmentDirectional(
+                                                              -1,
+                                                              -0.050000000000000044),
                                                       child: Text(
                                                         "waterSaved",
                                                         style:
-                                                        FlutterFlowTheme.of(
-                                                            context)
-                                                            .bodyText1
-                                                            .override(
-                                                          fontFamily:
-                                                          'Poppins',
-                                                          fontSize: 18,
-                                                        ),
+                                                            FlutterFlowTheme.of(
+                                                                    context)
+                                                                .bodyText1
+                                                                .override(
+                                                                  fontFamily:
+                                                                      'Poppins',
+                                                                  fontSize: 18,
+                                                                ),
                                                       ),
                                                     ),
                                                     Padding(
                                                       padding:
-                                                      const EdgeInsetsDirectional
-                                                          .fromSTEB(
-                                                          0, 0, 0, 4),
+                                                          const EdgeInsetsDirectional
+                                                                  .fromSTEB(
+                                                              0, 0, 0, 4),
                                                       child: Text(
                                                         'L',
                                                         style:
-                                                        FlutterFlowTheme.of(
-                                                            context)
-                                                            .bodyText1
-                                                            .override(
-                                                          fontFamily:
-                                                          'Poppins',
-                                                          color: const Color(
-                                                              0xFF3999D2),
-                                                          fontSize: 18,
-                                                        ),
+                                                            FlutterFlowTheme.of(
+                                                                    context)
+                                                                .bodyText1
+                                                                .override(
+                                                                  fontFamily:
+                                                                      'Poppins',
+                                                                  color: const Color(
+                                                                      0xFF3999D2),
+                                                                  fontSize: 18,
+                                                                ),
                                                       ),
                                                     ),
                                                   ],
@@ -1317,91 +1313,91 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                                       mainAxisSize: MainAxisSize.max,
                                       children: [
                                         Padding(
-                                          padding:
-                                          const EdgeInsetsDirectional.fromSTEB(
-                                              0, 10, 0, 0),
+                                          padding: const EdgeInsetsDirectional
+                                              .fromSTEB(0, 10, 0, 0),
                                           child: Row(
                                             mainAxisSize: MainAxisSize.max,
                                             mainAxisAlignment:
-                                            MainAxisAlignment.center,
+                                                MainAxisAlignment.center,
                                             children: [
                                               Padding(
-                                                padding: const EdgeInsetsDirectional
-                                                    .fromSTEB(0, 0, 70, 0),
+                                                padding:
+                                                    const EdgeInsetsDirectional
+                                                        .fromSTEB(0, 0, 70, 0),
                                                 child: Text(
                                                   'Financial Benefits',
                                                   textAlign: TextAlign.center,
                                                   style: FlutterFlowTheme.of(
-                                                      context)
+                                                          context)
                                                       .bodyText1
                                                       .override(
-                                                    fontFamily: 'Poppins',
-                                                    color:
-                                                    FlutterFlowTheme.of(
-                                                        context)
-                                                        .secondaryText,
-                                                    fontSize: 17,
-                                                  ),
+                                                        fontFamily: 'Poppins',
+                                                        color:
+                                                            FlutterFlowTheme.of(
+                                                                    context)
+                                                                .secondaryText,
+                                                        fontSize: 17,
+                                                      ),
                                                 ),
                                               ),
                                             ],
                                           ),
                                         ),
                                         Padding(
-                                          padding:
-                                          const EdgeInsetsDirectional.fromSTEB(
-                                              0, 5, 0, 0),
+                                          padding: const EdgeInsetsDirectional
+                                              .fromSTEB(0, 5, 0, 0),
                                           child: Row(
                                             mainAxisSize: MainAxisSize.max,
                                             mainAxisAlignment:
-                                            MainAxisAlignment.start,
+                                                MainAxisAlignment.start,
                                             children: [
                                               Container(
                                                 width: 140,
                                                 height: 30,
                                                 decoration: BoxDecoration(
                                                   color: FlutterFlowTheme.of(
-                                                      context)
+                                                          context)
                                                       .primaryBackground,
                                                 ),
                                                 alignment:
-                                                const AlignmentDirectional(0, 0),
+                                                    const AlignmentDirectional(
+                                                        0, 0),
                                                 child: Row(
                                                   mainAxisSize:
-                                                  MainAxisSize.max,
+                                                      MainAxisSize.max,
                                                   mainAxisAlignment:
-                                                  MainAxisAlignment.start,
+                                                      MainAxisAlignment.start,
                                                   children: [
                                                     Padding(
                                                       padding:
-                                                      const EdgeInsetsDirectional
-                                                          .fromSTEB(
-                                                          10, 0, 0, 0),
+                                                          const EdgeInsetsDirectional
+                                                                  .fromSTEB(
+                                                              10, 0, 0, 0),
                                                       child: FaIcon(
                                                         FontAwesomeIcons.coins,
                                                         color:
-                                                        FlutterFlowTheme.of(
-                                                            context)
-                                                            .tertiaryColor,
+                                                            FlutterFlowTheme.of(
+                                                                    context)
+                                                                .tertiaryColor,
                                                         size: 18,
                                                       ),
                                                     ),
                                                     Padding(
                                                       padding:
-                                                      const EdgeInsetsDirectional
-                                                          .fromSTEB(
-                                                          5, 0, 0, 0),
+                                                          const EdgeInsetsDirectional
+                                                                  .fromSTEB(
+                                                              5, 0, 0, 0),
                                                       child: Text(
                                                         'Daily',
                                                         style:
-                                                        FlutterFlowTheme.of(
-                                                            context)
-                                                            .bodyText1
-                                                            .override(
-                                                          fontFamily:
-                                                          'Poppins',
-                                                          fontSize: 14,
-                                                        ),
+                                                            FlutterFlowTheme.of(
+                                                                    context)
+                                                                .bodyText1
+                                                                .override(
+                                                                  fontFamily:
+                                                                      'Poppins',
+                                                                  fontSize: 14,
+                                                                ),
                                                       ),
                                                     ),
                                                   ],
@@ -1414,55 +1410,57 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                                                   color: Color(0x00FFFFFF),
                                                 ),
                                                 alignment:
-                                                const AlignmentDirectional(0, 0),
+                                                    const AlignmentDirectional(
+                                                        0, 0),
                                                 child: Row(
                                                   mainAxisSize:
-                                                  MainAxisSize.max,
+                                                      MainAxisSize.max,
                                                   mainAxisAlignment:
-                                                  MainAxisAlignment.start,
+                                                      MainAxisAlignment.start,
                                                   children: [
                                                     Padding(
                                                       padding:
-                                                      const EdgeInsetsDirectional
-                                                          .fromSTEB(
-                                                          0, 1, 5, 4),
+                                                          const EdgeInsetsDirectional
+                                                                  .fromSTEB(
+                                                              0, 1, 5, 4),
                                                       child: Text(
                                                         'R',
                                                         style:
-                                                        FlutterFlowTheme.of(
-                                                            context)
-                                                            .bodyText1
-                                                            .override(
-                                                          fontFamily:
-                                                          'Poppins',
-                                                          color: const Color(
-                                                              0xFF775B0E),
-                                                          fontSize: 18,
-                                                        ),
+                                                            FlutterFlowTheme.of(
+                                                                    context)
+                                                                .bodyText1
+                                                                .override(
+                                                                  fontFamily:
+                                                                      'Poppins',
+                                                                  color: const Color(
+                                                                      0xFF775B0E),
+                                                                  fontSize: 18,
+                                                                ),
                                                       ),
                                                     ),
                                                     Container(
                                                       width: 60,
                                                       height: 29,
-                                                      decoration: const BoxDecoration(
+                                                      decoration:
+                                                          const BoxDecoration(
                                                         color:
-                                                        Color(0x00FFFFFF),
+                                                            Color(0x00FFFFFF),
                                                       ),
                                                       alignment:
-                                                      const AlignmentDirectional(
-                                                          -1,
-                                                          -0.050000000000000044),
+                                                          const AlignmentDirectional(
+                                                              -1,
+                                                              -0.050000000000000044),
                                                       child: Text(
                                                         "dailyFinancial",
                                                         style:
-                                                        FlutterFlowTheme.of(
-                                                            context)
-                                                            .bodyText1
-                                                            .override(
-                                                          fontFamily:
-                                                          'Poppins',
-                                                          fontSize: 18,
-                                                        ),
+                                                            FlutterFlowTheme.of(
+                                                                    context)
+                                                                .bodyText1
+                                                                .override(
+                                                                  fontFamily:
+                                                                      'Poppins',
+                                                                  fontSize: 18,
+                                                                ),
                                                       ),
                                                     ),
                                                   ],
@@ -1472,60 +1470,60 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                                           ),
                                         ),
                                         Padding(
-                                          padding:
-                                          const EdgeInsetsDirectional.fromSTEB(
-                                              0, 5, 0, 0),
+                                          padding: const EdgeInsetsDirectional
+                                              .fromSTEB(0, 5, 0, 0),
                                           child: Row(
                                             mainAxisSize: MainAxisSize.max,
                                             mainAxisAlignment:
-                                            MainAxisAlignment.start,
+                                                MainAxisAlignment.start,
                                             children: [
                                               Container(
                                                 width: 140,
                                                 height: 30,
                                                 decoration: BoxDecoration(
                                                   color: FlutterFlowTheme.of(
-                                                      context)
+                                                          context)
                                                       .primaryBackground,
                                                 ),
                                                 alignment:
-                                                const AlignmentDirectional(0, 0),
+                                                    const AlignmentDirectional(
+                                                        0, 0),
                                                 child: Row(
                                                   mainAxisSize:
-                                                  MainAxisSize.max,
+                                                      MainAxisSize.max,
                                                   mainAxisAlignment:
-                                                  MainAxisAlignment.start,
+                                                      MainAxisAlignment.start,
                                                   children: [
                                                     Padding(
                                                       padding:
-                                                      const EdgeInsetsDirectional
-                                                          .fromSTEB(
-                                                          10, 0, 0, 0),
+                                                          const EdgeInsetsDirectional
+                                                                  .fromSTEB(
+                                                              10, 0, 0, 0),
                                                       child: FaIcon(
                                                         FontAwesomeIcons.coins,
                                                         color:
-                                                        FlutterFlowTheme.of(
-                                                            context)
-                                                            .tertiaryColor,
+                                                            FlutterFlowTheme.of(
+                                                                    context)
+                                                                .tertiaryColor,
                                                         size: 18,
                                                       ),
                                                     ),
                                                     Padding(
                                                       padding:
-                                                      const EdgeInsetsDirectional
-                                                          .fromSTEB(
-                                                          5, 0, 0, 0),
+                                                          const EdgeInsetsDirectional
+                                                                  .fromSTEB(
+                                                              5, 0, 0, 0),
                                                       child: Text(
                                                         'Monthly',
                                                         style:
-                                                        FlutterFlowTheme.of(
-                                                            context)
-                                                            .bodyText1
-                                                            .override(
-                                                          fontFamily:
-                                                          'Poppins',
-                                                          fontSize: 14,
-                                                        ),
+                                                            FlutterFlowTheme.of(
+                                                                    context)
+                                                                .bodyText1
+                                                                .override(
+                                                                  fontFamily:
+                                                                      'Poppins',
+                                                                  fontSize: 14,
+                                                                ),
                                                       ),
                                                     ),
                                                   ],
@@ -1538,55 +1536,57 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                                                   color: Color(0x00FFFFFF),
                                                 ),
                                                 alignment:
-                                                const AlignmentDirectional(0, 0),
+                                                    const AlignmentDirectional(
+                                                        0, 0),
                                                 child: Row(
                                                   mainAxisSize:
-                                                  MainAxisSize.max,
+                                                      MainAxisSize.max,
                                                   mainAxisAlignment:
-                                                  MainAxisAlignment.start,
+                                                      MainAxisAlignment.start,
                                                   children: [
                                                     Padding(
                                                       padding:
-                                                      const EdgeInsetsDirectional
-                                                          .fromSTEB(
-                                                          0, 1, 5, 4),
+                                                          const EdgeInsetsDirectional
+                                                                  .fromSTEB(
+                                                              0, 1, 5, 4),
                                                       child: Text(
                                                         'R',
                                                         style:
-                                                        FlutterFlowTheme.of(
-                                                            context)
-                                                            .bodyText1
-                                                            .override(
-                                                          fontFamily:
-                                                          'Poppins',
-                                                          color: const Color(
-                                                              0xFF775B0E),
-                                                          fontSize: 18,
-                                                        ),
+                                                            FlutterFlowTheme.of(
+                                                                    context)
+                                                                .bodyText1
+                                                                .override(
+                                                                  fontFamily:
+                                                                      'Poppins',
+                                                                  color: const Color(
+                                                                      0xFF775B0E),
+                                                                  fontSize: 18,
+                                                                ),
                                                       ),
                                                     ),
                                                     Container(
                                                       width: 60,
                                                       height: 29,
-                                                      decoration: const BoxDecoration(
+                                                      decoration:
+                                                          const BoxDecoration(
                                                         color:
-                                                        Color(0x00FFFFFF),
+                                                            Color(0x00FFFFFF),
                                                       ),
                                                       alignment:
-                                                      const AlignmentDirectional(
-                                                          -1,
-                                                          -0.050000000000000044),
+                                                          const AlignmentDirectional(
+                                                              -1,
+                                                              -0.050000000000000044),
                                                       child: Text(
                                                         "monthlyFinancial",
                                                         style:
-                                                        FlutterFlowTheme.of(
-                                                            context)
-                                                            .bodyText1
-                                                            .override(
-                                                          fontFamily:
-                                                          'Poppins',
-                                                          fontSize: 18,
-                                                        ),
+                                                            FlutterFlowTheme.of(
+                                                                    context)
+                                                                .bodyText1
+                                                                .override(
+                                                                  fontFamily:
+                                                                      'Poppins',
+                                                                  fontSize: 18,
+                                                                ),
                                                       ),
                                                     ),
                                                   ],
@@ -1596,60 +1596,60 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                                           ),
                                         ),
                                         Padding(
-                                          padding:
-                                          const EdgeInsetsDirectional.fromSTEB(
-                                              0, 5, 0, 0),
+                                          padding: const EdgeInsetsDirectional
+                                              .fromSTEB(0, 5, 0, 0),
                                           child: Row(
                                             mainAxisSize: MainAxisSize.max,
                                             mainAxisAlignment:
-                                            MainAxisAlignment.start,
+                                                MainAxisAlignment.start,
                                             children: [
                                               Container(
                                                 width: 140,
                                                 height: 30,
                                                 decoration: BoxDecoration(
                                                   color: FlutterFlowTheme.of(
-                                                      context)
+                                                          context)
                                                       .primaryBackground,
                                                 ),
                                                 alignment:
-                                                const AlignmentDirectional(0, 0),
+                                                    const AlignmentDirectional(
+                                                        0, 0),
                                                 child: Row(
                                                   mainAxisSize:
-                                                  MainAxisSize.max,
+                                                      MainAxisSize.max,
                                                   mainAxisAlignment:
-                                                  MainAxisAlignment.start,
+                                                      MainAxisAlignment.start,
                                                   children: [
                                                     Padding(
                                                       padding:
-                                                      const EdgeInsetsDirectional
-                                                          .fromSTEB(
-                                                          10, 0, 0, 0),
+                                                          const EdgeInsetsDirectional
+                                                                  .fromSTEB(
+                                                              10, 0, 0, 0),
                                                       child: FaIcon(
                                                         FontAwesomeIcons.coins,
                                                         color:
-                                                        FlutterFlowTheme.of(
-                                                            context)
-                                                            .tertiaryColor,
+                                                            FlutterFlowTheme.of(
+                                                                    context)
+                                                                .tertiaryColor,
                                                         size: 18,
                                                       ),
                                                     ),
                                                     Padding(
                                                       padding:
-                                                      const EdgeInsetsDirectional
-                                                          .fromSTEB(
-                                                          5, 0, 0, 0),
+                                                          const EdgeInsetsDirectional
+                                                                  .fromSTEB(
+                                                              5, 0, 0, 0),
                                                       child: Text(
                                                         'Total',
                                                         style:
-                                                        FlutterFlowTheme.of(
-                                                            context)
-                                                            .bodyText1
-                                                            .override(
-                                                          fontFamily:
-                                                          'Poppins',
-                                                          fontSize: 14,
-                                                        ),
+                                                            FlutterFlowTheme.of(
+                                                                    context)
+                                                                .bodyText1
+                                                                .override(
+                                                                  fontFamily:
+                                                                      'Poppins',
+                                                                  fontSize: 14,
+                                                                ),
                                                       ),
                                                     ),
                                                   ],
@@ -1662,55 +1662,57 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                                                   color: Color(0x00FFFFFF),
                                                 ),
                                                 alignment:
-                                                const AlignmentDirectional(0, 0),
+                                                    const AlignmentDirectional(
+                                                        0, 0),
                                                 child: Row(
                                                   mainAxisSize:
-                                                  MainAxisSize.max,
+                                                      MainAxisSize.max,
                                                   mainAxisAlignment:
-                                                  MainAxisAlignment.start,
+                                                      MainAxisAlignment.start,
                                                   children: [
                                                     Padding(
                                                       padding:
-                                                      const EdgeInsetsDirectional
-                                                          .fromSTEB(
-                                                          0, 1, 5, 4),
+                                                          const EdgeInsetsDirectional
+                                                                  .fromSTEB(
+                                                              0, 1, 5, 4),
                                                       child: Text(
                                                         'R',
                                                         style:
-                                                        FlutterFlowTheme.of(
-                                                            context)
-                                                            .bodyText1
-                                                            .override(
-                                                          fontFamily:
-                                                          'Poppins',
-                                                          color: const Color(
-                                                              0xFF775B0E),
-                                                          fontSize: 18,
-                                                        ),
+                                                            FlutterFlowTheme.of(
+                                                                    context)
+                                                                .bodyText1
+                                                                .override(
+                                                                  fontFamily:
+                                                                      'Poppins',
+                                                                  color: const Color(
+                                                                      0xFF775B0E),
+                                                                  fontSize: 18,
+                                                                ),
                                                       ),
                                                     ),
                                                     Container(
                                                       width: 60,
                                                       height: 29,
-                                                      decoration: const BoxDecoration(
+                                                      decoration:
+                                                          const BoxDecoration(
                                                         color:
-                                                        Color(0x00FFFFFF),
+                                                            Color(0x00FFFFFF),
                                                       ),
                                                       alignment:
-                                                      const AlignmentDirectional(
-                                                          -1,
-                                                          -0.050000000000000044),
+                                                          const AlignmentDirectional(
+                                                              -1,
+                                                              -0.050000000000000044),
                                                       child: Text(
                                                         "totalFinancial",
                                                         style:
-                                                        FlutterFlowTheme.of(
-                                                            context)
-                                                            .bodyText1
-                                                            .override(
-                                                          fontFamily:
-                                                          'Poppins',
-                                                          fontSize: 18,
-                                                        ),
+                                                            FlutterFlowTheme.of(
+                                                                    context)
+                                                                .bodyText1
+                                                                .override(
+                                                                  fontFamily:
+                                                                      'Poppins',
+                                                                  fontSize: 18,
+                                                                ),
                                                       ),
                                                     ),
                                                   ],
@@ -1729,47 +1731,49 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                                           children: <Widget>[
                                             Column(
                                               mainAxisAlignment:
-                                              MainAxisAlignment.center,
+                                                  MainAxisAlignment.center,
                                               crossAxisAlignment:
-                                              CrossAxisAlignment.start,
+                                                  CrossAxisAlignment.start,
                                               children: <Widget>[
                                                 Row(
                                                   mainAxisAlignment:
-                                                  MainAxisAlignment.start,
+                                                      MainAxisAlignment.start,
                                                   crossAxisAlignment:
-                                                  CrossAxisAlignment.end,
+                                                      CrossAxisAlignment.end,
                                                   children: const <Widget>[],
                                                 ),
                                                 Padding(
-                                                  padding: const EdgeInsetsDirectional
-                                                      .fromSTEB(0, 10, 0, 0),
+                                                  padding:
+                                                      const EdgeInsetsDirectional
+                                                              .fromSTEB(
+                                                          0, 10, 0, 0),
                                                   child: Row(
                                                     mainAxisSize:
-                                                    MainAxisSize.max,
+                                                        MainAxisSize.max,
                                                     mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceEvenly,
+                                                        MainAxisAlignment
+                                                            .spaceEvenly,
                                                     children: [
                                                       Row(
                                                         mainAxisSize:
-                                                        MainAxisSize.max,
+                                                            MainAxisSize.max,
                                                         mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .start,
+                                                            MainAxisAlignment
+                                                                .start,
                                                         children: [
                                                           Padding(
                                                             padding:
-                                                            const EdgeInsetsDirectional
-                                                                .fromSTEB(
-                                                                0,
-                                                                0,
-                                                                10,
-                                                                0),
+                                                                const EdgeInsetsDirectional
+                                                                        .fromSTEB(
+                                                                    0,
+                                                                    0,
+                                                                    10,
+                                                                    0),
                                                             child: Icon(
                                                               Icons
                                                                   .battery_charging_full,
                                                               color: FlutterFlowTheme
-                                                                  .of(context)
+                                                                      .of(context)
                                                                   .tertiaryColor,
                                                               size: 24,
                                                             ),
@@ -1777,21 +1781,21 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                                                           Text(
                                                             "batStateTxt",
                                                             style: FlutterFlowTheme
-                                                                .of(context)
+                                                                    .of(context)
                                                                 .bodyText1,
                                                           ),
                                                           Text(
                                                             '(batExport) kW',
                                                             style: FlutterFlowTheme
-                                                                .of(context)
+                                                                    .of(context)
                                                                 .bodyText1
                                                                 .override(
-                                                              fontFamily:
-                                                              'Poppins',
-                                                              color: const Color(
-                                                                  0xFF3999D2),
-                                                              fontSize: 18,
-                                                            ),
+                                                                  fontFamily:
+                                                                      'Poppins',
+                                                                  color: const Color(
+                                                                      0xFF3999D2),
+                                                                  fontSize: 18,
+                                                                ),
                                                           ),
                                                         ],
                                                       ),
@@ -1799,46 +1803,48 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                                                   ),
                                                 ),
                                                 Padding(
-                                                  padding: const EdgeInsetsDirectional
-                                                      .fromSTEB(10, 10, 0, 0),
+                                                  padding:
+                                                      const EdgeInsetsDirectional
+                                                              .fromSTEB(
+                                                          10, 10, 0, 0),
                                                   child: Row(
                                                     mainAxisSize:
-                                                    MainAxisSize.max,
+                                                        MainAxisSize.max,
                                                     mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceEvenly,
+                                                        MainAxisAlignment
+                                                            .spaceEvenly,
                                                     children: [
                                                       Container(
                                                         width: 130,
                                                         height: 30,
                                                         decoration:
-                                                        BoxDecoration(
+                                                            BoxDecoration(
                                                           color: FlutterFlowTheme
-                                                              .of(context)
+                                                                  .of(context)
                                                               .primaryBackground,
                                                         ),
                                                         alignment:
-                                                        const AlignmentDirectional(
-                                                            0, 0),
+                                                            const AlignmentDirectional(
+                                                                0, 0),
                                                         child: Row(
                                                           mainAxisSize:
-                                                          MainAxisSize.max,
+                                                              MainAxisSize.max,
                                                           mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .start,
+                                                              MainAxisAlignment
+                                                                  .start,
                                                           children: [
                                                             Padding(
                                                               padding:
-                                                              const EdgeInsetsDirectional
-                                                                  .fromSTEB(
-                                                                  0,
-                                                                  0,
-                                                                  10,
-                                                                  0),
+                                                                  const EdgeInsetsDirectional
+                                                                          .fromSTEB(
+                                                                      0,
+                                                                      0,
+                                                                      10,
+                                                                      0),
                                                               child: Icon(
                                                                 Icons.bolt,
                                                                 color: FlutterFlowTheme.of(
-                                                                    context)
+                                                                        context)
                                                                     .tertiaryColor,
                                                                 size: 20,
                                                               ),
@@ -1846,7 +1852,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                                                             Text(
                                                               'Voltage',
                                                               style: FlutterFlowTheme
-                                                                  .of(context)
+                                                                      .of(context)
                                                                   .bodyText1,
                                                             ),
                                                           ],
@@ -1856,25 +1862,25 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                                                         width: 100,
                                                         height: 30,
                                                         decoration:
-                                                        BoxDecoration(
+                                                            BoxDecoration(
                                                           color: FlutterFlowTheme
-                                                              .of(context)
+                                                                  .of(context)
                                                               .primaryBackground,
                                                         ),
                                                         alignment:
-                                                        const AlignmentDirectional(
-                                                            0, 0),
+                                                            const AlignmentDirectional(
+                                                                0, 0),
                                                         child: Row(
                                                           mainAxisSize:
-                                                          MainAxisSize.max,
+                                                              MainAxisSize.max,
                                                           children: [
                                                             Container(
                                                               width: 60,
                                                               height: 29,
                                                               decoration:
-                                                              BoxDecoration(
+                                                                  BoxDecoration(
                                                                 color: FlutterFlowTheme.of(
-                                                                    context)
+                                                                        context)
                                                                     .primaryBackground,
                                                               ),
                                                               alignment: const AlignmentDirectional(
@@ -1883,22 +1889,22 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                                                               child: Text(
                                                                 "batVoltage",
                                                                 style: FlutterFlowTheme.of(
-                                                                    context)
+                                                                        context)
                                                                     .bodyText1,
                                                               ),
                                                             ),
                                                             Text(
                                                               'V',
                                                               style: FlutterFlowTheme
-                                                                  .of(context)
+                                                                      .of(context)
                                                                   .bodyText1
                                                                   .override(
-                                                                fontFamily:
-                                                                'Poppins',
-                                                                color: FlutterFlowTheme.of(
-                                                                    context)
-                                                                    .secondaryText,
-                                                              ),
+                                                                    fontFamily:
+                                                                        'Poppins',
+                                                                    color: FlutterFlowTheme.of(
+                                                                            context)
+                                                                        .secondaryText,
+                                                                  ),
                                                             ),
                                                           ],
                                                         ),
@@ -1907,46 +1913,48 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                                                   ),
                                                 ),
                                                 Padding(
-                                                  padding: const EdgeInsetsDirectional
-                                                      .fromSTEB(10, 10, 0, 0),
+                                                  padding:
+                                                      const EdgeInsetsDirectional
+                                                              .fromSTEB(
+                                                          10, 10, 0, 0),
                                                   child: Row(
                                                     mainAxisSize:
-                                                    MainAxisSize.max,
+                                                        MainAxisSize.max,
                                                     mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceEvenly,
+                                                        MainAxisAlignment
+                                                            .spaceEvenly,
                                                     children: [
                                                       Container(
                                                         width: 130,
                                                         height: 30,
                                                         decoration:
-                                                        BoxDecoration(
+                                                            BoxDecoration(
                                                           color: FlutterFlowTheme
-                                                              .of(context)
+                                                                  .of(context)
                                                               .primaryBackground,
                                                         ),
                                                         alignment:
-                                                        const AlignmentDirectional(
-                                                            0, 0),
+                                                            const AlignmentDirectional(
+                                                                0, 0),
                                                         child: Row(
                                                           mainAxisSize:
-                                                          MainAxisSize.max,
+                                                              MainAxisSize.max,
                                                           mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .start,
+                                                              MainAxisAlignment
+                                                                  .start,
                                                           children: [
                                                             Padding(
                                                               padding:
-                                                              const EdgeInsetsDirectional
-                                                                  .fromSTEB(
-                                                                  0,
-                                                                  0,
-                                                                  10,
-                                                                  0),
+                                                                  const EdgeInsetsDirectional
+                                                                          .fromSTEB(
+                                                                      0,
+                                                                      0,
+                                                                      10,
+                                                                      0),
                                                               child: Icon(
                                                                 Icons.bolt,
                                                                 color: FlutterFlowTheme.of(
-                                                                    context)
+                                                                        context)
                                                                     .tertiaryColor,
                                                                 size: 20,
                                                               ),
@@ -1954,7 +1962,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                                                             Text(
                                                               'Current',
                                                               style: FlutterFlowTheme
-                                                                  .of(context)
+                                                                      .of(context)
                                                                   .bodyText1,
                                                             ),
                                                           ],
@@ -1964,25 +1972,25 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                                                         width: 100,
                                                         height: 30,
                                                         decoration:
-                                                        BoxDecoration(
+                                                            BoxDecoration(
                                                           color: FlutterFlowTheme
-                                                              .of(context)
+                                                                  .of(context)
                                                               .primaryBackground,
                                                         ),
                                                         alignment:
-                                                        const AlignmentDirectional(
-                                                            0, 0),
+                                                            const AlignmentDirectional(
+                                                                0, 0),
                                                         child: Row(
                                                           mainAxisSize:
-                                                          MainAxisSize.max,
+                                                              MainAxisSize.max,
                                                           children: [
                                                             Container(
                                                               width: 60,
                                                               height: 29,
                                                               decoration:
-                                                              BoxDecoration(
+                                                                  BoxDecoration(
                                                                 color: FlutterFlowTheme.of(
-                                                                    context)
+                                                                        context)
                                                                     .primaryBackground,
                                                               ),
                                                               alignment: const AlignmentDirectional(
@@ -1991,22 +1999,22 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                                                               child: Text(
                                                                 "batCurrent",
                                                                 style: FlutterFlowTheme.of(
-                                                                    context)
+                                                                        context)
                                                                     .bodyText1,
                                                               ),
                                                             ),
                                                             Text(
                                                               'A',
                                                               style: FlutterFlowTheme
-                                                                  .of(context)
+                                                                      .of(context)
                                                                   .bodyText1
                                                                   .override(
-                                                                fontFamily:
-                                                                'Poppins',
-                                                                color: FlutterFlowTheme.of(
-                                                                    context)
-                                                                    .secondaryText,
-                                                              ),
+                                                                    fontFamily:
+                                                                        'Poppins',
+                                                                    color: FlutterFlowTheme.of(
+                                                                            context)
+                                                                        .secondaryText,
+                                                                  ),
                                                             ),
                                                           ],
                                                         ),
@@ -2015,46 +2023,48 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                                                   ),
                                                 ),
                                                 Padding(
-                                                  padding: const EdgeInsetsDirectional
-                                                      .fromSTEB(10, 10, 0, 0),
+                                                  padding:
+                                                      const EdgeInsetsDirectional
+                                                              .fromSTEB(
+                                                          10, 10, 0, 0),
                                                   child: Row(
                                                     mainAxisSize:
-                                                    MainAxisSize.max,
+                                                        MainAxisSize.max,
                                                     mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceEvenly,
+                                                        MainAxisAlignment
+                                                            .spaceEvenly,
                                                     children: [
                                                       Container(
                                                         width: 130,
                                                         height: 30,
                                                         decoration:
-                                                        BoxDecoration(
+                                                            BoxDecoration(
                                                           color: FlutterFlowTheme
-                                                              .of(context)
+                                                                  .of(context)
                                                               .primaryBackground,
                                                         ),
                                                         alignment:
-                                                        const AlignmentDirectional(
-                                                            0, 0),
+                                                            const AlignmentDirectional(
+                                                                0, 0),
                                                         child: Row(
                                                           mainAxisSize:
-                                                          MainAxisSize.max,
+                                                              MainAxisSize.max,
                                                           mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .start,
+                                                              MainAxisAlignment
+                                                                  .start,
                                                           children: [
                                                             Padding(
                                                               padding:
-                                                              const EdgeInsetsDirectional
-                                                                  .fromSTEB(
-                                                                  0,
-                                                                  0,
-                                                                  10,
-                                                                  0),
+                                                                  const EdgeInsetsDirectional
+                                                                          .fromSTEB(
+                                                                      0,
+                                                                      0,
+                                                                      10,
+                                                                      0),
                                                               child: Icon(
                                                                 Icons.bolt,
                                                                 color: FlutterFlowTheme.of(
-                                                                    context)
+                                                                        context)
                                                                     .tertiaryColor,
                                                                 size: 20,
                                                               ),
@@ -2062,7 +2072,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                                                             Text(
                                                               'Power',
                                                               style: FlutterFlowTheme
-                                                                  .of(context)
+                                                                      .of(context)
                                                                   .bodyText1,
                                                             ),
                                                           ],
@@ -2072,25 +2082,25 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                                                         width: 100,
                                                         height: 30,
                                                         decoration:
-                                                        BoxDecoration(
+                                                            BoxDecoration(
                                                           color: FlutterFlowTheme
-                                                              .of(context)
+                                                                  .of(context)
                                                               .primaryBackground,
                                                         ),
                                                         alignment:
-                                                        const AlignmentDirectional(
-                                                            0, 0),
+                                                            const AlignmentDirectional(
+                                                                0, 0),
                                                         child: Row(
                                                           mainAxisSize:
-                                                          MainAxisSize.max,
+                                                              MainAxisSize.max,
                                                           children: [
                                                             Container(
                                                               width: 60,
                                                               height: 29,
                                                               decoration:
-                                                              BoxDecoration(
+                                                                  BoxDecoration(
                                                                 color: FlutterFlowTheme.of(
-                                                                    context)
+                                                                        context)
                                                                     .primaryBackground,
                                                               ),
                                                               alignment: const AlignmentDirectional(
@@ -2099,22 +2109,22 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                                                               child: Text(
                                                                 "batPowerW",
                                                                 style: FlutterFlowTheme.of(
-                                                                    context)
+                                                                        context)
                                                                     .bodyText1,
                                                               ),
                                                             ),
                                                             Text(
                                                               'W',
                                                               style: FlutterFlowTheme
-                                                                  .of(context)
+                                                                      .of(context)
                                                                   .bodyText1
                                                                   .override(
-                                                                fontFamily:
-                                                                'Poppins',
-                                                                color: FlutterFlowTheme.of(
-                                                                    context)
-                                                                    .secondaryText,
-                                                              ),
+                                                                    fontFamily:
+                                                                        'Poppins',
+                                                                    color: FlutterFlowTheme.of(
+                                                                            context)
+                                                                        .secondaryText,
+                                                                  ),
                                                             ),
                                                           ],
                                                         ),
@@ -2137,15 +2147,15 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                                             color: const Color(0xFFAACBCE)
                                                 .withOpacity(0.4),
                                             borderRadius:
-                                            const BorderRadius.only(
-                                                topLeft:
-                                                Radius.circular(80.0),
-                                                bottomLeft:
-                                                Radius.circular(80.0),
-                                                bottomRight:
-                                                Radius.circular(80.0),
-                                                topRight:
-                                                Radius.circular(80.0)),
+                                                const BorderRadius.only(
+                                                    topLeft:
+                                                        Radius.circular(80.0),
+                                                    bottomLeft:
+                                                        Radius.circular(80.0),
+                                                    bottomRight:
+                                                        Radius.circular(80.0),
+                                                    topRight:
+                                                        Radius.circular(80.0)),
                                             boxShadow: <BoxShadow>[
                                               BoxShadow(
                                                   color: Colors.grey
@@ -2155,9 +2165,9 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                                             ],
                                           ),
                                           child: const BatteryView(
-                                            percentageValue: 50 //batStorage,
-                                            // percentageValue: 60,
-                                          ),
+                                              percentageValue: 50 //batStorage,
+                                              // percentageValue: 60,
+                                              ),
                                         ),
                                       )
                                     ],
@@ -2168,8 +2178,8 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                             Align(
                               alignment: const AlignmentDirectional(0, 1),
                               child: Padding(
-                                padding:
-                                const EdgeInsetsDirectional.fromSTEB(0, 0, 0, 10),
+                                padding: const EdgeInsetsDirectional.fromSTEB(
+                                    0, 0, 0, 10),
                                 child: SmoothPageIndicator(
                                   controller: pageViewController ??=
                                       PageController(initialPage: 0),
@@ -2178,7 +2188,8 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                                   onDotClicked: (i) {
                                     pageViewController?.animateToPage(
                                       i,
-                                      duration: const Duration(milliseconds: 500),
+                                      duration:
+                                          const Duration(milliseconds: 500),
                                       curve: Curves.ease,
                                     );
                                   },
@@ -2188,7 +2199,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                                     // jumpScale: .7,
                                     // verticalOffset: 15,
                                     dotColor: Color(0xFF9E9E9E),
-                                    activeDotColor:  Color(0xFFFFBC00),
+                                    activeDotColor: Color(0xFFFFBC00),
                                     paintStyle: PaintingStyle.fill,
                                   ),
                                 ),
@@ -2217,16 +2228,15 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                         width: 100,
                         height: 75,
                         decoration: BoxDecoration(
-                          color:
-                          FlutterFlowTheme.of(context).primaryBackground,
+                          color: FlutterFlowTheme.of(context).primaryBackground,
                         ),
                         child: Column(
                           mainAxisSize: MainAxisSize.max,
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             Padding(
-                              padding:
-                              const EdgeInsetsDirectional.fromSTEB(0, 0, 0, 0),
+                              padding: const EdgeInsetsDirectional.fromSTEB(
+                                  0, 0, 0, 0),
                               child: Image.asset(
                                 'assets/images/pvIcon.png',
                                 width: 54,
@@ -2235,30 +2245,30 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                               ),
                             ),
                             Padding(
-                              padding:
-                              const EdgeInsetsDirectional.fromSTEB(0, 0, 0, 0),
+                              padding: const EdgeInsetsDirectional.fromSTEB(
+                                  0, 0, 0, 0),
                               child: Row(
                                 mainAxisSize: MainAxisSize.max,
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Text(
-                                    '00.00',
-                                    style: FlutterFlowTheme.of(context)
-                                        .bodyText1,
+                                    pvPower,
+                                    style:
+                                        FlutterFlowTheme.of(context).bodyText1,
                                   ),
                                   Padding(
-                                    padding: const EdgeInsetsDirectional.fromSTEB(
-                                        5, 0, 0, 0),
+                                    padding:
+                                        const EdgeInsetsDirectional.fromSTEB(
+                                            5, 0, 0, 0),
                                     child: Text(
                                       'kW☀️',
                                       style: FlutterFlowTheme.of(context)
                                           .bodyText1
                                           .override(
-                                        fontFamily: 'Poppins',
-                                        color:
-                                        FlutterFlowTheme.of(context)
-                                            .secondaryText,
-                                      ),
+                                            fontFamily: 'Poppins',
+                                            color: FlutterFlowTheme.of(context)
+                                                .secondaryText,
+                                          ),
                                     ),
                                   ),
                                 ],
@@ -2292,8 +2302,8 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           Padding(
-                            padding:
-                            const EdgeInsetsDirectional.fromSTEB(0, 20, 0, 0),
+                            padding: const EdgeInsetsDirectional.fromSTEB(
+                                0, 20, 0, 0),
                             child: Image.asset(
                               'assets/images/gridIcon.png',
                               width: 54,
@@ -2302,16 +2312,15 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                             ),
                           ),
                           Padding(
-                            padding:
-                            const EdgeInsetsDirectional.fromSTEB(0, 5, 0, 0),
+                            padding: const EdgeInsetsDirectional.fromSTEB(
+                                0, 5, 0, 0),
                             child: Row(
                               mainAxisSize: MainAxisSize.max,
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
                                 Text(
-                                  "00.00",
-                                  style:
-                                  FlutterFlowTheme.of(context).bodyText1,
+                                  gridPower,
+                                  style: FlutterFlowTheme.of(context).bodyText1,
                                 ),
                                 Padding(
                                   padding: const EdgeInsetsDirectional.fromSTEB(
@@ -2321,10 +2330,10 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                                     style: FlutterFlowTheme.of(context)
                                         .bodyText1
                                         .override(
-                                      fontFamily: 'Poppins',
-                                      color: FlutterFlowTheme.of(context)
-                                          .secondaryText,
-                                    ),
+                                          fontFamily: 'Poppins',
+                                          color: FlutterFlowTheme.of(context)
+                                              .secondaryText,
+                                        ),
                                   ),
                                 ),
                               ],
@@ -2342,13 +2351,32 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                       // ),
                       decoration: BoxDecoration(
                         color: FlutterFlowTheme.of(context).primaryBackground,
-
                         image: DecorationImage(
                           fit: BoxFit.cover,
-                          image:FlutterFlowTheme.of(context).dashboard!.image,
+                          image: FlutterFlowTheme.of(context).dashboard!.image,
                         ),
                       ),
                       alignment: const AlignmentDirectional(0, 0),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          Transform.translate(
+                            offset: Offset(71.5, pvToBatDotPosition- 65),
+                            child:  Padding(
+                              padding:
+                                  EdgeInsetsDirectional.fromSTEB(0, 0, 0, 1),
+                              child: Opacity(
+                                opacity: psManager.pvToBatDotActive,
+                                child: FaIcon(
+                                  FontAwesomeIcons.solidCircle,
+                                  color: Colors.green,
+                                  size: 7,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                     Container(
                       width: 100,
@@ -2361,8 +2389,8 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Padding(
-                            padding:
-                            const EdgeInsetsDirectional.fromSTEB(0, 20, 0, 0),
+                            padding: const EdgeInsetsDirectional.fromSTEB(
+                                0, 20, 0, 0),
                             child: Image.asset(
                               'assets/images/loadIcon.png',
                               width: 54,
@@ -2371,16 +2399,15 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                             ),
                           ),
                           Padding(
-                            padding:
-                            const EdgeInsetsDirectional.fromSTEB(0, 0, 0, 0),
+                            padding: const EdgeInsetsDirectional.fromSTEB(
+                                0, 0, 0, 0),
                             child: Row(
                               mainAxisSize: MainAxisSize.max,
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
                                 Text(
-                                  '00.00',
-                                  style:
-                                  FlutterFlowTheme.of(context).bodyText1,
+                                  loadPower,
+                                  style: FlutterFlowTheme.of(context).bodyText1,
                                 ),
                                 Padding(
                                   padding: const EdgeInsetsDirectional.fromSTEB(
@@ -2390,10 +2417,10 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                                     style: FlutterFlowTheme.of(context)
                                         .bodyText1
                                         .override(
-                                      fontFamily: 'Poppins',
-                                      color: FlutterFlowTheme.of(context)
-                                          .secondaryText,
-                                    ),
+                                          fontFamily: 'Poppins',
+                                          color: FlutterFlowTheme.of(context)
+                                              .secondaryText,
+                                        ),
                                   ),
                                 ),
                               ],
@@ -2424,16 +2451,15 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                             fit: BoxFit.fitHeight,
                           ),
                           Padding(
-                            padding:
-                            const EdgeInsetsDirectional.fromSTEB(0, 0, 0, 0),
+                            padding: const EdgeInsetsDirectional.fromSTEB(
+                                0, 0, 0, 0),
                             child: Row(
                               mainAxisSize: MainAxisSize.max,
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
-                                  '00.00',
-                                  style:
-                                  FlutterFlowTheme.of(context).bodyText1,
+                                  '$batPower',
+                                  style: FlutterFlowTheme.of(context).bodyText1,
                                 ),
                                 Padding(
                                   padding: const EdgeInsetsDirectional.fromSTEB(
@@ -2443,10 +2469,10 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                                     style: FlutterFlowTheme.of(context)
                                         .bodyText1
                                         .override(
-                                      fontFamily: 'Poppins',
-                                      color: FlutterFlowTheme.of(context)
-                                          .secondaryText,
-                                    ),
+                                          fontFamily: 'Poppins',
+                                          color: FlutterFlowTheme.of(context)
+                                              .secondaryText,
+                                        ),
                                   ),
                                 ),
                               ],

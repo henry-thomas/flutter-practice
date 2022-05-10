@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:http/http.dart' as http;
 import 'package:provider_test/api/api_controller.dart';
 import 'package:provider_test/entities/api_login_response.dart';

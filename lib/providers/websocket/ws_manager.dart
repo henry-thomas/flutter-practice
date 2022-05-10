@@ -13,16 +13,35 @@ import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:provider_test/screens/dashboardScreen/dashboard_page_view.dart';
 
 class WsManager extends ChangeNotifier {
-  var _count = 0;
-  var _random = 0;
+
+
   int requestId = 0;
+  bool isInit = false;
 
-  int get getRandom {
-    return _random;
-  }
+  static String loggerSerial = ApiController.SELECTED_LOGGER;
+  static String devModel = "12";
+  var channel;
 
-  int get getCounter {
-    return _count;
+  bool initWs(BuildContext context) {
+    String url = 'ws://192.168.100.18:8084/SolarMDApi/mobile?token=' +
+    // String url = 'ws://cweb1.mypower24.co.za/SolarMDApi/mobile?token=' +
+        ApiController.jwt +
+        '&loggerSerial=' +
+        loggerSerial +
+        '&deviceModel=' +
+        devModel;
+
+    if (!isInit) {
+     channel = WebSocketChannel.connect(Uri.parse(url));
+      channel.stream.listen((event) {
+        processMessage(jsonDecode(event), context);
+      });
+      isInit = true;
+      return true;
+    }
+
+
+    return false;
   }
 
   void requestBcMsg(channel) {
@@ -31,7 +50,7 @@ class WsManager extends ChangeNotifier {
     webSocketMsg.msgType = "devInstruction";
     webSocketMsg.devModel = 12;
     webSocketMsg.devModelId = 12;
-    webSocketMsg.loggerSerial ="SLV216362637";
+    webSocketMsg.loggerSerial = "SLV209980540";
 
     sendWsMessage(webSocketMsg, channel);
   }
@@ -46,7 +65,7 @@ class WsManager extends ChangeNotifier {
     webSocketMsg.msgType = "conConfig";
     webSocketMsg.devModel = 12;
     webSocketMsg.devModelId = 12;
-    webSocketMsg.loggerSerial = "SLV216362637";
+    webSocketMsg.loggerSerial = "SLV209980540";
 
     sendWsMessage(webSocketMsg, channel);
   }
@@ -59,8 +78,7 @@ class WsManager extends ChangeNotifier {
     channel.sink.add(encodedWebSocketMsg);
   }
 
-  void processMessage(Map<String, dynamic> data, WebSocketChannel channel,
-      BuildContext context) {
+  void processMessage(Map<String, dynamic> data, BuildContext context) {
     var msgType = data['msgType'];
     DevMessage devMessage = DevMessage.fromJson(data);
     switch (msgType) {
@@ -77,7 +95,6 @@ class WsManager extends ChangeNotifier {
         // ResponseMessage
         break;
       case 2: // EventMessage
-
         break;
       case 3: //Authentication
 
@@ -93,8 +110,6 @@ class WsManager extends ChangeNotifier {
         break;
       default:
     }
-    // notifyListeners();
-
   }
 
   void _processPsMessage(BuildContext context, Map<String, dynamic> msg) {
