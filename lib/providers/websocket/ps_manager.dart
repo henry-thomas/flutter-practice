@@ -31,41 +31,43 @@ class PowerServiceManager extends ChangeNotifier {
   }
 
   //This is called after power types are recieved, only once on page load.
-  void init(BuildContext context) async {
+  Future init(BuildContext context) async {
     List<PowerType>? powerTypeList = await _getPowerTypes(context);
     List<DevPowerSummary>? powerList = await _getPowerList(context);
+    _powerTypeMap.clear();
     for (var i = 0; i < powerTypeList!.length; i++) {
       PowerType pType = powerTypeList[i];
-      if (_powerTypeMap[pType.powerType] == null) {
-        _powerTypeMap[pType.powerType] = [];
-      }
 
       for (var j = 0; j < powerList!.length; j++) {
         if (powerList[j].powerName == powerTypeList[i].powerName) {
+          if (_powerTypeMap[pType.powerType] == null) {
+            _powerTypeMap[pType.powerType] = [];
+          }
           _powerTypeMap[pType.powerType]!.add(powerList[j]);
         }
       }
     }
-  }
-
-  void onPsMessageReceived(Map<String, dynamic> msg) {
-    DevMessage message = DevMessage.fromJson(msg);
-    List<DevPowerSummary>? powerList = message.messageList;
-
-    if (powerList != null) {
-      for (var i = 0; i < powerList.length; i++) {
-        String? powerType = powerList[i].powerType;
-
-        if (powerType != null) {
-          if (!_powerTypeMap.containsKey(powerType)) {
-            Map<String?, List<DevPowerSummary>> entry = {powerType: []};
-            _powerTypeMap.addAll(entry);
-          }
-          _powerTypeMap[powerType]?.add(powerList[i]);
-        }
-      }
-    }
-    count++;
     notifyListeners();
   }
+
+  // void onPsMessageReceived(Map<String, dynamic> msg) {
+  //   DevMessage message = DevMessage.fromJson(msg);
+  //   List<DevPowerSummary>? powerList = message.messageList;
+
+  //   if (powerList != null) {
+  //     for (var i = 0; i < powerList.length; i++) {
+  //       String? powerType = powerList[i].powerType;
+
+  //       if (powerType != null) {
+  //         if (!_powerTypeMap.containsKey(powerType)) {
+  //           Map<String?, List<DevPowerSummary>> entry = {powerType: []};
+  //           _powerTypeMap.addAll(entry);
+  //         }
+  //         _powerTypeMap[powerType]?.add(powerList[i]);
+  //       }
+  //     }
+  //   }
+  //   count++;
+  //   notifyListeners();
+  // }
 }

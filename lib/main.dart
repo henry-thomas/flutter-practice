@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:provider_test/api/api_controller.dart';
 import 'package:provider_test/entities/device_message.dart';
+import 'package:provider_test/power_type_chart.dart';
 import 'package:provider_test/providers/websocket/ps_manager.dart';
 import 'package:provider_test/providers/websocket/ws_manager.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
@@ -56,16 +57,14 @@ class MyHomePage extends StatelessWidget {
 
 //Calling the login method in API controller, passing the state of this
 //widget. We can later get the JWT from API controller class.
-  void _login(BuildContext context) {
-    Provider.of<ApiController>(context, listen: false)
+  Future _login(BuildContext context) async {
+    await Provider.of<ApiController>(context, listen: false)
         .login(ApiController.USERNAME, ApiController.PASSWORD, context);
   }
 
   static int reqId = 0;
   @override
   Widget build(BuildContext context) {
-    _login(context);
-
     var counter = Provider.of<PowerServiceManager>(context).count;
 
     //This is how we get the values form a provider/
@@ -81,6 +80,7 @@ class MyHomePage extends StatelessWidget {
       ),
       body: Center(
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             const Text(
@@ -90,32 +90,18 @@ class MyHomePage extends StatelessWidget {
               '$counter',
               style: Theme.of(context).textTheme.headline4,
             ),
-            // StreamBuilder(
-            //   stream: channel.stream,
-            //   builder: (context, snapshot) {
-            //     if (snapshot.hasData) {
-            //       var data = jsonDecode(snapshot.data.toString());
-            //       try {
-            //         _processMessage(context, data, channel);
-            //       } catch (e) {
-            //         // ignore: avoid_print
-            //         print(e);
-            //       }
-            //     }
-
-            //     return const Text(
-            //       '',
-            //     );
-            //   },
-            // ),
+            PowerTypeChart.withSampleData(powerTypeMap)
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
         // onPressed: () => _startRandom(context),
-        onPressed: () {
+        onPressed: () async {
           // debugPrint(powerTypeMap.toString());
-          _initWsManager(context);
+          // _initWsManager(context);
+          await _login(context);
+
+          debugPrint(powerTypeMap.toString());
         },
         tooltip: 'Increment',
         child: const Icon(Icons.add),

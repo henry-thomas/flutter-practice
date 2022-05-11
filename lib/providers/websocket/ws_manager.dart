@@ -16,10 +16,10 @@ class WsManager extends ChangeNotifier {
   var _random = 0;
   int requestId = 0;
 
-  static String loggerSerial = "SLV216362637";
+  static String loggerSerial = "SLV209980540";
   static String devModel = "12";
   static String jwt =
-      "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiIxIiwic2NlIjoibW9iaWxlIn0.Vcxby9gFQBg7nVq3CP67hMcq2eeKA1OreipFrNQkGfv5R8emjS8Td8sjK91LncWCTF9qubsX_LzggkcuXhc6E8NJFKD36NOHMZdDrkw8N-RE1BDUvjsBXsacxFNI6aauX8jFkiGuQH6yRggVDc5Q5mb3dCnidrKDzdjkUSgRfoe0IGE1i-sF88yW8P7uyCfheB7fHAPXX9Fuyon6IPpM0eDJVDoe0aQC9zYZObfQrxueVetcqo3N9QY8Xrfbz08xn1yPZpTZfhcJ3dGhCJM6Wsz2yehlfCFVjc2kYTAAH0eobEyIY7AYyvjYkpGvcDR-GLG7EPaJeQf06vclJiEI0A";
+      "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiIxIiwic2NlIjoibW9iaWxlIn0.ec-bcZz--mHaD_J3ABBwcUVs4VN-FjhX0e8sWoqVvjAATBrR5Ar8QlzxJJAfeioX1f2YdhWL8uKzj15FdjFjmxfMLrkExtbbN8dEgQWwbSDne0uG7cehdxWtVCuBS9NaRSg27xq3z8Ab4XNmodaSgSr0DbypI1QYXOTC7l9G_lFlBy6lVwmtoFwi_TMxZPNhNg8P9WM10bIMgO0Zg2a-FpzDSGIZc0xsnPz17Y50Cji9H2bDdfVBRFsTKKrAWqP1X_7RvkczCr3OCLl9eOGwGFClmkaEYwda4u2W7HHjWOLhY9-7oKDUirRtp_tsiCKdU4qbaBvbN4bK4XF_s2m2qw";
   static String url = 'ws://192.168.100.18:8084/SolarMDApi/mobile?token=' +
       jwt +
       '&loggerSerial=' +
@@ -77,7 +77,7 @@ class WsManager extends ChangeNotifier {
         break;
       case 0: //BroadcastData
         if (data['devModel'] == 12) {
-          _processPsMessage(data, context);
+          // _processPsMessage(data, context);
         }
         break;
       case 1: // ResponseMessage
@@ -113,8 +113,8 @@ class WsManager extends ChangeNotifier {
     });
   }
 
-  void _processPsMessage(Map<String, dynamic> msg, BuildContext context) {
-    Provider.of<PowerServiceManager>(context, listen: false)
-        .onPsMessageReceived(msg);
-  }
+  // void _processPsMessage(Map<String, dynamic> msg, BuildContext context) {
+  //   Provider.of<PowerServiceManager>(context, listen: false)
+  //       .onPsMessageReceived(msg);
+  // }
 }

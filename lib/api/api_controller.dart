@@ -13,17 +13,18 @@ class ApiController extends ChangeNotifier {
   static const BASE_URL = "http://192.168.100.18:8084/SolarMDApi/";
   static const USERNAME = "kostadin";
   static const PASSWORD = "1234";
-  static const SELECTED_LOGGER = "SLV216362637";
-  static const START_DATE = "20220401";
-  static const END_DATE = "20220419";
+  static const SELECTED_LOGGER = "SLV209980540";
+  static const START_DATE = "20220510";
+  static const END_DATE = "20220511";
   static const PAGE = 1;
-  static const PER_PAGE = 10;
+  static const PER_PAGE = 10000;
 
   static String jwt = "";
   ApiService service = ApiService();
 
-  void _initPsManager(BuildContext context) {
-    Provider.of<PowerServiceManager>(context, listen: false).init(context);
+  Future _initPsManager(BuildContext context) async {
+    await Provider.of<PowerServiceManager>(context, listen: false)
+        .init(context);
   }
 
   Future<List<dynamic>?> _getPowerTypes() async {
@@ -46,13 +47,13 @@ class ApiController extends ChangeNotifier {
     }
   }
 
-  void login(String username, String password, BuildContext context) async {
+  Future login(String username, String password, BuildContext context) async {
     ApiLoginResponse? loginResponse =
         await service.sendLoginRequest(username, password);
     if (loginResponse != null) {
       if (loginResponse.success == true) {
         jwt = loginResponse.data?["jwt"];
-        _initPsManager(context);
+        await _initPsManager(context);
       }
     }
   }
