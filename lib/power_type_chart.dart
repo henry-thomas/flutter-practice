@@ -50,17 +50,38 @@ class PowerTypeChart extends StatelessWidget {
     powerTypeMap.forEach((pType, powerList) {
       debugPrint(pType);
       List<PowerTypeSeriesPoint> ptspList = [];
+
+      bool isExist = false;
       for (var i = 0; i < powerList.length; i++) {
-        ptspList.add(new PowerTypeSeriesPoint(
-            DateTime.fromMillisecondsSinceEpoch(powerList[i].lastUpdate),
-            powerList[i].powerW));
+        for (var powerTypeSeriesPoint in ptspList) {
+          {
+            if (powerTypeSeriesPoint.time ==
+                DateTime.fromMillisecondsSinceEpoch(powerList[i].lastUpdate)) {
+              powerTypeSeriesPoint.value += powerList[i].powerW;
+              isExist = true;
+              break;
+            } else {
+              // ptspList.add(new PowerTypeSeriesPoint(
+              //     DateTime.fromMillisecondsSinceEpoch(
+              //         powerList[i].lastUpdate),
+              //     powerList[i].powerW))
+            }
+          }
+        }
+        if (!isExist) {
+          ptspList.add(new PowerTypeSeriesPoint(
+              DateTime.fromMillisecondsSinceEpoch(powerList[i].lastUpdate),
+              powerList[i].powerW));
+        }
       }
+
       if (pType != null) {
-        seriesList.add(new charts.Series(
+        var series = new charts.Series(
             id: pType,
             data: ptspList,
             domainFn: (PowerTypeSeriesPoint ptsp, _) => ptsp.time,
-            measureFn: (PowerTypeSeriesPoint ptsp, _) => ptsp.value));
+            measureFn: (PowerTypeSeriesPoint ptsp, _) => ptsp.value);
+        seriesList.add(series);
       }
     });
     return seriesList;
@@ -85,8 +106,8 @@ class PowerTypeChart extends StatelessWidget {
 
 /// Sample time series data type.
 class PowerTypeSeriesPoint {
-  final DateTime time;
-  final double value;
+  DateTime time;
+  double value;
 
   PowerTypeSeriesPoint(this.time, this.value);
 }
