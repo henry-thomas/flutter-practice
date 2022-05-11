@@ -60,11 +60,6 @@ class PowerTypeChart extends StatelessWidget {
               powerTypeSeriesPoint.value += powerList[i].powerW;
               isExist = true;
               break;
-            } else {
-              // ptspList.add(new PowerTypeSeriesPoint(
-              //     DateTime.fromMillisecondsSinceEpoch(
-              //         powerList[i].lastUpdate),
-              //     powerList[i].powerW))
             }
           }
         }
