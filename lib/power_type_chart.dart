@@ -1,5 +1,5 @@
 /// Timeseries chart example
-// ignore_for_file: unnecessary_new, duplicate_ignore
+// ignore_for_file: unnecessary_new, duplicate_ignore, prefer_const_constructors
 
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:flutter/material.dart';
@@ -33,11 +33,35 @@ class PowerTypeChart extends StatelessWidget {
       height: 500,
       child: charts.TimeSeriesChart(
         seriesList,
+        defaultRenderer:
+            new charts.LineRendererConfig(includeArea: true, areaOpacity: 0.1),
         animate: animate,
+        defaultInteractions: true,
+
+        // customSeriesRenderers: [
+        //   new charts.LineRendererConfig(
+        //       includeArea: true, areaOpacity: 0.1, customRendererId: 'pv'),
+        //   new charts.LineRendererConfig(
+        //       includeArea: true, areaOpacity: 0.1, customRendererId: 'load'),
+        // ],
+        domainAxis: new charts.DateTimeAxisSpec(
+            tickFormatterSpec: new charts.AutoDateTimeTickFormatterSpec(
+                hour: new charts.TimeFormatterSpec(
+                    format: 'hh:mm', transitionFormat: 'MM/dd hh:mm'),
+                day: new charts.TimeFormatterSpec(
+                    format: 'MM/dd hh:mm',
+                    transitionFormat: 'MM/dd/yyyy hh:mm'))),
+
         // Optionally pass in a [DateTimeFactory] used by the chart. The factory
         // should create the same type of [DateTime] as the data provided. If none
         // specified, the default creates local date time.
         dateTimeFactory: const charts.LocalDateTimeFactory(),
+        behaviors: [
+          new charts.SeriesLegend(
+            position: charts.BehaviorPosition.bottom,
+          ),
+          // insideJustification: charts.InsideJustification.),
+        ],
       ),
     );
   }
@@ -75,6 +99,26 @@ class PowerTypeChart extends StatelessWidget {
             id: pType,
             data: ptspList,
             domainFn: (PowerTypeSeriesPoint ptsp, _) => ptsp.time,
+            colorFn: (_, __) {
+              switch (pType) {
+                case "pv":
+                  return charts.MaterialPalette.green.shadeDefault;
+                case "load":
+                  return charts.MaterialPalette.cyan.shadeDefault;
+                case "gridConsume":
+                  return charts.MaterialPalette.red.shadeDefault.darker;
+                case "gridFeed":
+                  return charts.MaterialPalette.red.shadeDefault.lighter;
+                case "stCharge":
+                  return charts.MaterialPalette.lime.shadeDefault;
+                case "stDischarge":
+                  return charts.MaterialPalette.deepOrange.shadeDefault;
+                case "gen":
+                  return charts.MaterialPalette.gray.shadeDefault;
+                default:
+                  return charts.MaterialPalette.gray.shadeDefault.lighter;
+              }
+            },
             measureFn: (PowerTypeSeriesPoint ptsp, _) => ptsp.value);
         seriesList.add(series);
       }

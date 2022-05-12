@@ -1,9 +1,8 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:provider_test/api/api_controller.dart';
 import 'package:provider_test/entities/device_message.dart';
+import 'package:provider_test/fl_chart_test.dart';
 import 'package:provider_test/power_type_chart.dart';
 import 'package:provider_test/providers/websocket/ps_manager.dart';
 import 'package:provider_test/providers/websocket/ws_manager.dart';
@@ -80,7 +79,7 @@ class MyHomePage extends StatelessWidget {
       ),
       body: Center(
         child: Column(
-          mainAxisSize: MainAxisSize.min,
+          mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             const Text(
@@ -90,7 +89,12 @@ class MyHomePage extends StatelessWidget {
               '$counter',
               style: Theme.of(context).textTheme.headline4,
             ),
-            PowerTypeChart.withSampleData(powerTypeMap)
+            SizedBox(
+                height: 500,
+                child: LineChartSample2(
+                  powerTypeMap: powerTypeMap,
+                ))
+            // PowerTypeChart.withSampleData(powerTypeMap)
           ],
         ),
       ),

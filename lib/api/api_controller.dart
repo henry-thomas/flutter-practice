@@ -14,10 +14,10 @@ class ApiController extends ChangeNotifier {
   static const USERNAME = "kostadin";
   static const PASSWORD = "1234";
   static const SELECTED_LOGGER = "SLV209980540";
-  static const START_DATE = "20220510";
-  static const END_DATE = "20220511";
+  static const START_DATE = "20220201";
+  static const END_DATE = "20220513";
   static const PAGE = 1;
-  static const PER_PAGE = 10000;
+  static const PER_PAGE = 1000000000000;
 
   static String jwt = "";
   ApiService service = ApiService();
