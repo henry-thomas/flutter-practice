@@ -21,6 +21,23 @@ class ApiService {
     }
   }
 
+  Future<ApiResponse?> getLoggers() async {
+    var headers = {'Authorization': 'Bearer ' + ApiController.jwt};
+    var request = http.Request(
+        'GET',
+        Uri.parse(ApiController.BASE_URL +
+            'rest/loggers/'));
+    request.headers.addAll(headers);
+    http.StreamedResponse response = await request.send();
+    if (response.statusCode == 200) {
+      var bytesToString = await response.stream.bytesToString();
+      var apiResponse = ApiResponse.fromJson(jsonDecode(bytesToString));
+      return apiResponse;
+    } else {
+      return null;
+    }
+  }
+
   Future<ApiResponse?> getPowerTypes() async {
     var headers = {'Authorization': 'Bearer ' + ApiController.jwt};
     var request = http.Request(

@@ -22,9 +22,10 @@ class WsManager extends ChangeNotifier {
   static String devModel = "12";
   var channel;
 
+
   bool initWs(BuildContext context) {
-    String url = 'ws://192.168.100.18:8084/SolarMDApi/mobile?token=' +
-    // String url = 'ws://cweb1.mypower24.co.za/SolarMDApi/mobile?token=' +
+    // String url = 'ws://192.168.100.18:8084/SolarMDApi/mobile?token=' +
+    String url = 'ws://cweb1.mypower24.co.za/SolarMDApi/mobile?token=' +
         ApiController.jwt +
         '&loggerSerial=' +
         loggerSerial +
@@ -50,7 +51,7 @@ class WsManager extends ChangeNotifier {
     webSocketMsg.msgType = "devInstruction";
     webSocketMsg.devModel = 12;
     webSocketMsg.devModelId = 12;
-    webSocketMsg.loggerSerial = "SLV209980540";
+    webSocketMsg.loggerSerial = loggerSerial;
 
     sendWsMessage(webSocketMsg, channel);
   }
@@ -65,7 +66,23 @@ class WsManager extends ChangeNotifier {
     webSocketMsg.msgType = "conConfig";
     webSocketMsg.devModel = 12;
     webSocketMsg.devModelId = 12;
-    webSocketMsg.loggerSerial = "SLV209980540";
+    webSocketMsg.loggerSerial = loggerSerial;
+
+    _onConnectionInit(channel);
+    sendWsMessage(webSocketMsg, channel);
+  }
+
+  void _onConnectionInit(channel) {
+    Timer.periodic(Duration(milliseconds: 1000), (timer) {
+      requestBcMsg(channel);
+    });
+
+    DevMessage webSocketMsg = DevMessage();
+    webSocketMsg.instr = "broadcastRequest";
+    webSocketMsg.msgType = "devInstruction";
+    webSocketMsg.devModel = 11;
+    webSocketMsg.devModelId = 11;
+    webSocketMsg.loggerSerial = loggerSerial;
 
     sendWsMessage(webSocketMsg, channel);
   }
@@ -90,6 +107,10 @@ class WsManager extends ChangeNotifier {
         if (data['devModel'] == 12) {
           _processPsMessage(context, data);
         }
+        if (data['devModel'] == 11) {
+          _processEnergyStorageMessage(context, data);
+        }
+
         break;
       case 1:
         // ResponseMessage
@@ -115,5 +136,10 @@ class WsManager extends ChangeNotifier {
   void _processPsMessage(BuildContext context, Map<String, dynamic> msg) {
     Provider.of<PowerServiceManager>(context, listen: false)
         .onPsMessageReceived(msg);
+  }
+
+  void _processEnergyStorageMessage(BuildContext context, Map<String, dynamic> msg) {
+    Provider.of<PowerServiceManager>(context, listen: false)
+        .onEnergyStorageMessageReceived(msg);
   }
 }

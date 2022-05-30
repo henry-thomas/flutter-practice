@@ -23,7 +23,7 @@ class FFLocalizations {
   String getVariableText({
     String en = '',
   }) =>
-      [en][languageIndex] ?? '';
+      [en][languageIndex];
 }
 
 class FFLocalizationsDelegate extends LocalizationsDelegate<FFLocalizations> {

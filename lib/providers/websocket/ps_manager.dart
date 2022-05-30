@@ -13,33 +13,66 @@ class PowerServiceManager extends ChangeNotifier {
   //<powerType, <powerList>>
   final Map<String?, List<DevPowerSummary>> _powerTypeMap = HashMap();
   final Map<String?, DevPowerSummary> _livePowerTypeMap = HashMap();
+
   List<PowerType>? _powerTypeList = [];
 
-  double _batPower = 0;
-  double _gridPower = 0;
+  // Battery
+  double batPower = 0;
+  double batChargeDotActive = 0;
+  double batDischargeDotActive = 0;
+  double batStorage = 0;
+  double batCurrent = 0;
+  double batVoltage = 0;
+  double batRatedPower = 0;
+  double batRatedPowerPercentage = 0;
+
+  // GRID
+  double gridPower = 0;
+  double gridDotActive = 0;
+  double gridDailyEnergy = 0;
+  double gridRatedPower = 0;
+  double gridRatedPowerPercentageLevel = 0;
+  double gridVoltage = 0;
+  double gridCurrent = 0;
+  double gridMonthlyEnergy = 0;
+  double gridTotalEnergy = 0;
 
   // PV
-  double _pvPower = 0;
+  double pvPower = 0;
+  double pvRatedPower = 0;
+  double pvRatedPowerPercentageLevel = 0;
+  double pvDailyEnergy = 0;
+  double pvMonthlyEnergy = 0;
+  double pvTotalEnergy = 0;
   double pvToBatDotActive = 0;
+  double pvVoltage = 0;
+  double pvCurrent = 0;
+  double pvAvailable = 0;
+  double pvChartIconPosition = 0;
+  double pvIconPositionOpacity = 1;
+  Color pvIconColor = Colors.green;
 
+// LOAD
+  double loadPower = 0;
+  double loadDotActive = 0;
+  double loadDailyEnergy = 0;
+  double loadMonthlyEnergy = 0;
+  double loadTotalEnergy = 0;
+  double loadRatedPower = 0;
+  double loadRatedPowerPercentageLevel = 0;
+  double loadVoltage = 0;
+  double loadCurrent = 0;
+  double loadChartIconPosition = 0;
 
-  final DevPowerSummary _loadPower = DevPowerSummary();
+  // Financial Benefits
+  double dailyFinancial = 0;
+  double monthlyFinancial = 0;
+  double totalFinancial = 0;
 
-  double get getPvPower {
-    return _pvPower;
-  }
-
-  DevPowerSummary get getLoadPower {
-    return _loadPower;
-  }
-
-  double get getBatPower {
-    return _batPower;
-  }
-
-  double get getGridPower {
-    return _gridPower;
-  }
+  // Enviromental Benefits
+  double c02Reduced = 0;
+  double waterSaved = 0;
+  double electricCar = 0;
 
   Map<String?, List<DevPowerSummary>> get getPowerTypeMap {
     return _powerTypeMap;
@@ -57,10 +90,14 @@ class PowerServiceManager extends ChangeNotifier {
     return powerTypes;
   }
 
+  Future<List?> _getLoggerList(BuildContext context) async {
+    var powerTypes =
+        await Provider.of<ApiController>(context, listen: false).getPowerList();
+    return powerTypes;
+  }
 
   //This is called after power types are recieved, only once on page load.
   void init(BuildContext context) async {
-
     List<PowerType>? powerTypeList = await _getPowerTypes(context);
     List<DevPowerSummary>? powerList = await _getPowerList(context);
     _powerTypeList = powerTypeList;
@@ -70,12 +107,81 @@ class PowerServiceManager extends ChangeNotifier {
         _powerTypeMap[pType.powerType] = [];
       }
       for (var j = 0; j < powerList!.length; j++) {
-
         if (powerList[j].powerName == powerTypeList[i].powerName) {
           _powerTypeMap[pType.powerType]!.add(powerList[j]);
         }
       }
     }
+  }
+
+  // void updatePowers(Map<String?, List<DevPowerSummary>> ptMap) {
+  //   for (var i = 0; i < _livePowerTypeMap.length; i++) {
+  //     DevPowerSummary? dPower = _livePowerTypeMap[i];
+  //     if (ptMap[dPower?.powerType] != null) {
+  //       dPower.onlineDevices=0;
+  //       //1 clear dPower
+  //       var voltageV =0;
+  //       var powerW =0;
+  //       //2 loop in ptMap List
+  //       for (var j = 0; j < ptMap[dPower.powerType]; j++) {
+  //         voltageV+= ptMap[dPower?.powerType].voltageV;
+  //         dPower.onlineDevices++;
+  //       }
+  //
+  //
+  //
+  //       dPower.voltageV = voltageV;
+  //
+  //     }else{
+  //       dPower?.available = false;
+  //     }
+  //   }
+  // }
+
+  void onEnergyStorageMessageReceived(Map<String, dynamic> msg) {
+    batStorage = (msg['messageList'][0]['capacityP']);
+    batPower = (msg['messageList'][0]['powerW']) / 1000;
+    batCurrent = (msg['messageList'][0]['currentA']);
+    batVoltage = (msg['messageList'][0]['voltageV']);
+
+    double ratedCapacityAh = 0;
+    double ratedChargeCurrentC = 0;
+    double ratedVoltageV = 0;
+    ratedCapacityAh += ((msg['messageList'][0]['ratedCapacityAh']));
+    ratedChargeCurrentC += ((msg['messageList'][0]['ratedChargeCurrentC']));
+    ratedVoltageV += ((msg['messageList'][0]['ratedVoltageV']));
+
+    batRatedPower = ratedCapacityAh * ratedChargeCurrentC * ratedVoltageV;
+    batRatedPowerPercentage = ((batPower / batRatedPower) * 100);
+    if (batRatedPowerPercentage < 0) {
+      batRatedPowerPercentage = 0;
+    }
+    // Battery
+    // double stCharge = 0;
+    // if (_livePowerTypeMap["stCharge"]?.powerW != null) {
+    //   stCharge = _livePowerTypeMap["stCharge"]?.powerW as double;
+    // }
+    // double stDischarge = 0;
+    // if (_livePowerTypeMap["stDischarge"]?.powerW != null) {
+    //   stDischarge = _livePowerTypeMap["stDischarge"]?.powerW as double;
+    // }
+
+    // var totBat = stCharge - stDischarge;
+    // _batPower = totBat;
+    if (batPower > 0) {
+      batChargeDotActive = 1;
+    } else {
+      batChargeDotActive = 0;
+    }
+
+    if (batPower < 0) {
+      batDischargeDotActive = 1;
+    } else {
+      batDischargeDotActive = 0;
+    }
+
+    // for (var j = 0; j < storageList!.length; j++) {
+    // }
   }
 
   void onPsMessageReceived(Map<String, dynamic> msg) {
@@ -93,143 +199,164 @@ class PowerServiceManager extends ChangeNotifier {
       for (var j = 0; j < powerList!.length; j++) {
         if (powerList[j].powerName == pType.powerName) {
 
-            _livePowerTypeMap[pType.powerType]?.powerW = ((powerList[j].powerW as double) + (_livePowerTypeMap[pType.powerType]?.powerW as double));
-            _livePowerTypeMap[pType.powerType]?.ratedPowerW  = ((powerList[j].ratedPowerW as double) + (_livePowerTypeMap[pType.powerType]?.ratedPowerW as double));
+          _livePowerTypeMap[pType.powerType]?.powerW =
+              ((powerList[j].powerW as double) +
+                  (_livePowerTypeMap[pType.powerType]?.powerW as double));
+
+          _livePowerTypeMap[pType.powerType]?.ratedPowerW =
+              ((powerList[j].ratedPowerW as double) +
+                  (_livePowerTypeMap[pType.powerType]?.ratedPowerW as double));
+
+          _livePowerTypeMap[pType.powerType]?.dailyEnergyWh = ((powerList[j]
+                  .dailyEnergyWh as double) +
+              (_livePowerTypeMap[pType.powerType]?.dailyEnergyWh as double));
+
+          _livePowerTypeMap[pType.powerType]?.monthlyEnergyWh = ((powerList[j]
+                  .monthlyEnergyWh as double) +
+              (_livePowerTypeMap[pType.powerType]?.monthlyEnergyWh as double));
+
+          _livePowerTypeMap[pType.powerType]?.energyWh =
+              ((powerList[j].energyWh as double) +
+                  (_livePowerTypeMap[pType.powerType]?.energyWh as double));
+
+          _livePowerTypeMap[pType.powerType]?.voltageV =
+              ((powerList[j].voltageV as double) +
+                  (_livePowerTypeMap[pType.powerType]?.voltageV as double));
+
+          _livePowerTypeMap[pType.powerType]?.currentA =
+              ((powerList[j].currentA as double) +
+                  (_livePowerTypeMap[pType.powerType]?.currentA as double));
 
         }
       }
-
     }
 
     calcPowerTotals();
   }
 
   void calcPowerTotals() {
-    // double totPv = 0;
-    debugPrint(_livePowerTypeMap["pv"]?.powerW.toString());
-    if(_livePowerTypeMap["pv"]?.powerW !=  null){
-    _pvPower = _livePowerTypeMap["pv"]?.powerW  as double;
+    // PV
+    if (_livePowerTypeMap["pv"]?.powerW != null) {
+      pvPower = _livePowerTypeMap["pv"]?.powerW as double;
+      pvRatedPower = _livePowerTypeMap["pv"]?.ratedPowerW as double;
+      pvDailyEnergy = (_livePowerTypeMap["pv"]?.dailyEnergyWh as double) / 1000;
+      pvMonthlyEnergy =
+          (_livePowerTypeMap["pv"]?.monthlyEnergyWh as double) / 1000;
+      pvTotalEnergy = (_livePowerTypeMap["pv"]?.energyWh as double) / 1000;
+      pvRatedPowerPercentageLevel = ((pvPower / pvRatedPower) * 100);
+      if (pvRatedPowerPercentageLevel.isNaN) {
+        pvRatedPowerPercentageLevel = 0;
+      }
+      if (pvRatedPowerPercentageLevel > 100) {
+        pvRatedPowerPercentageLevel = 100;
+      }
+      pvVoltage = _livePowerTypeMap["pv"]?.voltageV as double;
+      pvCurrent = _livePowerTypeMap["pv"]?.currentA as double;
     }
-    if (_pvPower >0) {
+    if (pvPower > 0) {
       pvToBatDotActive = 1;
-    }else {
+    } else {
       pvToBatDotActive = 0;
     }
 
-
-
-    debugPrint(_livePowerTypeMap["load"]?.powerW.toString());
-    if(_livePowerTypeMap["load"]?.powerW !=  null){
-    _loadPower.powerW = _livePowerTypeMap["load"]?.powerW as double ;
+    // LOAD
+    if (_livePowerTypeMap["load"]?.powerW != null) {
+      loadPower = _livePowerTypeMap["load"]?.powerW as double;
+      loadDailyEnergy =
+          (_livePowerTypeMap["load"]?.dailyEnergyWh as double) / 1000;
+      loadRatedPower = _livePowerTypeMap["load"]?.ratedPowerW as double;
+      loadRatedPowerPercentageLevel = ((loadPower / loadRatedPower) * 100);
+      loadMonthlyEnergy =
+          (_livePowerTypeMap["load"]?.monthlyEnergyWh as double) / 1000;
+      loadTotalEnergy =
+          (_livePowerTypeMap["load"]?.energyWh as double) / 1000000;
+      loadVoltage = _livePowerTypeMap["load"]?.voltageV as double;
+      loadCurrent = _livePowerTypeMap["load"]?.currentA as double;
+      if (loadRatedPowerPercentageLevel.isNaN) {
+        loadRatedPowerPercentageLevel = 0;
+      }
+      if (loadRatedPowerPercentageLevel > 100) {
+        loadRatedPowerPercentageLevel = 100;
+      }
+    }
+    if (loadPower > 0) {
+      loadDotActive = 1;
+    } else {
+      loadDotActive = 0;
     }
 
-    debugPrint(_livePowerTypeMap["gridConsume"]?.powerW.toString());
-    debugPrint(_livePowerTypeMap["gridFeed"]?.powerW.toString());
-
+    //GRID
     double gridFeed = 0;
-    if(_livePowerTypeMap["gridFeed"]?.powerW !=  null){
+    if (_livePowerTypeMap["gridFeed"]?.powerW != null) {
       gridFeed = _livePowerTypeMap["gridFeed"]?.powerW as double;
     }
     double gridConsume = 0;
-    if(_livePowerTypeMap["gridFeed"]?.powerW !=  null){
+    if (_livePowerTypeMap["gridConsume"]?.powerW != null) {
       gridConsume = _livePowerTypeMap["gridConsume"]?.powerW as double;
+      gridDailyEnergy =
+          (_livePowerTypeMap["gridConsume"]?.dailyEnergyWh as double) / 1000;
+      gridRatedPower = _livePowerTypeMap["gridConsume"]?.ratedPowerW as double;
+      gridRatedPowerPercentageLevel = ((gridConsume / gridRatedPower) * 100);
+      gridTotalEnergy =
+          (_livePowerTypeMap["gridConsume"]?.energyWh as double) / 1000000;
+      gridMonthlyEnergy =
+          (_livePowerTypeMap["gridConsume"]?.monthlyEnergyWh as double) / 1000;
+      gridCurrent = _livePowerTypeMap["gridConsume"]?.currentA as double;
+      gridVoltage = _livePowerTypeMap["gridConsume"]?.voltageV as double;
+      if (gridRatedPowerPercentageLevel.isNaN) {
+        gridRatedPowerPercentageLevel = 0;
+      }
+      if (gridRatedPowerPercentageLevel > 100) {
+        gridRatedPowerPercentageLevel = 100;
+      }
     }
 
-    var totGrid = gridFeed - gridConsume;
-      _gridPower = totGrid;
-
-    debugPrint(_livePowerTypeMap["gen"]?.powerW.toString());
-
-    debugPrint(_livePowerTypeMap["stCharge"]?.powerW.toString());
-    double stCharge = 0;
-    if (_livePowerTypeMap["stCharge"]?.powerW != null) {
-      stCharge = _livePowerTypeMap["stCharge"]?.powerW as double;
+    var totGrid = gridConsume - gridFeed;
+    gridPower = totGrid;
+    if (gridPower > 0) {
+      gridDotActive = 1;
+    } else {
+      gridDotActive = 0;
     }
 
-    debugPrint(_livePowerTypeMap["stDischarge"]?.powerW.toString());
-    double stDischarge = 0;
-    if (_livePowerTypeMap["stDischarge"]?.powerW !=null) {
-      stDischarge = _livePowerTypeMap["stDischarge"]?.powerW as double;
+    // Financial Benefits calculations
+    dailyFinancial = pvDailyEnergy * 1.46;
+    monthlyFinancial = pvMonthlyEnergy * 1.46;
+    totalFinancial = pvTotalEnergy * 1.46;
+
+    // Environmental Benefits calculation
+    c02Reduced = ((pvTotalEnergy / 1000000) * 0.9) * 1000;
+    waterSaved = ((pvTotalEnergy / 1000000) * 1.35) * 1000;
+    electricCar = ((pvTotalEnergy / 1000000) * 8.2) * 1000;
+
+    // PVChartIconPosition
+    List highestRatedPower = [pvRatedPower, loadRatedPower, gridRatedPower];
+    var maxY =
+        highestRatedPower.reduce((curr, next) => curr > next ? curr : next);
+    double maxRange = 40;
+    double minRange = 25;
+    var livePvChartPosition = pvPower / maxY;
+    var liveLoadChartPosition = loadPower / maxY;
+
+    if (livePvChartPosition > 0.5) {
+      pvChartIconPosition = maxRange * livePvChartPosition;
+    }
+    if (livePvChartPosition < 0.5) {
+      var newPercentageSet = maxRange * livePvChartPosition;
+      pvChartIconPosition = newPercentageSet - minRange;
+      if (livePvChartPosition == 0) {
+        pvIconPositionOpacity = 0.5;
+        pvIconColor = Colors.grey;
+      }
     }
 
-    var totBat = stCharge - stDischarge;
-    _batPower = totBat;
-
-
-    // if (_livePowerTypeMap["pv"] != null) {
-    //   for (int i = 0; i < _livePowerTypeMap["pv"]!.length; i++) {
-    //     totPv += _powerTypeMap["pv"]![i].powerW as double;
-    //   }
-    // }
-    // _pvPower = totPv;
-    // double totLoad = 0;
-    // if (_livePowerTypeMap["load"] != null) {
-    //   for (int i = 0; i < _powerTypeMap["load"]!.length; i++) {
-    //     totLoad += _powerTypeMap["load"]![i].powerW as double;
-    //   }
-    // }
-    // _loadPower = totLoad;
-    //
-    // double totStCharge = 0;
-    // if (_livePowerTypeMap["stCharge"] != null) {
-    //   for (int i = 0; i < _powerTypeMap["stCharge"]!.length; i++) {
-    //     totStCharge += _powerTypeMap["stCharge"]![i].powerW as double;
-    //   }
-    // }
-    //
-    // double totDisCharge = 0;
-    // if (_livePowerTypeMap["stDischarge"] != null) {
-    //   for (int i = 0; i < _powerTypeMap["stDischarge"]!.length; i++) {
-    //     totDisCharge += _powerTypeMap["stDischarge"]![i].powerW as double;
-    //   }
-    // }
-    //
-    // if (totStCharge >= totDisCharge) {
-    //   _batPower = totStCharge - totDisCharge;
-    //   //means bat charging
-    // } else {
-    //   _batPower = totDisCharge - totStCharge;
-    // }
-    //
-    //
-    // double totGridExport = 0;
-    // if (_livePowerTypeMap["gridFeed"] != null) {
-    //   for (int i = 0; i < _powerTypeMap["gridFeed"]!.length; i++) {
-    //     totGridExport += _powerTypeMap["gridFeed"]![i].powerW as double;
-    //   }
-    // }
-    //
-    //
-    // double totGridImport = 0;
-    // if (_livePowerTypeMap["gridConsume"] != null) {
-    //   for (int i = 0; i < _powerTypeMap["gridConsume"]!.length; i++) {
-    //     totGridImport += _powerTypeMap["gridConsume"]![i].powerW as double;
-    //   }
-    // }
-    //
-    //
-    // if(totGridImport >= totGridExport){
-    //   _gridPower = totGridImport - totGridExport;
-    //   //means bat charging
-    // }else{
-    //   _gridPower = totGridExport - totGridImport;
-    // }
-    //
-    // _gridPower = totGridExport;
-    //
-    //
-    //   double gridImport = 0;
-    // if (_livePowerTypeMap["gridConsume"] != null) {
-    //   for (int i = 0; i < _powerTypeMap["gridConsume"]!.length; i++) {
-    //     gridImport += _powerTypeMap["gridConsume"]![i].powerW as double;
-    //     // print("$gridExport this is grid Export");
-    //   }
-    // }
-    //
-    //
-    //
-
-
+    if (liveLoadChartPosition > 0.5) {
+      loadChartIconPosition = maxRange * liveLoadChartPosition;
+    }
+    if (liveLoadChartPosition < 0.5) {
+      var newPercentageSet = maxRange * liveLoadChartPosition;
+      loadChartIconPosition = newPercentageSet - minRange;
+    }
     notifyListeners();
   }
 }

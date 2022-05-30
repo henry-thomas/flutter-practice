@@ -4,8 +4,11 @@ import 'package:provider_test/api/api_controller.dart';
 import 'package:provider_test/providers/websocket/ps_manager.dart';
 import 'package:provider_test/providers/websocket/ws_manager.dart';
 import 'package:provider_test/screens/dashboardScreen/dashboardAnimation/dashboard_animation_provider.dart';
+import 'package:provider_test/screens/dashboardScreen/dashboardComponents/dashboard_button_actions.dart';
+import 'package:provider_test/screens/weatherScreen/weatherControllers/weather_controller.dart';
 import 'flutterFlow/flutter_flow_theme.dart';
 import 'screens/loginScreen/login_page_view.dart';
+import 'screens/weatherScreen/weatherControllers/weather_api.dart';
 
 void main() {
   runApp( MyApp());
@@ -19,6 +22,15 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider.value(
+          value: ButtonAction(),
+        ),
+        ChangeNotifierProvider.value(
+          value: weatherController(),
+        ),
+        ChangeNotifierProvider.value(
+          value: WeatherApi(),
+        ),
+        ChangeNotifierProvider.value(
           value: DashboardAnimationProvider(),
         ),
         ChangeNotifierProvider.value(
@@ -30,6 +42,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider.value(
           value: ApiController(),
         ),
+
       ],
       child: MaterialApp(
         title: 'Flutter Demo',
