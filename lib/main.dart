@@ -1,25 +1,39 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:provider_test/api/api_controller.dart';
 import 'package:provider_test/entities/device_message.dart';
 import 'package:provider_test/providers/websocket/ps_manager.dart';
 import 'package:provider_test/providers/websocket/ws_manager.dart';
-import 'package:web_socket_channel/web_socket_channel.dart';
+import 'package:provider_test/screens/dashboardScreen/dashboardAnimation/dashboard_animation_provider.dart';
+import 'package:provider_test/screens/dashboardScreen/dashboardComponents/dashboard_button_actions.dart';
+import 'package:provider_test/screens/weatherScreen/weatherControllers/weather_controller.dart';
+import 'flutterFlow/flutter_flow_theme.dart';
+import 'screens/loginScreen/login_page_view.dart';
+import 'screens/weatherScreen/weatherControllers/weather_api.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  final ThemeMode _themeMode = FlutterFlowTheme.themeMode;
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        ChangeNotifierProvider.value(
+          value: ButtonAction(),
+        ),
+        ChangeNotifierProvider.value(
+          value: weatherController(),
+        ),
+        ChangeNotifierProvider.value(
+          value: WeatherApi(),
+        ),
+        ChangeNotifierProvider.value(
+          value: DashboardAnimationProvider(),
+        ),
         ChangeNotifierProvider.value(
           value: WsManager(),
         ),
@@ -32,93 +46,11 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp(
         title: 'Flutter Demo',
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-        ),
-        home: const MyHomePage(title: 'Flutter Demo Home Page'),
-      ),
-    );
-  }
-}
-
-class MyHomePage extends StatelessWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
-
-  final String title;
-  static var isWsInit = false;
-
-  void _initWsManager(BuildContext context) {
-    if (!isWsInit) {
-      Provider.of<WsManager>(context, listen: false).initWsManager(context);
-      isWsInit = true;
-    }
-  }
-
-//Calling the login method in API controller, passing the state of this
-//widget. We can later get the JWT from API controller class.
-  void _login(BuildContext context) {
-    Provider.of<ApiController>(context, listen: false)
-        .login(ApiController.USERNAME, ApiController.PASSWORD, context);
-  }
-
-  static int reqId = 0;
-  @override
-  Widget build(BuildContext context) {
-    _login(context);
-
-    var counter = Provider.of<PowerServiceManager>(context).count;
-
-    //This is how we get the values form a provider/
-    var powerTypeMap =
-        Provider.of<PowerServiceManager>(context).getPowerTypeMap;
-
-    //This should be called from the login page, ofcourse.
-    //This is how we call a method from a provider.
-
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-            // StreamBuilder(
-            //   stream: channel.stream,
-            //   builder: (context, snapshot) {
-            //     if (snapshot.hasData) {
-            //       var data = jsonDecode(snapshot.data.toString());
-            //       try {
-            //         _processMessage(context, data, channel);
-            //       } catch (e) {
-            //         // ignore: avoid_print
-            //         print(e);
-            //       }
-            //     }
-
-            //     return const Text(
-            //       '',
-            //     );
-            //   },
-            // ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        // onPressed: () => _startRandom(context),
-        onPressed: () {
-          // debugPrint(powerTypeMap.toString());
-          _initWsManager(context);
-        },
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
+        theme: ThemeData(brightness: Brightness.light),
+        darkTheme: ThemeData(brightness: Brightness.dark),
+        themeMode: _themeMode,
+        color: Colors.red,
+        home: const LoginPageWidget(),
       ),
     );
   }

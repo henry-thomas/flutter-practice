@@ -1,19 +1,19 @@
-import 'package:flutter/cupertino.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter/material.dart';
 import 'package:provider_test/api/api_service.dart';
 import 'package:provider_test/entities/api_login_response.dart';
 import 'package:provider_test/entities/api_response.dart';
 import 'package:provider_test/entities/api_response_power.dart';
 import 'package:provider_test/entities/dev_power_summary.dart';
-
+import 'package:provider_test/screens/loginScreen/login_components.dart';
 import '../entities/power_type.dart';
-import '../providers/websocket/ps_manager.dart';
+import 'package:provider_test/screens/dashboardScreen/dashboard_page_view.dart';
 
 class ApiController extends ChangeNotifier {
-  static const BASE_URL = "http://192.168.100.18:8084/SolarMDApi/";
-  static const USERNAME = "kostadin";
-  static const PASSWORD = "1234";
-  static const SELECTED_LOGGER = "SLV216362637";
+  static const BASE_URL = "http://cweb1.mypower24.co.za/SolarMDApi/";
+  // static const BASE_URL = "http://192.168.100.18:8084/SolarMDApi/";
+  // static const USERNAME = "kostadin";
+  // static const PASSWORD = "1234";
+  static const SELECTED_LOGGER = "SLV209080058";
   static const START_DATE = "20220401";
   static const END_DATE = "20220419";
   static const PAGE = 1;
@@ -22,8 +22,13 @@ class ApiController extends ChangeNotifier {
   static String jwt = "";
   ApiService service = ApiService();
 
-  void _initPsManager(BuildContext context) {
-    Provider.of<PowerServiceManager>(context, listen: false).init(context);
+  Future<List<dynamic>?> _getLoggers() async {
+    ApiResponse? response = await service.getLoggers();
+    if (response != null) {
+      return response.data;
+    } else {
+      return null;
+    }
   }
 
   Future<List<dynamic>?> _getPowerTypes() async {
@@ -52,8 +57,14 @@ class ApiController extends ChangeNotifier {
     if (loginResponse != null) {
       if (loginResponse.success == true) {
         jwt = loginResponse.data?["jwt"];
-        _initPsManager(context);
+
+        Navigator.push(context, MaterialPageRoute(builder: (context) {
+          return DashboardWidget();
+        }));
       }
+    } else {
+      LoginComponents.errorDialog(context);
+      //error "server error"
     }
   }
 
@@ -66,6 +77,17 @@ class ApiController extends ChangeNotifier {
       }
     }
     return powerTypeList;
+  }
+
+  Future<List> getLoggerList() async {
+    List<dynamic>? getLoggerList = await _getLoggers();
+    List loggerList = [];
+    if (loggerList != null) {
+      for (var i = 0; i < loggerList.length; i++) {
+        loggerList.add(getLoggerList?[i]);
+      }
+    }
+    return loggerList;
   }
 
   Future<List<DevPowerSummary>?> getPowerList() async {
