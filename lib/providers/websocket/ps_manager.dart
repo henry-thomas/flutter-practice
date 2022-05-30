@@ -11,8 +11,8 @@ import '../../screens/dashboardScreen/dashboardAnimation/dashboard_animation_pro
 
 class PowerServiceManager extends ChangeNotifier {
   //<powerType, <powerList>>
-  final Map<String?, List<DevPowerSummary>> _powerTypeMap = HashMap();
-  final Map<String?, DevPowerSummary> _livePowerTypeMap = HashMap();
+  final Map<String?, List<DevPowerSummary>> _powerTypeMap = {};
+  final Map<String?, DevPowerSummary> _livePowerTypeMap = {};
 
   List<PowerType>? _powerTypeList = [];
 
@@ -191,11 +191,18 @@ class PowerServiceManager extends ChangeNotifier {
     List<DevPowerSummary>? powerList = message.messageList;
 
     _livePowerTypeMap.clear();
+
     for (var i = 0; i < _powerTypeList!.length; i++) {
       PowerType pType = _powerTypeList![i];
       if (_livePowerTypeMap[pType.powerType] == null) {
         _livePowerTypeMap[pType.powerType] = new DevPowerSummary();
         _livePowerTypeMap[pType.powerType]!.powerW = 0;
+        _livePowerTypeMap[pType.powerType]!.ratedPowerW = 0;
+        _livePowerTypeMap[pType.powerType]!.dailyEnergyWh = 0;
+        _livePowerTypeMap[pType.powerType]!.monthlyEnergyWh = 0;
+        _livePowerTypeMap[pType.powerType]!.energyWh = 0;
+        _livePowerTypeMap[pType.powerType]!.voltageV = 0;
+        _livePowerTypeMap[pType.powerType]!.currentA = 0;
       }
 
       for (var j = 0; j < powerList!.length; j++) {
@@ -230,6 +237,7 @@ class PowerServiceManager extends ChangeNotifier {
         }
       }
     }
+    debugPrint(_livePowerTypeMap.toString());
 
     calcPowerTotals();
   }
