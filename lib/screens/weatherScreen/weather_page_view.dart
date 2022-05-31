@@ -53,6 +53,7 @@ class _WeatherPageState extends State<WeatherPage> {
       listen: false,
     );
     weatherData.queryWeather();
+    // weatherData.queryForecast();
     final temp = weatherData.temp;
     final hoursTillSunset = weatherData.hoursTillSunset;
     final minutsTillSunset = weatherData.minutsTillSunset;

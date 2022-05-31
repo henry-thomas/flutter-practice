@@ -97,7 +97,7 @@ class LightModeTheme extends FlutterFlowTheme {
   Image? weatherNightClearCover = Image.asset('assets/images/clearNightBackgroundCoverLightTheme.png');
 
   Image? backDrop = Image.asset('assets/images/cover.png');
-  Image? loginCover = Image.asset('assets/images/rect858.png');
+  Image? loginCover = Image.asset('assets/images/lightAnimationCover.png');
   Color? primaryColor = const Color(0xFFFFBC00);
   Color? secondaryColor = const Color(0xFFB2A7A7);
   Color? tertiaryColor = const Color(0xFF2F3743);
@@ -114,7 +114,7 @@ class DarkModeTheme extends FlutterFlowTheme {
   Image? dashboard = Image.asset('assets/images/whiteDashboardX.png');
   Image? weatherNightClearCover = Image.asset('assets/images/clearNightBackgroundCoverDarkTheme.png');
   Image? backDrop = Image.asset('assets/images/coverDark.png');
-  Image? loginCover = Image.asset('assets/images/loginCoverDark.png');
+  Image? loginCover = Image.asset('assets/images/darkAnimationCover.png');
   Color? primaryColor = const  Color(0xFFFFBC00);
   Color? secondaryColor = const Color(0xFFF2EDED);
   Color? tertiaryColor = const Color(0xFFF2EDED);

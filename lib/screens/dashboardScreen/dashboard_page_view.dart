@@ -3,15 +3,18 @@ import 'package:alan_voice/alan_voice.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
+import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:provider_test/flutterFlow/flutter_flow_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider_test/providers/websocket/ps_manager.dart';
+import 'package:provider_test/screens/dashboardScreen/dashboardComponents/energy_efficiency_indicator.dart';
 import 'package:provider_test/screens/dashboardScreen/dashboardComponents/more_info_grid_card.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 import '../test_screen.dart';
+import '../weatherScreen/weatherControllers/weather_api.dart';
 import '../weatherScreen/weather_page_view.dart';
 import 'dashbaord_page_loading_view.dart';
 import 'package:provider_test/screens/loginScreen/login_page_view.dart';
@@ -22,6 +25,7 @@ import 'package:provider_test/providers/websocket/ws_manager.dart';
 import 'dashboardAnimation/dashboard_animation_controller.dart';
 import 'dashboardAnimation/dashboard_animation_provider.dart';
 import 'dashboardComponents/dashboard_button_actions.dart';
+import 'dashboardComponents/eco_score_card.dart';
 import 'dashboardComponents/liveCharts/pv_live_chart.dart';
 import 'dashboardComponents/more_info_bat_card.dart';
 import 'dashboardComponents/more_info_load_card.dart';
@@ -39,18 +43,20 @@ class DashboardWidget extends StatefulWidget {
 class _DashboardWidgetState extends State<DashboardWidget> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
-  _DashboardWidgetState() {
-    AlanVoice.addButton("1e7b405a0b96f10a7038e5097548796f2e956eca572e1d8b807a3e2338fdd0dc/stage");
-    AlanVoice.onCommand.add((command) {
-      debugPrint("got new command ${command.toString()}");
-    });
-  }
-  
+  // _DashboardWidgetState() {
+  //   AlanVoice.addButton("1e7b405a0b96f10a7038e5097548796f2e956eca572e1d8b807a3e2338fdd0dc/stage");
+  //   AlanVoice.onCommand.add((command) {
+  //     debugPrint("got new command ${command.toString()}");
+  //   });
+  // }
+
   // _DashboardWidgetState({
   //   this.fabLocation = FloatingActionButtonLocation.endDocked,
   //   this.shape = const CircularNotchedRectangle(),
   //  this.alan = const
   // });
+
+  bool greenEfficiencyVisibility = false;
 
   void _initWs(BuildContext context) {
     Provider.of<WsManager>(context, listen: false).initWs(context);
@@ -185,6 +191,16 @@ class _DashboardWidgetState extends State<DashboardWidget> {
     String batPower = psManager.batPower.toStringAsFixed(2);
     final batStorageTxt = psManager.batStorage.toStringAsFixed(1);
     final batStorageLevel = psManager.batStorage / 100;
+    // final weatherData = Provider.of<WeatherApi>(
+    //   context,
+    //   listen: false,
+    // );
+    final energyEfficiencyPercentageTxt =
+        psManager.energyEfficiencyPercentageTxt;
+    final energyEfficiencyPercentage = psManager.energyEfeciancy / 100;
+    final energyLinePosition = psManager.energyLinePosition;
+    // weatherData.queryWeather();
+    // weatherData.queryForecast();
     // String gridPower = Provider.of<PowerServiceManager>(context).getGridPower.toStringAsFixed(2);
     // int random = Provider.of<WsManager>(context).getRandom;
 
@@ -1988,8 +2004,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                     height: 20,
                   ),
                   Padding(
-                    padding: const EdgeInsetsDirectional
-                        .fromSTEB(0, 0, 0, 10),
+                    padding: const EdgeInsetsDirectional.fromSTEB(0, 0, 0, 10),
                     child: Material(
                       color: Colors.transparent,
                       elevation: 5,
@@ -1997,12 +2012,14 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: Container(
+                        constraints: BoxConstraints(
+                          maxHeight: double.infinity,
+                        ),
                         width: MediaQuery.of(context).size.width * 0.9,
-                        height: 210,
                         decoration: BoxDecoration(
                           boxShadow: [
                             BoxShadow(
-                              color: buttonAction.moreInfoColor,
+                              color: Colors.white10,
                               offset: Offset(0.0, buttonAction.offsetRadius),
                               //(x,y)
                               blurRadius: buttonAction.blurRadius,
@@ -2011,15 +2028,178 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                           color: FlutterFlowTheme.of(context).primaryBackground,
                           borderRadius: BorderRadius.circular(10),
                         ),
-                        child: Row(
-                          children:  [
-                            // NeumorphicProgress(
-                            //   percent: 1.5,
-                            //   height: 10,
-                            //   style: ProgressStyle(
-                            //     depth: 2,
-                            //   ),
-
+                        child: Column(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.max,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    // mainAxisSize: MainAxisSize.max,
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsetsDirectional
+                                            .fromSTEB(5, 0, 5, 0),
+                                        child: Text(
+                                          "Eco Score",
+                                          style: FlutterFlowTheme.of(context)
+                                              .bodyText1
+                                              .override(
+                                                fontFamily: 'Poppins',
+                                                color:
+                                                    FlutterFlowTheme.of(context)
+                                                        .secondaryText,
+                                                fontSize: 11,
+                                              ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Row(
+                                    // mainAxisSize: MainAxisSize.max,
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      Text(
+                                        energyEfficiencyPercentageTxt,
+                                        style: FlutterFlowTheme.of(context)
+                                            .bodyText1
+                                            .override(
+                                              fontFamily: 'Poppins',
+                                              color: psManager
+                                                  .energyEfficiencyColor,
+                                              fontSize: 14,
+                                            ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsetsDirectional
+                                            .fromSTEB(1, 0, 0, 0),
+                                        child: Text(
+                                          '%',
+                                          style: FlutterFlowTheme.of(context)
+                                              .bodyText1
+                                              .override(
+                                                fontFamily: 'Poppins',
+                                                color:
+                                                    FlutterFlowTheme.of(context)
+                                                        .secondaryText,
+                                                fontSize: 12,
+                                              ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  InkWell(
+                                    child: Padding(
+                                      padding:
+                                          const EdgeInsetsDirectional.fromSTEB(
+                                              170, 0, 0, 0),
+                                      child: Icon(
+                                        Icons.info_outlined,
+                                        color: FlutterFlowTheme.of(context)
+                                            .tertiaryColor
+                                            ?.withOpacity(0.7),
+                                        size: 20,
+                                      ),
+                                    ),
+                                    onTap: () {
+                                      if (greenEfficiencyVisibility == false) {
+                                        greenEfficiencyVisibility = true;
+                                      }else{
+                                        greenEfficiencyVisibility = false;
+                                      }
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Padding(
+                              padding:
+                                  EdgeInsetsDirectional.fromSTEB(0, 10, 0, 0),
+                              child: Container(
+                                width: MediaQuery.of(context).size.width * 0.83,
+                                height: 3,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(20),
+                                  gradient: const LinearGradient(
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                    colors: [
+                                      Colors.red,
+                                      Colors.yellow,
+                                      Colors.green
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Row(
+                              mainAxisSize: MainAxisSize.max,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Transform.translate(
+                                  offset: Offset(energyLinePosition, -15),
+                                  child: Padding(
+                                    padding:
+                                        const EdgeInsetsDirectional.fromSTEB(
+                                            0, 0, 0, 1),
+                                    child: Opacity(
+                                        opacity: 1,
+                                        child: Neumorphic(
+                                          style: NeumorphicStyle(
+                                            shape: NeumorphicShape.concave,
+                                            boxShape:
+                                                NeumorphicBoxShape.roundRect(
+                                                    BorderRadius.circular(30)),
+                                            depth: 2,
+                                            lightSource: LightSource.top,
+                                            // shadowDarkColor: Colors.orange,
+                                            color: FlutterFlowTheme.of(context)
+                                                .primaryBackground,
+                                          ),
+                                          child: SizedBox(
+                                            width: 25,
+                                            height: 25,
+                                            child: Center(
+                                              child: FaIcon(
+                                                FontAwesomeIcons.cloudscale,
+                                                color:
+                                                psManager
+                                                    .energyEfficiencyColor.withOpacity(0.7),
+                                                size: 22,
+                                              ),
+                                            ),
+                                          ),
+                                        )),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Visibility(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  "Eco Score refers to how much of the electricity you use, comes from renewable sources like solar panels. ",
+                                  style: FlutterFlowTheme.of(context)
+                                      .bodyText1
+                                      .override(
+                                        fontFamily: 'Poppins',
+                                        color: FlutterFlowTheme.of(context)
+                                            .secondaryText,
+                                        fontSize: 11,
+                                      ),
+                                ),
+                              ),
+                              visible: greenEfficiencyVisibility,
+                            ),
+                            Visibility(
+                              child: EcoCard(),
+                              visible: greenEfficiencyVisibility,
+                            ),
                           ],
                         ),
                       ),

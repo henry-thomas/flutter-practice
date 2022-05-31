@@ -77,7 +77,7 @@ class _DailyEnergyCardState extends State<DailyEnergyCard> {
                   mainAxisSize: MainAxisSize.max,
                   children: [
                     Container(
-                      width: 40,
+                      width: 46,
                       height: 29,
                       decoration: BoxDecoration(
                         color: FlutterFlowTheme.of(context).primaryBackground,
@@ -151,7 +151,7 @@ class _DailyEnergyCardState extends State<DailyEnergyCard> {
                   mainAxisSize: MainAxisSize.max,
                   children: [
                     Container(
-                      width: 40,
+                      width: 46,
                       height: 29,
                       decoration: BoxDecoration(
                         color: FlutterFlowTheme.of(context).primaryBackground,
@@ -226,7 +226,7 @@ class _DailyEnergyCardState extends State<DailyEnergyCard> {
                   mainAxisSize: MainAxisSize.max,
                   children: [
                     Container(
-                      width: 40,
+                      width: 46,
                       height: 29,
                       decoration: BoxDecoration(
                         color: FlutterFlowTheme.of(context).primaryBackground,
@@ -249,6 +249,7 @@ class _DailyEnergyCardState extends State<DailyEnergyCard> {
                   ],
                 ),
               ),
+              
             ],
           ),
         ),

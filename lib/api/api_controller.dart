@@ -15,7 +15,7 @@ class ApiController extends ChangeNotifier {
   // static const BASE_URL = "http://192.168.100.18:8084/SolarMDApi/";
   // static const USERNAME = "kostadin";
   // static const PASSWORD = "1234";
-  static const SELECTED_LOGGER = "SLV209080058";
+  static const SELECTED_LOGGER = "SLV211948677";
   static const START_DATE = "20220401";
   static const END_DATE = "20220419";
   static const PAGE = 1;

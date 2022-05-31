@@ -74,6 +74,13 @@ class PowerServiceManager extends ChangeNotifier {
   double waterSaved = 0;
   double electricCar = 0;
 
+  // Energy Efficiency
+  String energyEfficiencyPercentageTxt = "0";
+  double energyEfeciancy = 0;
+  double energyLinePosition = 0;
+  Color energyEfficiencyColor = Colors.red;
+
+
   Map<String?, List<DevPowerSummary>> get getPowerTypeMap {
     return _powerTypeMap;
   }
@@ -139,46 +146,49 @@ class PowerServiceManager extends ChangeNotifier {
   // }
 
   void onEnergyStorageMessageReceived(Map<String, dynamic> msg) {
-    batStorage = (msg['messageList'][0]['capacityP']);
-    batPower = (msg['messageList'][0]['powerW']) / 1000;
-    batCurrent = (msg['messageList'][0]['currentA']);
-    batVoltage = (msg['messageList'][0]['voltageV']);
+    if (msg['messageList'].length >0){
+      batStorage = (msg['messageList'][0]['capacityP']);
+      batPower = (msg['messageList'][0]['powerW']) / 1000;
+      batCurrent = (msg['messageList'][0]['currentA']);
+      batVoltage = (msg['messageList'][0]['voltageV']);
 
-    double ratedCapacityAh = 0;
-    double ratedChargeCurrentC = 0;
-    double ratedVoltageV = 0;
-    ratedCapacityAh += ((msg['messageList'][0]['ratedCapacityAh']));
-    ratedChargeCurrentC += ((msg['messageList'][0]['ratedChargeCurrentC']));
-    ratedVoltageV += ((msg['messageList'][0]['ratedVoltageV']));
+      double ratedCapacityAh = 0;
+      double ratedChargeCurrentC = 0;
+      double ratedVoltageV = 0;
+      ratedCapacityAh += ((msg['messageList'][0]['ratedCapacityAh']));
+      ratedChargeCurrentC += ((msg['messageList'][0]['ratedChargeCurrentC']));
+      ratedVoltageV += ((msg['messageList'][0]['ratedVoltageV']));
 
-    batRatedPower = ratedCapacityAh * ratedChargeCurrentC * ratedVoltageV;
-    batRatedPowerPercentage = ((batPower / batRatedPower) * 100);
-    if (batRatedPowerPercentage < 0) {
-      batRatedPowerPercentage = 0;
+      batRatedPower = ratedCapacityAh * ratedChargeCurrentC * ratedVoltageV;
+      batRatedPowerPercentage = ((batPower / batRatedPower) * 100);
+      if (batRatedPowerPercentage < 0) {
+        batRatedPowerPercentage = 0;
+      }
+      // Battery
+      // double stCharge = 0;
+      // if (_livePowerTypeMap["stCharge"]?.powerW != null) {
+      //   stCharge = _livePowerTypeMap["stCharge"]?.powerW as double;
+      // }
+      // double stDischarge = 0;
+      // if (_livePowerTypeMap["stDischarge"]?.powerW != null) {
+      //   stDischarge = _livePowerTypeMap["stDischarge"]?.powerW as double;
+      // }
+
+      // var totBat = stCharge - stDischarge;
+      // _batPower = totBat;
+      if (batPower > 0) {
+        batChargeDotActive = 1;
+      } else {
+        batChargeDotActive = 0;
+      }
+
+      if (batPower < 0) {
+        batDischargeDotActive = 1;
+      } else {
+        batDischargeDotActive = 0;
+      }
     }
-    // Battery
-    // double stCharge = 0;
-    // if (_livePowerTypeMap["stCharge"]?.powerW != null) {
-    //   stCharge = _livePowerTypeMap["stCharge"]?.powerW as double;
-    // }
-    // double stDischarge = 0;
-    // if (_livePowerTypeMap["stDischarge"]?.powerW != null) {
-    //   stDischarge = _livePowerTypeMap["stDischarge"]?.powerW as double;
-    // }
 
-    // var totBat = stCharge - stDischarge;
-    // _batPower = totBat;
-    if (batPower > 0) {
-      batChargeDotActive = 1;
-    } else {
-      batChargeDotActive = 0;
-    }
-
-    if (batPower < 0) {
-      batDischargeDotActive = 1;
-    } else {
-      batDischargeDotActive = 0;
-    }
 
     // for (var j = 0; j < storageList!.length; j++) {
     // }
@@ -329,6 +339,30 @@ class PowerServiceManager extends ChangeNotifier {
     waterSaved = ((pvTotalEnergy / 1000000) * 1.35) * 1000;
     electricCar = ((pvTotalEnergy / 1000000) * 8.2) * 1000;
 
+    // Energy Efficiency
+    // (total Grid / total load) *100
+
+    energyEfeciancy = 100 -((gridTotalEnergy / loadTotalEnergy) * 100);
+    if (energyEfeciancy.isNaN){
+      energyEfeciancy = 0;
+    }
+    energyEfficiencyPercentageTxt = energyEfeciancy.toStringAsFixed(1);
+    energyLinePosition = (energyEfeciancy /100) *300;
+
+
+
+    if (energyLinePosition < 100) {
+      energyEfficiencyColor = Colors.red;
+    }
+    if (energyLinePosition > 100 && energyLinePosition < 200 ) {
+      energyEfficiencyColor = Colors.orange;
+    }
+    if (energyLinePosition > 200) {
+      energyEfficiencyColor = Colors.green;
+    }
+
+
+
     // PVChartIconPosition
     List highestRatedPower = [pvRatedPower, loadRatedPower, gridRatedPower];
     var maxY =
@@ -359,4 +393,7 @@ class PowerServiceManager extends ChangeNotifier {
     }
     notifyListeners();
   }
+
+
+
 }
