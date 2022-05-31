@@ -11,8 +11,8 @@ import '../../screens/dashboardScreen/dashboardAnimation/dashboard_animation_pro
 
 class PowerServiceManager extends ChangeNotifier {
   //<powerType, <powerList>>
-  final Map<String?, List<DevPowerSummary>> _powerTypeMap = HashMap();
-  final Map<String?, DevPowerSummary> _livePowerTypeMap = HashMap();
+  final Map<String?, List<DevPowerSummary>> _powerTypeMap = {};
+  final Map<String?, DevPowerSummary> _livePowerTypeMap = {};
 
   List<PowerType>? _powerTypeList = [];
 
@@ -93,13 +93,13 @@ class PowerServiceManager extends ChangeNotifier {
 
   Future<List<DevPowerSummary>?> _getPowerList(BuildContext context) async {
     var powerTypes =
-        await Provider.of<ApiController>(context, listen: false).getPowerList();
+    await Provider.of<ApiController>(context, listen: false).getPowerList();
     return powerTypes;
   }
 
   Future<List?> _getLoggerList(BuildContext context) async {
     var powerTypes =
-        await Provider.of<ApiController>(context, listen: false).getPowerList();
+    await Provider.of<ApiController>(context, listen: false).getPowerList();
     return powerTypes;
   }
 
@@ -210,32 +210,32 @@ class PowerServiceManager extends ChangeNotifier {
         if (powerList[j].powerName == pType.powerName) {
 
           _livePowerTypeMap[pType.powerType]?.powerW =
-              ((powerList[j].powerW as double) +
-                  (_livePowerTypeMap[pType.powerType]?.powerW as double));
+          ((powerList[j].powerW as double) +
+              (_livePowerTypeMap[pType.powerType]?.powerW as double));
 
           _livePowerTypeMap[pType.powerType]?.ratedPowerW =
-              ((powerList[j].ratedPowerW as double) +
-                  (_livePowerTypeMap[pType.powerType]?.ratedPowerW as double));
+          ((powerList[j].ratedPowerW as double) +
+              (_livePowerTypeMap[pType.powerType]?.ratedPowerW as double));
 
           _livePowerTypeMap[pType.powerType]?.dailyEnergyWh = ((powerList[j]
-                  .dailyEnergyWh as double) +
+              .dailyEnergyWh as double) +
               (_livePowerTypeMap[pType.powerType]?.dailyEnergyWh as double));
 
           _livePowerTypeMap[pType.powerType]?.monthlyEnergyWh = ((powerList[j]
-                  .monthlyEnergyWh as double) +
+              .monthlyEnergyWh as double) +
               (_livePowerTypeMap[pType.powerType]?.monthlyEnergyWh as double));
 
           _livePowerTypeMap[pType.powerType]?.energyWh =
-              ((powerList[j].energyWh as double) +
-                  (_livePowerTypeMap[pType.powerType]?.energyWh as double));
+          ((powerList[j].energyWh as double) +
+              (_livePowerTypeMap[pType.powerType]?.energyWh as double));
 
           _livePowerTypeMap[pType.powerType]?.voltageV =
-              ((powerList[j].voltageV as double) +
-                  (_livePowerTypeMap[pType.powerType]?.voltageV as double));
+          ((powerList[j].voltageV as double) +
+              (_livePowerTypeMap[pType.powerType]?.voltageV as double));
 
           _livePowerTypeMap[pType.powerType]?.currentA =
-              ((powerList[j].currentA as double) +
-                  (_livePowerTypeMap[pType.powerType]?.currentA as double));
+          ((powerList[j].currentA as double) +
+              (_livePowerTypeMap[pType.powerType]?.currentA as double));
 
         }
       }
@@ -366,7 +366,7 @@ class PowerServiceManager extends ChangeNotifier {
     // PVChartIconPosition
     List highestRatedPower = [pvRatedPower, loadRatedPower, gridRatedPower];
     var maxY =
-        highestRatedPower.reduce((curr, next) => curr > next ? curr : next);
+    highestRatedPower.reduce((curr, next) => curr > next ? curr : next);
     double maxRange = 40;
     double minRange = 25;
     var livePvChartPosition = pvPower / maxY;

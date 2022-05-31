@@ -8,18 +8,18 @@ class DevPowerSummary {
   String? serialNumber;
   int? deviceID;
   int? lastUpdate;
-  double? powerW = 0;
-  double? voltageV = 0;
-  double? currentA = 0;
-  double? ratedPowerW = 0;
+  double? powerW;
+  double? voltageV;
+  double? currentA;
+  double? ratedPowerW;
   String? powerName;
-  double? energyWh = 0;
+  double? energyWh;
   String? powerType;
   bool? available;
-  double? dailyEnergyWh = 0;
-  double? weeklyEnergyWh = 0;
-  double? monthlyEnergyWh = 0;
-  double? yearlyEnergyWh = 0;
+  double? dailyEnergyWh;
+  double? weeklyEnergyWh;
+  double? monthlyEnergyWh;
+  double? yearlyEnergyWh;
   int? onlineDevices;
   int? offlineDevices;
 

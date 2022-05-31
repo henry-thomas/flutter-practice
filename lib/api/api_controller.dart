@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:provider_test/api/api_service.dart';
 import 'package:provider_test/entities/api_login_response.dart';
@@ -10,7 +9,6 @@ import '../entities/power_type.dart';
 import 'package:provider_test/screens/dashboardScreen/dashboard_page_view.dart';
 
 class ApiController extends ChangeNotifier {
-
   static const BASE_URL = "http://cweb1.mypower24.co.za/SolarMDApi/";
   // static const BASE_URL = "http://192.168.100.18:8084/SolarMDApi/";
   // static const USERNAME = "kostadin";
@@ -23,8 +21,6 @@ class ApiController extends ChangeNotifier {
 
   static String jwt = "";
   ApiService service = ApiService();
-
-
 
   Future<List<dynamic>?> _getLoggers() async {
     ApiResponse? response = await service.getLoggers();
@@ -63,14 +59,15 @@ class ApiController extends ChangeNotifier {
         jwt = loginResponse.data?["jwt"];
 
         Navigator.push(context, MaterialPageRoute(builder: (context) {
-          return  DashboardWidget();
+          return DashboardWidget();
         }));
       }
-    }else {
+    } else {
       LoginComponents.errorDialog(context);
-     //error "server error"
+      //error "server error"
     }
   }
+
   Future<List<PowerType>?> getPowerTypeList() async {
     List<dynamic>? getPowerTypes = await _getPowerTypes();
     List<PowerType> powerTypeList = [];

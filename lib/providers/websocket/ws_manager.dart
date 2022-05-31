@@ -13,15 +13,12 @@ import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:provider_test/screens/dashboardScreen/dashboard_page_view.dart';
 
 class WsManager extends ChangeNotifier {
-
-
   int requestId = 0;
   bool isInit = false;
 
   static String loggerSerial = ApiController.SELECTED_LOGGER;
   static String devModel = "12";
   var channel;
-
 
   bool initWs(BuildContext context) {
     // String url = 'ws://192.168.100.18:8084/SolarMDApi/mobile?token=' +
@@ -33,14 +30,13 @@ class WsManager extends ChangeNotifier {
         devModel;
 
     if (!isInit) {
-     channel = WebSocketChannel.connect(Uri.parse(url));
+      channel = WebSocketChannel.connect(Uri.parse(url));
       channel.stream.listen((event) {
         processMessage(jsonDecode(event), context);
       });
       isInit = true;
       return true;
     }
-
 
     return false;
   }
@@ -138,7 +134,8 @@ class WsManager extends ChangeNotifier {
         .onPsMessageReceived(msg);
   }
 
-  void _processEnergyStorageMessage(BuildContext context, Map<String, dynamic> msg) {
+  void _processEnergyStorageMessage(
+      BuildContext context, Map<String, dynamic> msg) {
     Provider.of<PowerServiceManager>(context, listen: false)
         .onEnergyStorageMessageReceived(msg);
   }
