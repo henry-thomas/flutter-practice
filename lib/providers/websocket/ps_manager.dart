@@ -1,10 +1,13 @@
 import 'dart:collection';
+import 'dart:convert';
 import 'dart:ffi';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:provider_test/api/api_controller.dart';
+import 'package:provider_test/entities/calc_power_expression.dart';
 import 'package:provider_test/entities/dev_power_summary.dart';
 import 'package:provider_test/entities/device_message.dart';
+import 'package:provider_test/entities/logger_config.dart';
 import 'package:provider_test/entities/power_type.dart';
 
 import '../../screens/dashboardScreen/dashboardAnimation/dashboard_animation_provider.dart';
@@ -13,6 +16,11 @@ class PowerServiceManager extends ChangeNotifier {
   //<powerType, <powerList>>
   final Map<String?, List<DevPowerSummary>> _powerTypeMap = {};
   final Map<String?, DevPowerSummary> _livePowerTypeMap = {};
+  final Map<String?, DevPowerSummary> _livePowerMap = {};
+
+  final List<DevPowerSummary> _calcPowerList = [];
+  final Map<String?, String?> _expressionPowerMap = {};
+  final Map<String?, DevPowerSummary?> _calcPowerMap = {};
 
   List<PowerType>? _powerTypeList = [];
 
@@ -96,6 +104,12 @@ class PowerServiceManager extends ChangeNotifier {
     return powerTypes;
   }
 
+  Future<List<LoggerConfig>?> _getPowerCalcs(BuildContext context) async {
+    var powerCalcs = await Provider.of<ApiController>(context, listen: false)
+        .getPowerCalcs();
+    return powerCalcs;
+  }
+
   Future<List?> _getLoggerList(BuildContext context) async {
     var powerTypes =
         await Provider.of<ApiController>(context, listen: false).getPowerList();
@@ -106,6 +120,9 @@ class PowerServiceManager extends ChangeNotifier {
   void init(BuildContext context) async {
     List<PowerType>? powerTypeList = await _getPowerTypes(context);
     List<DevPowerSummary>? powerList = await _getPowerList(context);
+    List<LoggerConfig>? calcPowerList = await _getPowerCalcs(context);
+    initCalcPowers(calcPowerList!);
+
     _powerTypeList = powerTypeList;
     for (var i = 0; i < powerTypeList!.length; i++) {
       PowerType pType = powerTypeList[i];
@@ -211,6 +228,8 @@ class PowerServiceManager extends ChangeNotifier {
       }
 
       for (var j = 0; j < powerList!.length; j++) {
+        _livePowerMap[powerList[j].powerName] = powerList[j];
+
         if (powerList[j].powerName == pType.powerName) {
           _livePowerTypeMap[pType.powerType]?.powerW =
               ((powerList[j].powerW as double) +
@@ -244,6 +263,7 @@ class PowerServiceManager extends ChangeNotifier {
     }
 
     calcPowerTotals();
+    calcExpressionPowers();
   }
 
   void calcPowerTotals() {
@@ -390,5 +410,83 @@ class PowerServiceManager extends ChangeNotifier {
       loadChartIconPosition = newPercentageSet - minRange;
     }
     notifyListeners();
+  }
+
+  void initCalcPowers(List<LoggerConfig?> calcPowerList) {
+    for (var i = 0; i < calcPowerList.length; i++) {
+      DevPowerSummary power = new DevPowerSummary();
+      power.powerName = calcPowerList[i]?.confKey;
+      power.powerW = 0;
+      power.ratedPowerW = 0;
+      power.dailyEnergyWh = 0;
+      power.monthlyEnergyWh = 0;
+      power.energyWh = 0;
+      power.voltageV = 0;
+      power.currentA = 0;
+
+      _calcPowerList.add(power); //not used yet
+      _calcPowerMap[power.powerName] = power;
+      _expressionPowerMap[power.powerName] = (calcPowerList[i]?.confValue);
+    }
+  }
+
+  void calcExpressionPowers() {
+    for (var item in _expressionPowerMap.entries) {
+      String? powerName = item.key;
+      String? expression = item.value;
+
+      _calcPowerMap[powerName]!.powerName = powerName;
+      // _calcPowerMap[powerName]!.powerType = powerName;
+
+      Map<String, dynamic> expMap = jsonDecode(expression!);
+      _calcPowerMap[powerName] = getExpRecursive(expMap);
+      _calcPowerMap[powerName]!.powerType = expMap['powerType'];
+      debugPrint(_calcPowerMap[powerName]!.powerW.toString());
+    }
+  }
+
+  DevPowerSummary? getExpRecursive(Map<String, dynamic> expMap) {
+    var p1Value = null;
+    if (expMap['p1'] is String) {
+      p1Value = _livePowerMap[expMap['p1']];
+    } else if (expMap['p1'] is Map<String, dynamic>) {
+      p1Value = getExpRecursive(expMap['p1']);
+    } else if (expMap['p1'] is num) {
+      p1Value = DevPowerSummary();
+      p1Value.powerW = expMap['p1'] * 1.0;
+    }
+
+    var p2Value = null;
+    if (expMap['p2'] is String) {
+      p2Value = _livePowerMap[expMap['p2']];
+    } else if (expMap['p2'] is Map<String, dynamic>) {
+      p2Value = getExpRecursive(expMap['p2']);
+    } else if (expMap['p2'] is num) {
+      p2Value = DevPowerSummary();
+      p2Value.powerW = expMap['p2'] * 1.0;
+    }
+
+    DevPowerSummary resultPower = DevPowerSummary();
+    var mathFunction = getMathFunction(expMap['op']);
+    // if (calcPowerExpression.p1 == null || calcPowerExpression.p2 == null) {
+    //   return resultPower;
+    // }
+    resultPower.powerW = mathFunction(p1Value.powerW!, p2Value.powerW!);
+    return resultPower;
+  }
+
+  double Function(double a, double b) getMathFunction(op) {
+    switch (op) {
+      case '+':
+        return (double a, double b) => a + b;
+      case '-':
+        return (double a, double b) => a - b;
+      case '*':
+        return (double a, double b) => a * b;
+      case '/':
+        return (double a, double b) => a / b;
+      default:
+        return (double a, double b) => a + b;
+    }
   }
 }

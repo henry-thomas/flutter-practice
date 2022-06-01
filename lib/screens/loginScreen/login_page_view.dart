@@ -27,8 +27,8 @@ class _LoginPageWidgetState extends State<LoginPageWidget>
 
   @override
   Widget build(BuildContext context) {
-    var usernameInput = "Henry_Thomas"; //emailAddressController!.text;
-    var passwordInput = "123456"; // passwordController!.text;
+    var usernameInput = "kostadin"; //emailAddressController!.text;
+    var passwordInput = "1234"; // passwordController!.text;
     return Scaffold(
       key: scaffoldKey,
       backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
@@ -52,7 +52,8 @@ class _LoginPageWidgetState extends State<LoginPageWidget>
                       ),
                     ),
                     child: Padding(
-                      padding: const EdgeInsetsDirectional.fromSTEB(0, 70, 0, 0),
+                      padding:
+                          const EdgeInsetsDirectional.fromSTEB(0, 70, 0, 0),
                       child: SingleChildScrollView(
                         child: Column(
                           mainAxisSize: MainAxisSize.max,
@@ -62,17 +63,19 @@ class _LoginPageWidgetState extends State<LoginPageWidget>
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Transform.translate(
-                                  offset: const Offset(-100,35),
+                                  offset: const Offset(-100, 35),
                                   child: Padding(
-                                    padding: const EdgeInsetsDirectional.fromSTEB(
-                                        0, 0, 0, 1),
+                                    padding:
+                                        const EdgeInsetsDirectional.fromSTEB(
+                                            0, 0, 0, 1),
                                     child: Opacity(
                                         opacity: 0.5,
                                         child: Neumorphic(
                                           style: NeumorphicStyle(
                                             shape: NeumorphicShape.concave,
-                                            boxShape: NeumorphicBoxShape.roundRect(
-                                                BorderRadius.circular(30)),
+                                            boxShape:
+                                                NeumorphicBoxShape.roundRect(
+                                                    BorderRadius.circular(30)),
                                             depth: 2,
                                             lightSource: LightSource.top,
                                             // shadowDarkColor: Colors.orange,
@@ -83,21 +86,20 @@ class _LoginPageWidgetState extends State<LoginPageWidget>
                                             width: 29,
                                             height: 29,
                                             child: Center(
-                                              child:Icon(
+                                              child: Icon(
                                                 Icons.offline_bolt_outlined,
                                                 color:
-                                                FlutterFlowTheme.of(context)
-                                                    .tertiaryColor,
+                                                    FlutterFlowTheme.of(context)
+                                                        .tertiaryColor,
                                                 size: 20,
                                               ),
                                             ),
                                           ),
-                                        )
-                                    ),
+                                        )),
                                   ),
                                 ),
                                 Transform.translate(
-                                  offset: const Offset(-84,36),
+                                  offset: const Offset(-84, 36),
                                   child: const Padding(
                                     padding: EdgeInsetsDirectional.fromSTEB(
                                         0, 0, 0, 1),
@@ -112,17 +114,19 @@ class _LoginPageWidgetState extends State<LoginPageWidget>
                                   ),
                                 ),
                                 Transform.translate(
-                                  offset: const Offset(-67,-30),
+                                  offset: const Offset(-67, -30),
                                   child: Padding(
-                                    padding: const EdgeInsetsDirectional.fromSTEB(
-                                        0, 0, 0, 1),
+                                    padding:
+                                        const EdgeInsetsDirectional.fromSTEB(
+                                            0, 0, 0, 1),
                                     child: Opacity(
                                         opacity: 0.5,
                                         child: Neumorphic(
                                           style: NeumorphicStyle(
                                             shape: NeumorphicShape.concave,
-                                            boxShape: NeumorphicBoxShape.roundRect(
-                                                BorderRadius.circular(30)),
+                                            boxShape:
+                                                NeumorphicBoxShape.roundRect(
+                                                    BorderRadius.circular(30)),
                                             depth: 2,
                                             lightSource: LightSource.top,
                                             // shadowDarkColor: Colors.orange,
@@ -133,22 +137,20 @@ class _LoginPageWidgetState extends State<LoginPageWidget>
                                             width: 29,
                                             height: 29,
                                             child: Center(
-                                              child:FaIcon(
+                                              child: FaIcon(
                                                 FontAwesomeIcons.solarPanel,
                                                 color:
-                                                FlutterFlowTheme.of(context)
-                                                    .tertiaryColor,
+                                                    FlutterFlowTheme.of(context)
+                                                        .tertiaryColor,
                                                 size: 12,
                                               ),
                                             ),
                                           ),
-                                        )
-                                    ),
+                                        )),
                                   ),
                                 ),
-
                                 Transform.translate(
-                                  offset: const Offset(-84,0),
+                                  offset: const Offset(-84, 0),
                                   child: const Padding(
                                     padding: EdgeInsetsDirectional.fromSTEB(
                                         0, 0, 0, 1),
@@ -163,17 +165,19 @@ class _LoginPageWidgetState extends State<LoginPageWidget>
                                   ),
                                 ),
                                 Transform.translate(
-                                  offset: const Offset(-102,130),
+                                  offset: const Offset(-102, 130),
                                   child: Padding(
-                                    padding: const EdgeInsetsDirectional.fromSTEB(
-                                        0, 0, 0, 1),
+                                    padding:
+                                        const EdgeInsetsDirectional.fromSTEB(
+                                            0, 0, 0, 1),
                                     child: Opacity(
                                         opacity: 0.5,
                                         child: Neumorphic(
                                           style: NeumorphicStyle(
                                             shape: NeumorphicShape.concave,
-                                            boxShape: NeumorphicBoxShape.roundRect(
-                                                BorderRadius.circular(30)),
+                                            boxShape:
+                                                NeumorphicBoxShape.roundRect(
+                                                    BorderRadius.circular(30)),
                                             depth: 2,
                                             lightSource: LightSource.top,
                                             // shadowDarkColor: Colors.orange,
@@ -185,21 +189,19 @@ class _LoginPageWidgetState extends State<LoginPageWidget>
                                             height: 29,
                                             child: Center(
                                                 child: Icon(
-                                                  Icons
-                                                      .battery_charging_full_rounded,
-                                                  color: FlutterFlowTheme.of(
-                                                      context)
+                                              Icons
+                                                  .battery_charging_full_rounded,
+                                              color:
+                                                  FlutterFlowTheme.of(context)
                                                       .tertiaryColor,
-                                                  size: 12,
-                                                )
-                                            ),
+                                              size: 12,
+                                            )),
                                           ),
-                                        )
-                                    ),
+                                        )),
                                   ),
                                 ),
                                 Transform.translate(
-                                  offset: const Offset(-120,105),
+                                  offset: const Offset(-120, 105),
                                   child: const Padding(
                                     padding: EdgeInsetsDirectional.fromSTEB(
                                         0, 0, 0, 1),
@@ -214,17 +216,19 @@ class _LoginPageWidgetState extends State<LoginPageWidget>
                                   ),
                                 ),
                                 Transform.translate(
-                                  offset: const Offset(80,35),
+                                  offset: const Offset(80, 35),
                                   child: Padding(
-                                    padding: const EdgeInsetsDirectional.fromSTEB(
-                                        0, 0, 0, 1),
+                                    padding:
+                                        const EdgeInsetsDirectional.fromSTEB(
+                                            0, 0, 0, 1),
                                     child: Opacity(
                                         opacity: 0.5,
                                         child: Neumorphic(
                                           style: NeumorphicStyle(
                                             shape: NeumorphicShape.concave,
-                                            boxShape: NeumorphicBoxShape.roundRect(
-                                                BorderRadius.circular(30)),
+                                            boxShape:
+                                                NeumorphicBoxShape.roundRect(
+                                                    BorderRadius.circular(30)),
                                             depth: 2,
                                             lightSource: LightSource.top,
                                             // shadowDarkColor: Colors.orange,
@@ -235,21 +239,20 @@ class _LoginPageWidgetState extends State<LoginPageWidget>
                                             width: 29,
                                             height: 29,
                                             child: Center(
-                                              child:FaIcon(
+                                              child: FaIcon(
                                                 FontAwesomeIcons.house,
                                                 color:
-                                                FlutterFlowTheme.of(context)
-                                                    .tertiaryColor,
+                                                    FlutterFlowTheme.of(context)
+                                                        .tertiaryColor,
                                                 size: 12,
                                               ),
                                             ),
                                           ),
-                                        )
-                                    ),
+                                        )),
                                   ),
                                 ),
                                 Transform.translate(
-                                  offset: const Offset(25,37),
+                                  offset: const Offset(25, 37),
                                   child: const Padding(
                                     padding: EdgeInsetsDirectional.fromSTEB(
                                         0, 0, 0, 1),
@@ -264,7 +267,7 @@ class _LoginPageWidgetState extends State<LoginPageWidget>
                                   ),
                                 ),
                                 Transform.translate(
-                                  offset: const Offset(-30,37),
+                                  offset: const Offset(-30, 37),
                                   child: const Padding(
                                     padding: EdgeInsetsDirectional.fromSTEB(
                                         0, 0, 0, 1),
@@ -280,10 +283,9 @@ class _LoginPageWidgetState extends State<LoginPageWidget>
                                 ),
                               ],
                             ),
-
                             Padding(
-                              padding:
-                              const EdgeInsetsDirectional.fromSTEB(0, 10, 0, 60),
+                              padding: const EdgeInsetsDirectional.fromSTEB(
+                                  0, 10, 0, 60),
                               child: Row(
                                 mainAxisSize: MainAxisSize.max,
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -297,10 +299,9 @@ class _LoginPageWidgetState extends State<LoginPageWidget>
                                 ],
                               ),
                             ),
-
                             Padding(
-                              padding:
-                              const EdgeInsetsDirectional.fromSTEB(20, 20, 20, 0),
+                              padding: const EdgeInsetsDirectional.fromSTEB(
+                                  20, 20, 20, 0),
                               child: TextFormField(
                                 controller: emailAddressController,
                                 obscureText: false,
@@ -309,20 +310,20 @@ class _LoginPageWidgetState extends State<LoginPageWidget>
                                   labelStyle: FlutterFlowTheme.of(context)
                                       .bodyText1
                                       .override(
-                                    fontFamily: 'Lexend Deca',
-                                    color: const Color(0x98FFFFFF),
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.normal,
-                                  ),
+                                        fontFamily: 'Lexend Deca',
+                                        color: const Color(0x98FFFFFF),
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.normal,
+                                      ),
                                   hintText: 'Enter your Username...',
                                   hintStyle: FlutterFlowTheme.of(context)
                                       .bodyText1
                                       .override(
-                                    fontFamily: 'Lexend Deca',
-                                    color: const Color(0x98FFFFFF),
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.normal,
-                                  ),
+                                        fontFamily: 'Lexend Deca',
+                                        color: const Color(0x98FFFFFF),
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.normal,
+                                      ),
                                   enabledBorder: OutlineInputBorder(
                                     borderSide: const BorderSide(
                                       color: Color(0x00000000),
@@ -339,24 +340,25 @@ class _LoginPageWidgetState extends State<LoginPageWidget>
                                   ),
                                   filled: true,
                                   fillColor:
-                                  FlutterFlowTheme.of(context).primaryColor,
-                                  contentPadding: const EdgeInsetsDirectional.fromSTEB(
-                                      20, 24, 20, 24),
+                                      FlutterFlowTheme.of(context).primaryColor,
+                                  contentPadding:
+                                      const EdgeInsetsDirectional.fromSTEB(
+                                          20, 24, 20, 24),
                                 ),
                                 style: FlutterFlowTheme.of(context)
                                     .bodyText1
                                     .override(
-                                  fontFamily: 'Lexend Deca',
-                                  color: FlutterFlowTheme.of(context)
-                                      .primaryText,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.normal,
-                                ),
+                                      fontFamily: 'Lexend Deca',
+                                      color: FlutterFlowTheme.of(context)
+                                          .primaryText,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.normal,
+                                    ),
                               ),
                             ),
                             Padding(
-                              padding:
-                              const EdgeInsetsDirectional.fromSTEB(20, 12, 20, 0),
+                              padding: const EdgeInsetsDirectional.fromSTEB(
+                                  20, 12, 20, 0),
                               child: TextFormField(
                                 controller: passwordController,
                                 obscureText: !passwordVisibility!,
@@ -365,20 +367,20 @@ class _LoginPageWidgetState extends State<LoginPageWidget>
                                   labelStyle: FlutterFlowTheme.of(context)
                                       .bodyText1
                                       .override(
-                                    fontFamily: 'Lexend Deca',
-                                    color: const Color(0x98FFFFFF),
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.normal,
-                                  ),
+                                        fontFamily: 'Lexend Deca',
+                                        color: const Color(0x98FFFFFF),
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.normal,
+                                      ),
                                   hintText: 'Enter your password...',
                                   hintStyle: FlutterFlowTheme.of(context)
                                       .bodyText1
                                       .override(
-                                    fontFamily: 'Lexend Deca',
-                                    color: const Color(0x98FFFFFF),
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.normal,
-                                  ),
+                                        fontFamily: 'Lexend Deca',
+                                        color: const Color(0x98FFFFFF),
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.normal,
+                                      ),
                                   enabledBorder: OutlineInputBorder(
                                     borderSide: const BorderSide(
                                       color: Color(0x00000000),
@@ -395,13 +397,14 @@ class _LoginPageWidgetState extends State<LoginPageWidget>
                                   ),
                                   filled: true,
                                   fillColor:
-                                  FlutterFlowTheme.of(context).primaryColor,
-                                  contentPadding: const EdgeInsetsDirectional.fromSTEB(
-                                      20, 24, 20, 24),
+                                      FlutterFlowTheme.of(context).primaryColor,
+                                  contentPadding:
+                                      const EdgeInsetsDirectional.fromSTEB(
+                                          20, 24, 20, 24),
                                   suffixIcon: InkWell(
                                     onTap: () => setState(
-                                          () => passwordVisibility =
-                                      !passwordVisibility!,
+                                      () => passwordVisibility =
+                                          !passwordVisibility!,
                                     ),
                                     child: Icon(
                                       passwordVisibility!
@@ -416,19 +419,19 @@ class _LoginPageWidgetState extends State<LoginPageWidget>
                                 style: FlutterFlowTheme.of(context)
                                     .bodyText1
                                     .override(
-                                  fontFamily: 'Lexend Deca',
-                                  color: FlutterFlowTheme.of(context)
-                                      .primaryText,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.normal,
-                                ),
+                                      fontFamily: 'Lexend Deca',
+                                      color: FlutterFlowTheme.of(context)
+                                          .primaryText,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.normal,
+                                    ),
                               ),
                             ),
                             Padding(
-                              padding:
-                              const EdgeInsetsDirectional.fromSTEB(0, 24, 0, 0),
-                              child: LoginComponents.loginBtn(usernameInput,passwordInput,context),
-
+                              padding: const EdgeInsetsDirectional.fromSTEB(
+                                  0, 24, 0, 0),
+                              child: LoginComponents.loginBtn(
+                                  usernameInput, passwordInput, context),
                             ),
                           ],
                         ),

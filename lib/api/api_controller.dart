@@ -4,16 +4,17 @@ import 'package:provider_test/entities/api_login_response.dart';
 import 'package:provider_test/entities/api_response.dart';
 import 'package:provider_test/entities/api_response_power.dart';
 import 'package:provider_test/entities/dev_power_summary.dart';
+import 'package:provider_test/entities/logger_config.dart';
 import 'package:provider_test/screens/loginScreen/login_components.dart';
 import '../entities/power_type.dart';
 import 'package:provider_test/screens/dashboardScreen/dashboard_page_view.dart';
 
 class ApiController extends ChangeNotifier {
-  static const BASE_URL = "http://cweb1.mypower24.co.za/SolarMDApi/";
-  // static const BASE_URL = "http://192.168.100.18:8084/SolarMDApi/";
+  // static const BASE_URL = "http://cweb1.mypower24.co.za/SolarMDApi/";
+  static const BASE_URL = "http://192.168.100.18:8084/SolarMDApi/";
   // static const USERNAME = "kostadin";
   // static const PASSWORD = "1234";
-  static const SELECTED_LOGGER = "SLV211948677";
+  static const SELECTED_LOGGER = "MP-1623061258731";
   static const START_DATE = "20220401";
   static const END_DATE = "20220419";
   static const PAGE = 1;
@@ -46,6 +47,15 @@ class ApiController extends ChangeNotifier {
         await service.getPowerList(startDate, endDate, page, perPage);
     if (response != null) {
       return response.data!["requests"];
+    } else {
+      return null;
+    }
+  }
+
+  Future<List<dynamic>?> _getPowerCalcs() async {
+    ApiResponse? response = await service.getPowerCalcs();
+    if (response != null) {
+      return response.data;
     } else {
       return null;
     }
@@ -100,5 +110,16 @@ class ApiController extends ChangeNotifier {
       }
     }
     return powerList;
+  }
+
+  Future<List<LoggerConfig>?> getPowerCalcs() async {
+    List<dynamic>? getPowerCalcs = await _getPowerCalcs();
+    List<LoggerConfig> powerCalcList = [];
+    if (getPowerCalcs != null) {
+      for (var i = 0; i < getPowerCalcs.length; i++) {
+        powerCalcList.add(LoggerConfig.fromJson(getPowerCalcs[i]));
+      }
+    }
+    return powerCalcList;
   }
 }
