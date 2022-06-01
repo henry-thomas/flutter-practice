@@ -80,7 +80,6 @@ class PowerServiceManager extends ChangeNotifier {
   double energyLinePosition = 0;
   Color energyEfficiencyColor = Colors.red;
 
-
   Map<String?, List<DevPowerSummary>> get getPowerTypeMap {
     return _powerTypeMap;
   }
@@ -93,13 +92,13 @@ class PowerServiceManager extends ChangeNotifier {
 
   Future<List<DevPowerSummary>?> _getPowerList(BuildContext context) async {
     var powerTypes =
-    await Provider.of<ApiController>(context, listen: false).getPowerList();
+        await Provider.of<ApiController>(context, listen: false).getPowerList();
     return powerTypes;
   }
 
   Future<List?> _getLoggerList(BuildContext context) async {
     var powerTypes =
-    await Provider.of<ApiController>(context, listen: false).getPowerList();
+        await Provider.of<ApiController>(context, listen: false).getPowerList();
     return powerTypes;
   }
 
@@ -146,7 +145,7 @@ class PowerServiceManager extends ChangeNotifier {
   // }
 
   void onEnergyStorageMessageReceived(Map<String, dynamic> msg) {
-    if (msg['messageList'].length >0){
+    if (msg['messageList'].length > 0) {
       batStorage = (msg['messageList'][0]['capacityP']);
       batPower = (msg['messageList'][0]['powerW']) / 1000;
       batCurrent = (msg['messageList'][0]['currentA']);
@@ -189,7 +188,6 @@ class PowerServiceManager extends ChangeNotifier {
       }
     }
 
-
     // for (var j = 0; j < storageList!.length; j++) {
     // }
   }
@@ -204,39 +202,43 @@ class PowerServiceManager extends ChangeNotifier {
       if (_livePowerTypeMap[pType.powerType] == null) {
         _livePowerTypeMap[pType.powerType] = new DevPowerSummary();
         _livePowerTypeMap[pType.powerType]!.powerW = 0;
+        _livePowerTypeMap[pType.powerType]!.ratedPowerW = 0;
+        _livePowerTypeMap[pType.powerType]!.dailyEnergyWh = 0;
+        _livePowerTypeMap[pType.powerType]!.monthlyEnergyWh = 0;
+        _livePowerTypeMap[pType.powerType]!.energyWh = 0;
+        _livePowerTypeMap[pType.powerType]!.voltageV = 0;
+        _livePowerTypeMap[pType.powerType]!.currentA = 0;
       }
 
       for (var j = 0; j < powerList!.length; j++) {
         if (powerList[j].powerName == pType.powerName) {
-
           _livePowerTypeMap[pType.powerType]?.powerW =
-          ((powerList[j].powerW as double) +
-              (_livePowerTypeMap[pType.powerType]?.powerW as double));
+              ((powerList[j].powerW as double) +
+                  (_livePowerTypeMap[pType.powerType]?.powerW as double));
 
           _livePowerTypeMap[pType.powerType]?.ratedPowerW =
-          ((powerList[j].ratedPowerW as double) +
-              (_livePowerTypeMap[pType.powerType]?.ratedPowerW as double));
+              ((powerList[j].ratedPowerW as double) +
+                  (_livePowerTypeMap[pType.powerType]?.ratedPowerW as double));
 
           _livePowerTypeMap[pType.powerType]?.dailyEnergyWh = ((powerList[j]
-              .dailyEnergyWh as double) +
+                  .dailyEnergyWh as double) +
               (_livePowerTypeMap[pType.powerType]?.dailyEnergyWh as double));
 
           _livePowerTypeMap[pType.powerType]?.monthlyEnergyWh = ((powerList[j]
-              .monthlyEnergyWh as double) +
+                  .monthlyEnergyWh as double) +
               (_livePowerTypeMap[pType.powerType]?.monthlyEnergyWh as double));
 
           _livePowerTypeMap[pType.powerType]?.energyWh =
-          ((powerList[j].energyWh as double) +
-              (_livePowerTypeMap[pType.powerType]?.energyWh as double));
+              ((powerList[j].energyWh as double) +
+                  (_livePowerTypeMap[pType.powerType]?.energyWh as double));
 
           _livePowerTypeMap[pType.powerType]?.voltageV =
-          ((powerList[j].voltageV as double) +
-              (_livePowerTypeMap[pType.powerType]?.voltageV as double));
+              ((powerList[j].voltageV as double) +
+                  (_livePowerTypeMap[pType.powerType]?.voltageV as double));
 
           _livePowerTypeMap[pType.powerType]?.currentA =
-          ((powerList[j].currentA as double) +
-              (_livePowerTypeMap[pType.powerType]?.currentA as double));
-
+              ((powerList[j].currentA as double) +
+                  (_livePowerTypeMap[pType.powerType]?.currentA as double));
         }
       }
     }
@@ -342,31 +344,27 @@ class PowerServiceManager extends ChangeNotifier {
     // Energy Efficiency
     // (total Grid / total load) *100
 
-    energyEfeciancy = 100 -((gridTotalEnergy / loadTotalEnergy) * 100);
-    if (energyEfeciancy.isNaN){
+    energyEfeciancy = 100 - ((gridTotalEnergy / loadTotalEnergy) * 100);
+    if (energyEfeciancy.isNaN) {
       energyEfeciancy = 0;
     }
     energyEfficiencyPercentageTxt = energyEfeciancy.toStringAsFixed(1);
-    energyLinePosition = (energyEfeciancy /100) *300;
-
-
+    energyLinePosition = (energyEfeciancy / 100) * 300;
 
     if (energyLinePosition < 100) {
       energyEfficiencyColor = Colors.red;
     }
-    if (energyLinePosition > 100 && energyLinePosition < 200 ) {
+    if (energyLinePosition > 100 && energyLinePosition < 200) {
       energyEfficiencyColor = Colors.orange;
     }
     if (energyLinePosition > 200) {
       energyEfficiencyColor = Colors.green;
     }
 
-
-
     // PVChartIconPosition
     List highestRatedPower = [pvRatedPower, loadRatedPower, gridRatedPower];
     var maxY =
-    highestRatedPower.reduce((curr, next) => curr > next ? curr : next);
+        highestRatedPower.reduce((curr, next) => curr > next ? curr : next);
     double maxRange = 40;
     double minRange = 25;
     var livePvChartPosition = pvPower / maxY;
@@ -393,7 +391,4 @@ class PowerServiceManager extends ChangeNotifier {
     }
     notifyListeners();
   }
-
-
-
 }
