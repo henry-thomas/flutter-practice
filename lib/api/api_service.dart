@@ -24,18 +24,9 @@ class ApiService {
   Future<ApiResponse?> getLoggers() async {
     var headers = {'Authorization': 'Bearer ' + ApiController.jwt};
     var request = http.Request(
-        'GET',
-        Uri.parse(ApiController.BASE_URL +
-            'rest/loggers/'));
+        'GET', Uri.parse(ApiController.BASE_URL + 'rest/loggers/'));
     request.headers.addAll(headers);
-    http.StreamedResponse response = await request.send();
-    if (response.statusCode == 200) {
-      var bytesToString = await response.stream.bytesToString();
-      var apiResponse = ApiResponse.fromJson(jsonDecode(bytesToString));
-      return apiResponse;
-    } else {
-      return null;
-    }
+    return sendRequest(request);
   }
 
   Future<ApiResponse?> getPowerTypes() async {
@@ -49,14 +40,7 @@ class ApiService {
 
     request.headers.addAll(headers);
 
-    http.StreamedResponse response = await request.send();
-    if (response.statusCode == 200) {
-      var bytesToString = await response.stream.bytesToString();
-      var apiResponse = ApiResponse.fromJson(jsonDecode(bytesToString));
-      return apiResponse;
-    } else {
-      return null;
-    }
+    return sendRequest(request);
   }
 
   Future<ApiResponsePower?> getPowerList(
@@ -82,6 +66,30 @@ class ApiService {
     if (response.statusCode == 200) {
       var bytesToString = await response.stream.bytesToString();
       var apiResponse = ApiResponsePower.fromJson(jsonDecode(bytesToString));
+      return apiResponse;
+    } else {
+      return null;
+    }
+  }
+
+  Future<ApiResponse?> getPowerCalcs() async {
+    var headers = {'Authorization': 'Bearer ' + ApiController.jwt};
+    var request = http.Request(
+        'GET',
+        Uri.parse(ApiController.BASE_URL +
+            'rest/loggers/' +
+            ApiController.SELECTED_LOGGER +
+            "/calcPowers"));
+
+    request.headers.addAll(headers);
+    return sendRequest(request);
+  }
+
+  Future<ApiResponse?> sendRequest(http.Request request) async {
+    http.StreamedResponse response = await request.send();
+    if (response.statusCode == 200) {
+      var bytesToString = await response.stream.bytesToString();
+      var apiResponse = ApiResponse.fromJson(jsonDecode(bytesToString));
       return apiResponse;
     } else {
       return null;
