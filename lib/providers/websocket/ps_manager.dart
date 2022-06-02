@@ -1,18 +1,26 @@
 import 'dart:collection';
+import 'dart:convert';
 import 'dart:ffi';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:provider_test/api/api_controller.dart';
+import 'package:provider_test/entities/calc_power_expression.dart';
 import 'package:provider_test/entities/dev_power_summary.dart';
 import 'package:provider_test/entities/device_message.dart';
+import 'package:provider_test/entities/logger_config.dart';
 import 'package:provider_test/entities/power_type.dart';
 
 import '../../screens/dashboardScreen/dashboardAnimation/dashboard_animation_provider.dart';
 
 class PowerServiceManager extends ChangeNotifier {
   //<powerType, <powerList>>
-  final Map<String?, List<DevPowerSummary>> _powerTypeMap = HashMap();
-  final Map<String?, DevPowerSummary> _livePowerTypeMap = HashMap();
+  final Map<String?, List<DevPowerSummary>> _powerTypeMap = {};
+  final Map<String?, DevPowerSummary> _livePowerTypeMap = {};
+  final Map<String?, DevPowerSummary> _livePowerMap = {};
+
+  final List<DevPowerSummary> _calcPowerList = [];
+  final Map<String?, String?> _expressionPowerMap = {};
+  final Map<String?, DevPowerSummary?> _calcPowerMap = {};
 
   List<PowerType>? _powerTypeList = [];
 
@@ -69,17 +77,16 @@ class PowerServiceManager extends ChangeNotifier {
   double monthlyFinancial = 0;
   double totalFinancial = 0;
 
-  // Environmental Benefits
+  // Enviromental Benefits
   double c02Reduced = 0;
   double waterSaved = 0;
   double electricCar = 0;
 
   // Energy Efficiency
   String energyEfficiencyPercentageTxt = "0";
-  double energyEfficiency = 0;
+  double energyEfeciancy = 0;
   double energyLinePosition = 0;
   Color energyEfficiencyColor = Colors.red;
-
 
   Map<String?, List<DevPowerSummary>> get getPowerTypeMap {
     return _powerTypeMap;
@@ -93,13 +100,19 @@ class PowerServiceManager extends ChangeNotifier {
 
   Future<List<DevPowerSummary>?> _getPowerList(BuildContext context) async {
     var powerTypes =
-    await Provider.of<ApiController>(context, listen: false).getPowerList();
+        await Provider.of<ApiController>(context, listen: false).getPowerList();
     return powerTypes;
+  }
+
+  Future<List<LoggerConfig>?> _getPowerCalcs(BuildContext context) async {
+    var powerCalcs = await Provider.of<ApiController>(context, listen: false)
+        .getPowerCalcs();
+    return powerCalcs;
   }
 
   Future<List?> _getLoggerList(BuildContext context) async {
     var powerTypes =
-    await Provider.of<ApiController>(context, listen: false).getPowerList();
+        await Provider.of<ApiController>(context, listen: false).getPowerList();
     return powerTypes;
   }
 
@@ -107,6 +120,9 @@ class PowerServiceManager extends ChangeNotifier {
   void init(BuildContext context) async {
     List<PowerType>? powerTypeList = await _getPowerTypes(context);
     List<DevPowerSummary>? powerList = await _getPowerList(context);
+    List<LoggerConfig>? calcPowerList = await _getPowerCalcs(context);
+    initCalcPowers(calcPowerList!);
+
     _powerTypeList = powerTypeList;
     for (var i = 0; i < powerTypeList!.length; i++) {
       PowerType pType = powerTypeList[i];
@@ -121,32 +137,8 @@ class PowerServiceManager extends ChangeNotifier {
     }
   }
 
-  // void updatePowers(Map<String?, List<DevPowerSummary>> ptMap) {
-  //   for (var i = 0; i < _livePowerTypeMap.length; i++) {
-  //     DevPowerSummary? dPower = _livePowerTypeMap[i];
-  //     if (ptMap[dPower?.powerType] != null) {
-  //       dPower.onlineDevices=0;
-  //       //1 clear dPower
-  //       var voltageV =0;
-  //       var powerW =0;
-  //       //2 loop in ptMap List
-  //       for (var j = 0; j < ptMap[dPower.powerType]; j++) {
-  //         voltageV+= ptMap[dPower?.powerType].voltageV;
-  //         dPower.onlineDevices++;
-  //       }
-  //
-  //
-  //
-  //       dPower.voltageV = voltageV;
-  //
-  //     }else{
-  //       dPower?.available = false;
-  //     }
-  //   }
-  // }
-
   void onEnergyStorageMessageReceived(Map<String, dynamic> msg) {
-    if (msg['messageList'].length >0){
+    if (msg['messageList'].length > 0) {
       batStorage = (msg['messageList'][0]['capacityP']);
       batPower = (msg['messageList'][0]['powerW']) / 1000;
       batCurrent = (msg['messageList'][0]['currentA']);
@@ -189,7 +181,6 @@ class PowerServiceManager extends ChangeNotifier {
       }
     }
 
-
     // for (var j = 0; j < storageList!.length; j++) {
     // }
   }
@@ -198,51 +189,49 @@ class PowerServiceManager extends ChangeNotifier {
     DevMessage message = DevMessage.fromJson(msg);
     List<DevPowerSummary>? powerList = message.messageList;
 
+    for (var i = 0; i < powerList!.length; i++) {
+      _livePowerMap[powerList[i].powerName] = powerList[i];
+    }
+
+    calcExpressionPowers();
+    powerList.addAll(_calcPowerList);
+
     _livePowerTypeMap.clear();
     for (var i = 0; i < _powerTypeList!.length; i++) {
       PowerType pType = _powerTypeList![i];
       if (_livePowerTypeMap[pType.powerType] == null) {
-        _livePowerTypeMap[pType.powerType] = new DevPowerSummary();
-        _livePowerTypeMap[pType.powerType]!.powerW = 0;
-        _livePowerTypeMap[pType.powerType]!.ratedPowerW = 0;
-        _livePowerTypeMap[pType.powerType]!.dailyEnergyWh = 0;
-        _livePowerTypeMap[pType.powerType]!.monthlyEnergyWh = 0;
-        _livePowerTypeMap[pType.powerType]!.energyWh = 0;
-        _livePowerTypeMap[pType.powerType]!.voltageV = 0;
-        _livePowerTypeMap[pType.powerType]!.currentA = 0;
+        _livePowerTypeMap[pType.powerType] = createEmptyPower();
       }
 
-      for (var j = 0; j < powerList!.length; j++) {
+      for (var j = 0; j < powerList.length; j++) {
         if (powerList[j].powerName == pType.powerName) {
-
           _livePowerTypeMap[pType.powerType]?.powerW =
-          ((powerList[j].powerW as double) +
-              (_livePowerTypeMap[pType.powerType]?.powerW as double));
+              ((powerList[j].powerW as double) +
+                  (_livePowerTypeMap[pType.powerType]?.powerW as double));
 
           _livePowerTypeMap[pType.powerType]?.ratedPowerW =
-          ((powerList[j].ratedPowerW as double) +
-              (_livePowerTypeMap[pType.powerType]?.ratedPowerW as double));
+              ((powerList[j].ratedPowerW as double) +
+                  (_livePowerTypeMap[pType.powerType]?.ratedPowerW as double));
 
           _livePowerTypeMap[pType.powerType]?.dailyEnergyWh = ((powerList[j]
-              .dailyEnergyWh as double) +
+                  .dailyEnergyWh as double) +
               (_livePowerTypeMap[pType.powerType]?.dailyEnergyWh as double));
 
           _livePowerTypeMap[pType.powerType]?.monthlyEnergyWh = ((powerList[j]
-              .monthlyEnergyWh as double) +
+                  .monthlyEnergyWh as double) +
               (_livePowerTypeMap[pType.powerType]?.monthlyEnergyWh as double));
 
           _livePowerTypeMap[pType.powerType]?.energyWh =
-          ((powerList[j].energyWh as double) +
-              (_livePowerTypeMap[pType.powerType]?.energyWh as double));
+              ((powerList[j].energyWh as double) +
+                  (_livePowerTypeMap[pType.powerType]?.energyWh as double));
 
           _livePowerTypeMap[pType.powerType]?.voltageV =
-          ((powerList[j].voltageV as double) +
-              (_livePowerTypeMap[pType.powerType]?.voltageV as double));
+              ((powerList[j].voltageV as double) +
+                  (_livePowerTypeMap[pType.powerType]?.voltageV as double));
 
           _livePowerTypeMap[pType.powerType]?.currentA =
-          ((powerList[j].currentA as double) +
-              (_livePowerTypeMap[pType.powerType]?.currentA as double));
-
+              ((powerList[j].currentA as double) +
+                  (_livePowerTypeMap[pType.powerType]?.currentA as double));
         }
       }
     }
@@ -348,31 +337,27 @@ class PowerServiceManager extends ChangeNotifier {
     // Energy Efficiency
     // (total Grid / total load) *100
 
-    energyEfficiency = 100 -((gridTotalEnergy / loadTotalEnergy) * 100);
-    if (energyEfficiency.isNaN){
-      energyEfficiency = 0;
+    energyEfeciancy = 100 - ((gridTotalEnergy / loadTotalEnergy) * 100);
+    if (energyEfeciancy.isNaN) {
+      energyEfeciancy = 0;
     }
-    energyEfficiencyPercentageTxt = energyEfficiency.toStringAsFixed(1);
-    energyLinePosition = (energyEfficiency /100) *300;
-
-
+    energyEfficiencyPercentageTxt = energyEfeciancy.toStringAsFixed(1);
+    energyLinePosition = (energyEfeciancy / 100) * 300;
 
     if (energyLinePosition < 100) {
       energyEfficiencyColor = Colors.red;
     }
-    if (energyLinePosition > 100 && energyLinePosition < 200 ) {
+    if (energyLinePosition > 100 && energyLinePosition < 200) {
       energyEfficiencyColor = Colors.orange;
     }
     if (energyLinePosition > 200) {
       energyEfficiencyColor = Colors.green;
     }
 
-
-
     // PVChartIconPosition
     List highestRatedPower = [pvRatedPower, loadRatedPower, gridRatedPower];
     var maxY =
-    highestRatedPower.reduce((curr, next) => curr > next ? curr : next);
+        highestRatedPower.reduce((curr, next) => curr > next ? curr : next);
     double maxRange = 40;
     double minRange = 25;
     var livePvChartPosition = pvPower / maxY;
@@ -400,6 +385,95 @@ class PowerServiceManager extends ChangeNotifier {
     notifyListeners();
   }
 
+  void initCalcPowers(List<LoggerConfig?> calcPowerList) {
+    for (var i = 0; i < calcPowerList.length; i++) {
+      DevPowerSummary power = createEmptyPower();
+      power.powerName = calcPowerList[i]?.confKey;
 
+      // _calcPowerList.add(power); //not used yet
+      _calcPowerMap[power.powerName] = power;
+      _expressionPowerMap[power.powerName] = (calcPowerList[i]?.confValue);
+    }
+  }
 
+  List<DevPowerSummary> calcExpressionPowers() {
+    _calcPowerList.clear();
+    for (var item in _expressionPowerMap.entries) {
+      String? powerName = item.key;
+      String? expression = item.value;
+
+      _calcPowerMap[powerName]!.powerName = powerName;
+      // _calcPowerMap[powerName]!.powerType = powerName;
+
+      Map<String, dynamic> expMap = jsonDecode(expression!);
+      _calcPowerMap[powerName] = getExpRecursive(expMap);
+      _calcPowerMap[powerName]!.powerType = expMap['powerType'];
+      _calcPowerMap[powerName]!.powerName = powerName;
+      _calcPowerList.add(_calcPowerMap[powerName]!);
+      debugPrint(_calcPowerMap[powerName]!.powerW.toString());
+    }
+    return _calcPowerList;
+  }
+
+  DevPowerSummary? getExpRecursive(Map<String, dynamic> expMap) {
+    var p1Value = null;
+    if (expMap['p1'] is String) {
+      p1Value = _livePowerMap[expMap['p1']];
+    } else if (expMap['p1'] is Map<String, dynamic>) {
+      p1Value = getExpRecursive(expMap['p1']);
+    } else if (expMap['p1'] is num) {
+      p1Value = createEmptyPower();
+      p1Value.powerW = expMap['p1'] * 1.0;
+    }
+
+    var p2Value = null;
+    if (expMap['p2'] is String) {
+      p2Value = _livePowerMap[expMap['p2']];
+    } else if (expMap['p2'] is Map<String, dynamic>) {
+      p2Value = getExpRecursive(expMap['p2']);
+    } else if (expMap['p2'] is num) {
+      p2Value = createEmptyPower();
+      p2Value.powerW = expMap['p2'] * 1.0;
+    }
+
+    DevPowerSummary resultPower = createEmptyPower();
+
+    var mathFunction = getMathFunction(expMap['op']);
+    resultPower.powerW = mathFunction(p1Value.powerW!, p2Value.powerW!);
+    resultPower.ratedPowerW =
+        mathFunction(p1Value.ratedPowerW!, p2Value.ratedPowerW!);
+    resultPower.dailyEnergyWh =
+        mathFunction(p1Value.dailyEnergyWh!, p2Value.dailyEnergyWh!);
+    resultPower.energyWh = mathFunction(p1Value.energyWh!, p2Value.energyWh!);
+    resultPower.voltageV = mathFunction(p1Value.voltageV!, p2Value.voltageV!);
+    resultPower.currentA = mathFunction(p1Value.currentA!, p2Value.currentA!);
+    return resultPower;
+  }
+
+  double Function(double a, double b) getMathFunction(op) {
+    switch (op) {
+      case '+':
+        return (double a, double b) => a + b;
+      case '-':
+        return (double a, double b) => a - b;
+      case '*':
+        return (double a, double b) => a * b;
+      case '/':
+        return (double a, double b) => a / b;
+      default:
+        return (double a, double b) => a + b;
+    }
+  }
+
+  DevPowerSummary createEmptyPower() {
+    DevPowerSummary p = DevPowerSummary();
+    p.powerW = 0;
+    p.ratedPowerW = 0;
+    p.dailyEnergyWh = 0;
+    p.monthlyEnergyWh = 0;
+    p.energyWh = 0;
+    p.voltageV = 0;
+    p.currentA = 0;
+    return p;
+  }
 }
