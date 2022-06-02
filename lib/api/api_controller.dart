@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider_test/api/api_service.dart';
 import 'package:provider_test/entities/api_login_response.dart';
 import 'package:provider_test/entities/api_response.dart';
-import 'package:provider_test/entities/api_response_power.dart';
+import 'package:provider_test/entities/api_response_paginated.dart';
 import 'package:provider_test/entities/dev_power_summary.dart';
+import 'package:provider_test/entities/logger.dart';
 import 'package:provider_test/entities/logger_config.dart';
 import 'package:provider_test/screens/loginScreen/login_components.dart';
 import '../entities/power_type.dart';
@@ -24,9 +25,9 @@ class ApiController extends ChangeNotifier {
   ApiService service = ApiService();
 
   Future<List<dynamic>?> _getLoggers() async {
-    ApiResponse? response = await service.getLoggers();
+    ApiResponsePaginated? response = await service.getLoggers(1, 10000);
     if (response != null) {
-      return response.data;
+      return response.data!["requests"];
     } else {
       return null;
     }
@@ -43,7 +44,7 @@ class ApiController extends ChangeNotifier {
 
   Future<List<dynamic>?> _getPowerList(
       String startDate, String endDate, int page, int perPage) async {
-    ApiResponsePower? response =
+    ApiResponsePaginated? response =
         await service.getPowerList(startDate, endDate, page, perPage);
     if (response != null) {
       return response.data!["requests"];
@@ -68,6 +69,7 @@ class ApiController extends ChangeNotifier {
       if (loginResponse.success == true) {
         jwt = loginResponse.data?["jwt"];
 
+        // var loggerList = await getLoggerList();
         Navigator.push(context, MaterialPageRoute(builder: (context) {
           return DashboardWidget();
         }));
@@ -91,11 +93,9 @@ class ApiController extends ChangeNotifier {
 
   Future<List> getLoggerList() async {
     List<dynamic>? getLoggerList = await _getLoggers();
-    List loggerList = [];
-    if (loggerList != null) {
-      for (var i = 0; i < loggerList.length; i++) {
-        loggerList.add(getLoggerList?[i]);
-      }
+    List<Logger> loggerList = [];
+    for (var i = 0; i < getLoggerList!.length; i++) {
+      loggerList.add(Logger.fromJson(getLoggerList[i]));
     }
     return loggerList;
   }
