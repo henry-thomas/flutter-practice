@@ -35,28 +35,26 @@ class ApiService {
     return sendRequestPaginated(request);
   }
 
-  Future<ApiResponse?> getPowerTypes() async {
+  Future<ApiResponse?> getPowerTypes(String serial) async {
     var headers = {'Authorization': 'Bearer ' + ApiController.jwt};
     var request = http.Request(
         'GET',
-        Uri.parse(ApiController.BASE_URL +
-            'rest/loggers/' +
-            ApiController.SELECTED_LOGGER +
-            "/powerTypes"));
+        Uri.parse(
+            ApiController.BASE_URL + 'rest/loggers/' + serial + "/powerTypes"));
 
     request.headers.addAll(headers);
 
     return sendRequest(request);
   }
 
-  Future<ApiResponsePaginated?> getPowerList(
-      String startDate, String endDate, int currentPage, int perPage) async {
+  Future<ApiResponsePaginated?> getPowerList(String serial, String startDate,
+      String endDate, int currentPage, int perPage) async {
     var headers = {'Authorization': 'Bearer ' + ApiController.jwt};
     var request = http.Request(
         'GET',
         Uri.parse(ApiController.BASE_URL +
             'rest/loggers/' +
-            ApiController.SELECTED_LOGGER +
+            serial +
             "/powers?startDate=" +
             startDate +
             "&endDate=" +
@@ -71,14 +69,12 @@ class ApiService {
     return sendRequestPaginated(request);
   }
 
-  Future<ApiResponse?> getPowerCalcs() async {
+  Future<ApiResponse?> getPowerCalcs(String serial) async {
     var headers = {'Authorization': 'Bearer ' + ApiController.jwt};
     var request = http.Request(
         'GET',
-        Uri.parse(ApiController.BASE_URL +
-            'rest/loggers/' +
-            ApiController.SELECTED_LOGGER +
-            "/calcPowers"));
+        Uri.parse(
+            ApiController.BASE_URL + 'rest/loggers/' + serial + "/calcPowers"));
 
     request.headers.addAll(headers);
     return sendRequest(request);

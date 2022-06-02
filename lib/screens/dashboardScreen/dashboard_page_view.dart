@@ -5,9 +5,12 @@ import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
+import 'package:provider_test/api/api_controller.dart';
+import 'package:provider_test/entities/logger.dart';
 import 'package:provider_test/flutterFlow/flutter_flow_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:provider_test/providers/device_manager.dart';
 import 'package:provider_test/providers/websocket/ps_manager.dart';
 import 'package:provider_test/screens/dashboardScreen/dashboardComponents/energy_efficiency_indicator.dart';
 import 'package:provider_test/screens/dashboardScreen/dashboardComponents/more_info_grid_card.dart';
@@ -60,9 +63,17 @@ class _DashboardWidgetState extends State<DashboardWidget> {
 
   bool greenEfficiencyVisibility = false;
 
+  bool isWsInit = false;
   void _initWs(BuildContext context) {
-    Provider.of<WsManager>(context, listen: false).initWs(context);
+    if (!isWsInit) {
+      isWsInit = true;
+      Provider.of<WsManager>(context, listen: false).initWs(context);
+    }
   }
+
+  // Future __initDevManager(BuildContext context) async {
+  //   await Provider.of<DeviceManager>(context, listen: false).init(context);
+  // }
 
   // final FloatingActionButtonLocation? fabLocation;
   // final NotchedShape shape;
@@ -176,9 +187,29 @@ class _DashboardWidgetState extends State<DashboardWidget> {
     setState(() {});
   }
 
+  List<Widget> loggerListItem = [];
+  bool init = false;
+  void initLoggerList(BuildContext context) async {
+    if (!init) {
+      init = true;
+      // await __initDevManager(context);
+
+      // loggerListItem.clear();
+      final devManager = Provider.of<DeviceManager>(context, listen: false);
+
+      List<Logger> getLoggerList = devManager.getLoggerList;
+
+      for (var i = 0; i < getLoggerList.length; i++) {
+        loggerListItem.add(LoggerListComponent().renderLoggerListItems(
+            context, getLoggerList[i].serNum, getLoggerList[i].description));
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     // button action provider
+    initLoggerList(context);
     final buttonAction = Provider.of<ButtonAction>(context);
     // animation providers
     final animProvider = Provider.of<DashboardAnimationProvider>(context);
@@ -201,6 +232,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
         psManager.energyEfficiencyPercentageTxt;
     final energyEfficiencyPercentage = psManager.energyEfficiency / 100;
     final energyLinePosition = psManager.energyLinePosition;
+
     // weatherData.queryWeather();
     // weatherData.queryForecast();
     // String gridPower = Provider.of<PowerServiceManager>(context).getGridPower.toStringAsFixed(2);
@@ -423,9 +455,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
             ),
             Column(
               mainAxisSize: MainAxisSize.max,
-              children: [
-                LoggerListComponent().renderLoggerListItems(context, "SL", "test", )
-              ],
+              children: loggerListItem,
               // children: initLoggerList(context),
             ),
           ],
@@ -2153,7 +2183,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                                     onTap: () {
                                       if (greenEfficiencyVisibility == false) {
                                         greenEfficiencyVisibility = true;
-                                      }else{
+                                      } else {
                                         greenEfficiencyVisibility = false;
                                       }
                                     },
@@ -2211,9 +2241,9 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                                             child: Center(
                                               child: FaIcon(
                                                 FontAwesomeIcons.cloudscale,
-                                                color:
-                                                psManager
-                                                    .energyEfficiencyColor.withOpacity(0.7),
+                                                color: psManager
+                                                    .energyEfficiencyColor
+                                                    .withOpacity(0.7),
                                                 size: 22,
                                               ),
                                             ),

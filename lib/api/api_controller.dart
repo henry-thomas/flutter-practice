@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:provider_test/api/api_service.dart';
 import 'package:provider_test/entities/api_login_response.dart';
 import 'package:provider_test/entities/api_response.dart';
@@ -6,6 +7,7 @@ import 'package:provider_test/entities/api_response_paginated.dart';
 import 'package:provider_test/entities/dev_power_summary.dart';
 import 'package:provider_test/entities/logger.dart';
 import 'package:provider_test/entities/logger_config.dart';
+import 'package:provider_test/providers/device_manager.dart';
 import 'package:provider_test/screens/loginScreen/login_components.dart';
 import '../entities/power_type.dart';
 import 'package:provider_test/screens/dashboardScreen/dashboard_page_view.dart';
@@ -15,7 +17,6 @@ class ApiController extends ChangeNotifier {
   // static const BASE_URL = "http://192.168.100.18:8084/SolarMDApi/";
   // static const USERNAME = "kostadin";
   // static const PASSWORD = "1234";
-  static const SELECTED_LOGGER = "SLV211948677";
   static const START_DATE = "20220401";
   static const END_DATE = "20220419";
   static const PAGE = 1;
@@ -24,17 +25,21 @@ class ApiController extends ChangeNotifier {
   static String jwt = "";
   ApiService service = ApiService();
 
-  Future<List<dynamic>?> _getLoggers() async {
+  // void setSelectedLogger(String serNum) {
+  //   SELECTED_LOGGER = serNum;
+  // }
+
+  Future<List<dynamic>> _getLoggers() async {
     ApiResponsePaginated? response = await service.getLoggers(1, 10000);
     if (response != null) {
       return response.data!["requests"];
     } else {
-      return null;
+      return [];
     }
   }
 
-  Future<List<dynamic>?> _getPowerTypes() async {
-    ApiResponse? response = await service.getPowerTypes();
+  Future<List<dynamic>?> _getPowerTypes(String serial) async {
+    ApiResponse? response = await service.getPowerTypes(serial);
     if (response != null) {
       return response.data;
     } else {
@@ -42,10 +47,10 @@ class ApiController extends ChangeNotifier {
     }
   }
 
-  Future<List<dynamic>?> _getPowerList(
-      String startDate, String endDate, int page, int perPage) async {
+  Future<List<dynamic>?> _getPowerList(String serial, String startDate,
+      String endDate, int page, int perPage) async {
     ApiResponsePaginated? response =
-        await service.getPowerList(startDate, endDate, page, perPage);
+        await service.getPowerList(serial, startDate, endDate, page, perPage);
     if (response != null) {
       return response.data!["requests"];
     } else {
@@ -53,8 +58,8 @@ class ApiController extends ChangeNotifier {
     }
   }
 
-  Future<List<dynamic>?> _getPowerCalcs() async {
-    ApiResponse? response = await service.getPowerCalcs();
+  Future<List<dynamic>?> _getPowerCalcs(String serial) async {
+    ApiResponse? response = await service.getPowerCalcs(serial);
     if (response != null) {
       return response.data;
     } else {
@@ -69,7 +74,8 @@ class ApiController extends ChangeNotifier {
       if (loginResponse.success == true) {
         jwt = loginResponse.data?["jwt"];
 
-        // var loggerList = await getLoggerList();
+        await Provider.of<DeviceManager>(context, listen: false).init(context);
+
         Navigator.push(context, MaterialPageRoute(builder: (context) {
           return DashboardWidget();
         }));
@@ -80,8 +86,8 @@ class ApiController extends ChangeNotifier {
     }
   }
 
-  Future<List<PowerType>?> getPowerTypeList() async {
-    List<dynamic>? getPowerTypes = await _getPowerTypes();
+  Future<List<PowerType>?> getPowerTypeList(String serial) async {
+    List<dynamic>? getPowerTypes = await _getPowerTypes(serial);
     List<PowerType> powerTypeList = [];
     if (getPowerTypes != null) {
       for (var i = 0; i < getPowerTypes.length; i++) {
@@ -91,8 +97,8 @@ class ApiController extends ChangeNotifier {
     return powerTypeList;
   }
 
-  Future<List> getLoggerList() async {
-    List<dynamic>? getLoggerList = await _getLoggers();
+  Future<List<Logger>> getLoggerList() async {
+    List<dynamic> getLoggerList = await _getLoggers();
     List<Logger> loggerList = [];
     for (var i = 0; i < getLoggerList!.length; i++) {
       loggerList.add(Logger.fromJson(getLoggerList[i]));
@@ -100,9 +106,9 @@ class ApiController extends ChangeNotifier {
     return loggerList;
   }
 
-  Future<List<DevPowerSummary>?> getPowerList() async {
+  Future<List<DevPowerSummary>?> getPowerList(String serial) async {
     List<dynamic>? getPowerList =
-        await _getPowerList(START_DATE, END_DATE, PAGE, PER_PAGE);
+        await _getPowerList(serial, START_DATE, END_DATE, PAGE, PER_PAGE);
     List<DevPowerSummary> powerList = [];
     if (getPowerList != null) {
       for (var i = 0; i < getPowerList.length; i++) {
@@ -112,8 +118,8 @@ class ApiController extends ChangeNotifier {
     return powerList;
   }
 
-  Future<List<LoggerConfig>?> getPowerCalcs() async {
-    List<dynamic>? getPowerCalcs = await _getPowerCalcs();
+  Future<List<LoggerConfig>?> getPowerCalcs(String serial) async {
+    List<dynamic>? getPowerCalcs = await _getPowerCalcs(serial);
     List<LoggerConfig> powerCalcList = [];
     if (getPowerCalcs != null) {
       for (var i = 0; i < getPowerCalcs.length; i++) {

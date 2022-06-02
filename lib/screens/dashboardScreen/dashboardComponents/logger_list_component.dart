@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:provider_test/entities/logger.dart';
+import 'package:provider_test/providers/device_manager.dart';
 
 import '../../../flutterFlow/flutter_flow_theme.dart';
 
 class LoggerListComponent {
-
+  void _onLoggerSelected(BuildContext context, String serNum) {
+    Provider.of<DeviceManager>(context, listen: false)
+        .setSelectedLogger(context, serNum);
+  }
 
   InkWell renderLoggerListItems(context, sn, description) {
-
     return InkWell(
       child: Container(
         width: MediaQuery.of(context).size.width * 0.8,
@@ -52,9 +57,9 @@ class LoggerListComponent {
                   child: Text(
                     sn,
                     style: FlutterFlowTheme.of(context).bodyText1.override(
-                      fontFamily: 'Poppins',
-                      fontSize: 10,
-                    ),
+                          fontFamily: 'Poppins',
+                          fontSize: 10,
+                        ),
                   ),
                 ),
                 // Padding(
@@ -84,6 +89,7 @@ class LoggerListComponent {
         ),
       ),
       onTap: () {
+        _onLoggerSelected(context, sn);
         // loggerSN = sn;
         //
         // // getLoggerStatus ();
@@ -100,6 +106,4 @@ class LoggerListComponent {
       },
     );
   }
-
-
 }

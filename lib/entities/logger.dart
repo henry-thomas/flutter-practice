@@ -5,7 +5,7 @@ part 'logger.g.dart';
 
 @JsonSerializable(includeIfNull: false)
 class Logger {
-  String? serNum;
+  String serNum = "";
   String? model;
   String? installDate;
   String? description;

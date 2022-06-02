@@ -11,6 +11,7 @@ import 'package:provider_test/entities/logger_config.dart';
 import 'package:provider_test/entities/power_type.dart';
 
 import '../../screens/dashboardScreen/dashboardAnimation/dashboard_animation_provider.dart';
+import '../device_manager.dart';
 
 class PowerServiceManager extends ChangeNotifier {
   //<powerType, <powerList>>
@@ -94,25 +95,33 @@ class PowerServiceManager extends ChangeNotifier {
 
   Future<List<PowerType>?> _getPowerTypes(BuildContext context) async {
     var powerTypes = await Provider.of<ApiController>(context, listen: false)
-        .getPowerTypeList();
+        .getPowerTypeList(Provider.of<DeviceManager>(context, listen: false)
+            .getSelectedLogger!
+            .serNum);
     return powerTypes;
   }
 
   Future<List<DevPowerSummary>?> _getPowerList(BuildContext context) async {
-    var powerTypes =
-        await Provider.of<ApiController>(context, listen: false).getPowerList();
+    var powerTypes = await Provider.of<ApiController>(context, listen: false)
+        .getPowerList(Provider.of<DeviceManager>(context, listen: false)
+            .getSelectedLogger!
+            .serNum);
     return powerTypes;
   }
 
   Future<List<LoggerConfig>?> _getPowerCalcs(BuildContext context) async {
     var powerCalcs = await Provider.of<ApiController>(context, listen: false)
-        .getPowerCalcs();
+        .getPowerCalcs(Provider.of<DeviceManager>(context, listen: false)
+            .getSelectedLogger!
+            .serNum);
     return powerCalcs;
   }
 
   Future<List?> _getLoggerList(BuildContext context) async {
-    var powerTypes =
-        await Provider.of<ApiController>(context, listen: false).getPowerList();
+    var powerTypes = await Provider.of<ApiController>(context, listen: false)
+        .getPowerList(Provider.of<DeviceManager>(context, listen: false)
+            .getSelectedLogger!
+            .serNum);
     return powerTypes;
   }
 

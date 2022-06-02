@@ -7,7 +7,7 @@ part of 'logger.dart';
 // **************************************************************************
 
 Logger _$LoggerFromJson(Map<String, dynamic> json) => Logger()
-  ..serNum = json['serNum'] as String?
+  ..serNum = json['serNum'] as String
   ..model = json['model'] as String?
   ..installDate = json['installDate'] as String?
   ..description = json['description'] as String?
@@ -23,7 +23,9 @@ Logger _$LoggerFromJson(Map<String, dynamic> json) => Logger()
       .toList();
 
 Map<String, dynamic> _$LoggerToJson(Logger instance) {
-  final val = <String, dynamic>{};
+  final val = <String, dynamic>{
+    'serNum': instance.serNum,
+  };
 
   void writeNotNull(String key, dynamic value) {
     if (value != null) {
@@ -31,7 +33,6 @@ Map<String, dynamic> _$LoggerToJson(Logger instance) {
     }
   }
 
-  writeNotNull('serNum', instance.serNum);
   writeNotNull('model', instance.model);
   writeNotNull('installDate', instance.installDate);
   writeNotNull('description', instance.description);
