@@ -137,30 +137,6 @@ class PowerServiceManager extends ChangeNotifier {
     }
   }
 
-  // void updatePowers(Map<String?, List<DevPowerSummary>> ptMap) {
-  //   for (var i = 0; i < _livePowerTypeMap.length; i++) {
-  //     DevPowerSummary? dPower = _livePowerTypeMap[i];
-  //     if (ptMap[dPower?.powerType] != null) {
-  //       dPower.onlineDevices=0;
-  //       //1 clear dPower
-  //       var voltageV =0;
-  //       var powerW =0;
-  //       //2 loop in ptMap List
-  //       for (var j = 0; j < ptMap[dPower.powerType]; j++) {
-  //         voltageV+= ptMap[dPower?.powerType].voltageV;
-  //         dPower.onlineDevices++;
-  //       }
-  //
-  //
-  //
-  //       dPower.voltageV = voltageV;
-  //
-  //     }else{
-  //       dPower?.available = false;
-  //     }
-  //   }
-  // }
-
   void onEnergyStorageMessageReceived(Map<String, dynamic> msg) {
     if (msg['messageList'].length > 0) {
       batStorage = (msg['messageList'][0]['capacityP']);
@@ -213,23 +189,21 @@ class PowerServiceManager extends ChangeNotifier {
     DevMessage message = DevMessage.fromJson(msg);
     List<DevPowerSummary>? powerList = message.messageList;
 
+    for (var i = 0; i < powerList!.length; i++) {
+      _livePowerMap[powerList[i].powerName] = powerList[i];
+    }
+
+    calcExpressionPowers();
+    powerList.addAll(_calcPowerList);
+
     _livePowerTypeMap.clear();
     for (var i = 0; i < _powerTypeList!.length; i++) {
       PowerType pType = _powerTypeList![i];
       if (_livePowerTypeMap[pType.powerType] == null) {
-        _livePowerTypeMap[pType.powerType] = new DevPowerSummary();
-        _livePowerTypeMap[pType.powerType]!.powerW = 0;
-        _livePowerTypeMap[pType.powerType]!.ratedPowerW = 0;
-        _livePowerTypeMap[pType.powerType]!.dailyEnergyWh = 0;
-        _livePowerTypeMap[pType.powerType]!.monthlyEnergyWh = 0;
-        _livePowerTypeMap[pType.powerType]!.energyWh = 0;
-        _livePowerTypeMap[pType.powerType]!.voltageV = 0;
-        _livePowerTypeMap[pType.powerType]!.currentA = 0;
+        _livePowerTypeMap[pType.powerType] = createEmptyPower();
       }
 
-      for (var j = 0; j < powerList!.length; j++) {
-        _livePowerMap[powerList[j].powerName] = powerList[j];
-
+      for (var j = 0; j < powerList.length; j++) {
         if (powerList[j].powerName == pType.powerName) {
           _livePowerTypeMap[pType.powerType]?.powerW =
               ((powerList[j].powerW as double) +
@@ -263,7 +237,6 @@ class PowerServiceManager extends ChangeNotifier {
     }
 
     calcPowerTotals();
-    calcExpressionPowers();
   }
 
   void calcPowerTotals() {
@@ -414,23 +387,17 @@ class PowerServiceManager extends ChangeNotifier {
 
   void initCalcPowers(List<LoggerConfig?> calcPowerList) {
     for (var i = 0; i < calcPowerList.length; i++) {
-      DevPowerSummary power = new DevPowerSummary();
+      DevPowerSummary power = createEmptyPower();
       power.powerName = calcPowerList[i]?.confKey;
-      power.powerW = 0;
-      power.ratedPowerW = 0;
-      power.dailyEnergyWh = 0;
-      power.monthlyEnergyWh = 0;
-      power.energyWh = 0;
-      power.voltageV = 0;
-      power.currentA = 0;
 
-      _calcPowerList.add(power); //not used yet
+      // _calcPowerList.add(power); //not used yet
       _calcPowerMap[power.powerName] = power;
       _expressionPowerMap[power.powerName] = (calcPowerList[i]?.confValue);
     }
   }
 
-  void calcExpressionPowers() {
+  List<DevPowerSummary> calcExpressionPowers() {
+    _calcPowerList.clear();
     for (var item in _expressionPowerMap.entries) {
       String? powerName = item.key;
       String? expression = item.value;
@@ -441,8 +408,11 @@ class PowerServiceManager extends ChangeNotifier {
       Map<String, dynamic> expMap = jsonDecode(expression!);
       _calcPowerMap[powerName] = getExpRecursive(expMap);
       _calcPowerMap[powerName]!.powerType = expMap['powerType'];
+      _calcPowerMap[powerName]!.powerName = powerName;
+      _calcPowerList.add(_calcPowerMap[powerName]!);
       debugPrint(_calcPowerMap[powerName]!.powerW.toString());
     }
+    return _calcPowerList;
   }
 
   DevPowerSummary? getExpRecursive(Map<String, dynamic> expMap) {
@@ -452,7 +422,7 @@ class PowerServiceManager extends ChangeNotifier {
     } else if (expMap['p1'] is Map<String, dynamic>) {
       p1Value = getExpRecursive(expMap['p1']);
     } else if (expMap['p1'] is num) {
-      p1Value = DevPowerSummary();
+      p1Value = createEmptyPower();
       p1Value.powerW = expMap['p1'] * 1.0;
     }
 
@@ -462,16 +432,21 @@ class PowerServiceManager extends ChangeNotifier {
     } else if (expMap['p2'] is Map<String, dynamic>) {
       p2Value = getExpRecursive(expMap['p2']);
     } else if (expMap['p2'] is num) {
-      p2Value = DevPowerSummary();
+      p2Value = createEmptyPower();
       p2Value.powerW = expMap['p2'] * 1.0;
     }
 
-    DevPowerSummary resultPower = DevPowerSummary();
+    DevPowerSummary resultPower = createEmptyPower();
+
     var mathFunction = getMathFunction(expMap['op']);
-    // if (calcPowerExpression.p1 == null || calcPowerExpression.p2 == null) {
-    //   return resultPower;
-    // }
     resultPower.powerW = mathFunction(p1Value.powerW!, p2Value.powerW!);
+    resultPower.ratedPowerW =
+        mathFunction(p1Value.ratedPowerW!, p2Value.ratedPowerW!);
+    resultPower.dailyEnergyWh =
+        mathFunction(p1Value.dailyEnergyWh!, p2Value.dailyEnergyWh!);
+    resultPower.energyWh = mathFunction(p1Value.energyWh!, p2Value.energyWh!);
+    resultPower.voltageV = mathFunction(p1Value.voltageV!, p2Value.voltageV!);
+    resultPower.currentA = mathFunction(p1Value.currentA!, p2Value.currentA!);
     return resultPower;
   }
 
@@ -488,5 +463,17 @@ class PowerServiceManager extends ChangeNotifier {
       default:
         return (double a, double b) => a + b;
     }
+  }
+
+  DevPowerSummary createEmptyPower() {
+    DevPowerSummary p = DevPowerSummary();
+    p.powerW = 0;
+    p.ratedPowerW = 0;
+    p.dailyEnergyWh = 0;
+    p.monthlyEnergyWh = 0;
+    p.energyWh = 0;
+    p.voltageV = 0;
+    p.currentA = 0;
+    return p;
   }
 }
