@@ -8,13 +8,13 @@ class Logger {
   String serNum = "";
   String? model;
   String? installDate;
-  String? description;
+  String description = "";
   String? installationAddress;
   String? shortName;
   double? lat;
   double? lng;
   String? lastSeen;
-  bool? connected;
+  bool connected = false;
   String? swVersion;
   List<SubDevice>? devList;
 

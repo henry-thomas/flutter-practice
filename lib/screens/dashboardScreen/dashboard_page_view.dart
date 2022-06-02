@@ -343,7 +343,9 @@ class _DashboardWidgetState extends State<DashboardWidget> {
             IconThemeData(color: FlutterFlowTheme.of(context).tertiaryColor),
         automaticallyImplyLeading: true,
         title: Text(
-          "loggerDescription",
+          Provider.of<DeviceManager>(context, listen: false)
+              .getSelectedLogger!
+              .description,
           style: FlutterFlowTheme.of(context).bodyText1,
         ),
         actions: [
@@ -512,7 +514,10 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                                         const EdgeInsetsDirectional.fromSTEB(
                                             5, 8, 0, 0),
                                     child: Text(
-                                      "loggerDescription",
+                                      Provider.of<DeviceManager>(context,
+                                              listen: false)
+                                          .getSelectedLogger!
+                                          .description,
                                       style: FlutterFlowTheme.of(context)
                                           .bodyText1
                                           .override(
@@ -526,7 +531,10 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                                         const EdgeInsetsDirectional.fromSTEB(
                                             5, 8, 0, 0),
                                     child: Text(
-                                      "loggerSerial",
+                                      Provider.of<DeviceManager>(context,
+                                              listen: false)
+                                          .getSelectedLogger!
+                                          .serNum,
                                       style: FlutterFlowTheme.of(context)
                                           .bodyText1
                                           .override(

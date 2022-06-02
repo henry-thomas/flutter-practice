@@ -11,6 +11,7 @@ import 'package:provider_test/entities/logger.dart';
 import 'package:provider_test/entities/logger_config.dart';
 import 'package:provider_test/entities/logger_list.dart';
 import 'package:provider_test/entities/power_type.dart';
+import 'package:provider_test/providers/websocket/ps_manager.dart';
 import 'package:provider_test/providers/websocket/ws_manager.dart';
 
 import '../screens/dashboardScreen/dashboardAnimation/dashboard_animation_provider.dart';
@@ -35,6 +36,7 @@ class DeviceManager extends ChangeNotifier {
   void setSelectedLogger(BuildContext context, String serNum) {
     _selectedLogger = _serLoggerMap[serNum];
     Provider.of<WsManager>(context, listen: false).initWs(context);
+    Provider.of<PowerServiceManager>(context, listen: false).init(context);
     notifyListeners();
   }
 
