@@ -84,7 +84,7 @@ class PowerServiceManager extends ChangeNotifier {
 
   // Energy Efficiency
   String energyEfficiencyPercentageTxt = "0";
-  double energyEfeciancy = 0;
+  double energyEfficiency = 0;
   double energyLinePosition = 0;
   Color energyEfficiencyColor = Colors.red;
 
@@ -337,12 +337,12 @@ class PowerServiceManager extends ChangeNotifier {
     // Energy Efficiency
     // (total Grid / total load) *100
 
-    energyEfeciancy = 100 - ((gridTotalEnergy / loadTotalEnergy) * 100);
-    if (energyEfeciancy.isNaN) {
-      energyEfeciancy = 0;
+    energyEfficiency = 100 - ((gridTotalEnergy / loadTotalEnergy) * 100);
+    if (energyEfficiency.isNaN) {
+      energyEfficiency = 0;
     }
-    energyEfficiencyPercentageTxt = energyEfeciancy.toStringAsFixed(1);
-    energyLinePosition = (energyEfeciancy / 100) * 300;
+    energyEfficiencyPercentageTxt = energyEfficiency.toStringAsFixed(1);
+    energyLinePosition = (energyEfficiency / 100) * 300;
 
     if (energyLinePosition < 100) {
       energyEfficiencyColor = Colors.red;
