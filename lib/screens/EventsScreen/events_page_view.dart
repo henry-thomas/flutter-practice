@@ -17,16 +17,27 @@ class EventsPageView extends StatefulWidget {
 }
 
 class _EventsPageViewState extends State<EventsPageView> {
-
   final bool _showNotch = true;
   String? selectedValue;
   List<String> items = [
     'Logout',
   ];
+
+  String? selectedLevelValue;
+  List<String> levelItems = [
+    "Info","Error", "Warning", "Debug","Trace", "CONFIG_ADV", "CONFIG"
+  ];
   bool checkBox = false;
 
   @override
   Widget build(BuildContext context) {
+    List<Widget> eventsList = [
+      EventsRow().getEventRow(context, "info"),
+      EventsRow().getEventRow(context, "error"),
+      EventsRow().getEventRow(context, "warning"),
+      EventsRow().getEventRow(context, "debug"),
+      EventsRow().getEventRow(context, "trace"),
+    ];
     return Scaffold(
       bottomNavigationBar: BottomAppBar(
         shape: _showNotch ? const CircularNotchedRectangle() : null,
@@ -40,7 +51,7 @@ class _EventsPageViewState extends State<EventsPageView> {
               IconButton(
                 tooltip: 'Dashboard',
                 splashColor: Colors.white,
-                icon:  Icon(
+                icon: Icon(
                   Icons.speed_sharp,
                   color: FlutterFlowTheme.of(context).tertiaryColor,
                   size: 24,
@@ -82,9 +93,7 @@ class _EventsPageViewState extends State<EventsPageView> {
                 //   color: FlutterFlowTheme.of(context).tertiaryColor,
                 //   size: 22,
                 // ),
-                onPressed: () {
-
-                },
+                onPressed: () {},
               ),
               IconButton(
                 tooltip: 'Charts',
@@ -111,7 +120,7 @@ class _EventsPageViewState extends State<EventsPageView> {
       appBar: AppBar(
         backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
         iconTheme:
-        IconThemeData(color: FlutterFlowTheme.of(context).tertiaryColor),
+            IconThemeData(color: FlutterFlowTheme.of(context).tertiaryColor),
         automaticallyImplyLeading: true,
         title: Text(
           "Events",
@@ -141,12 +150,12 @@ class _EventsPageViewState extends State<EventsPageView> {
                 ),
                 items: items
                     .map((item) => DropdownMenuItem<String>(
-                  value: item,
-                  child: Text(
-                    item,
-                    style: FlutterFlowTheme.of(context).bodyText1,
-                  ),
-                ))
+                          value: item,
+                          child: Text(
+                            item,
+                            style: FlutterFlowTheme.of(context).bodyText1,
+                          ),
+                        ))
                     .toList(),
                 value: selectedValue,
                 onChanged: (value) {
@@ -186,16 +195,114 @@ class _EventsPageViewState extends State<EventsPageView> {
         elevation: 4,
       ),
       backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
-      body: SafeArea(child: SingleChildScrollView(
+      body: SafeArea(
         child: Column(
           children: [
-            EventsRow().getEventRow(context,"info"),
-            EventsRow().getEventRow(context,"error"),
-            EventsRow().getEventRow(context,"warning"),
-          ],
-        )
-      ),
+             Row(
+               mainAxisSize: MainAxisSize.max,
+               mainAxisAlignment: MainAxisAlignment.start,
+               children: [
+                 Padding(
+                   padding: const EdgeInsets.all(8.0),
+                   child: DropdownButtonHideUnderline(
+                    child: DropdownButton2(
+                      isExpanded: true,
+                      hint: Row(
+                        children:  [
+                          Icon(
+                            Icons.list,
+                            size: 16,
+                            color: FlutterFlowTheme
+                                .of(context)
+                                .tertiaryColor,
+                          ),
+                          SizedBox(
+                            width: 4,
+                          ),
+                          Expanded(
+                            child: Text(
+                              'Select Level',
+                              style: FlutterFlowTheme.of(context)
+                                  .bodyText1
+                                  .override(
+                                fontFamily: 'Poppins',
+                                color: FlutterFlowTheme.of(context)
+                                    .secondaryText,
+                                fontSize: 11,
+                            ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      items: levelItems
+                          .map((item) => DropdownMenuItem<String>(
+                        value: item,
+                        child: Text(
+                          item,
+                          style: FlutterFlowTheme.of(context)
+                              .bodyText1
+                              .override(
+                            fontFamily: 'Poppins',
+                            color: FlutterFlowTheme.of(context)
+                                .secondaryText,
+                            fontSize: 11,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ))
+                          .toList(),
+                      value: selectedLevelValue,
+                      onChanged: (value) {
+                        setState(() {
+                          selectedLevelValue = value as String;
+                        });
+                      },
+                      icon: const Icon(
+                        Icons.arrow_forward_ios_outlined,
+                      ),
+                      iconSize: 14,
+                      iconEnabledColor:FlutterFlowTheme
+                          .of(context)
+                          .tertiaryColor,
+                      iconDisabledColor: Colors.grey,
+                      buttonHeight: 50,
+                      buttonWidth: 130,
+                      buttonPadding: const EdgeInsets.only(left: 14, right: 14),
+                      buttonDecoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(6),
 
+                        color: FlutterFlowTheme.of(
+                            context)
+                            .primaryBackground,
+                      ),
+                      buttonElevation: 1,
+                      itemHeight: 40,
+                      itemPadding: const EdgeInsets.only(left: 14, right: 14),
+                      dropdownMaxHeight: 200,
+                      dropdownWidth: 200,
+                      dropdownPadding: null,
+                      dropdownDecoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(6),
+                        color: FlutterFlowTheme.of(
+                            context)
+                            .primaryBackground,
+                      ),
+                      dropdownElevation: 8,
+                      scrollbarRadius: const Radius.circular(10),
+                      scrollbarThickness: 6,
+                      scrollbarAlwaysShow: true,
+                      offset: const Offset(-20, 0),
+                    ),
+            ),
+                 ),
+               ],
+             ),
+            SingleChildScrollView(
+                child: Column(
+              children: eventsList,
+            )),
+          ],
+        ),
       ),
     );
   }

@@ -28,6 +28,7 @@ import 'dashboardAnimation/dashboard_animation_provider.dart';
 import 'dashboardComponents/dashboard_button_actions.dart';
 import 'dashboardComponents/eco_score_card.dart';
 import 'dashboardComponents/liveCharts/pv_live_chart.dart';
+import 'dashboardComponents/logger_list_component.dart';
 import 'dashboardComponents/more_info_bat_card.dart';
 import 'dashboardComponents/more_info_load_card.dart';
 import 'dashboardComponents/more_info_pv_card.dart';
@@ -422,6 +423,9 @@ class _DashboardWidgetState extends State<DashboardWidget> {
             ),
             Column(
               mainAxisSize: MainAxisSize.max,
+              children: [
+                LoggerListComponent().renderLoggerListItems(context, "SL", "test", )
+              ],
               // children: initLoggerList(context),
             ),
           ],

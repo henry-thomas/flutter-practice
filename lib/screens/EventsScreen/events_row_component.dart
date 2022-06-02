@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../flutterFlow/flutter_flow_theme.dart';
 
 class EventsRow {
-  Column getEventRow(context, icon) {
+  Column getEventRow(context, level) {
     // if (icon == "info"){
     //   icon = Icon(
     //     Icons.info_outline_rounded,
@@ -11,8 +11,14 @@ class EventsRow {
     //     size: 24,
     //   );
     // }
-    switch (icon) {
+   Icon icon = Icon(
+     Icons.info_outline_rounded,
+     color: Colors.blueAccent,
+     size: 24,
+   );
+    switch (level) {
       case "info":
+        level = "Info";
         icon = Icon(
           Icons.info_outline_rounded,
           color: Colors.blueAccent,
@@ -20,6 +26,7 @@ class EventsRow {
         );
       break;
       case "warning":
+        level = "Warning";
         icon = Icon(
           Icons.warning_rounded,
           color: Colors.orangeAccent,
@@ -27,9 +34,42 @@ class EventsRow {
         );
         break;
       case "error":
+        level = "Error";
         icon = Icon(
           Icons.error_rounded,
           color: Colors.redAccent,
+          size: 24,
+        );
+        break;
+      case "config_avd":
+        level = "CONFIG_AVD";
+        icon = Icon(
+          Icons.warning_rounded,
+          color: Colors.orangeAccent,
+          size: 24,
+        );
+        break;
+      case "config":
+        level = "CONFIG";
+        icon = Icon(
+          Icons.warning_rounded,
+          color: Colors.orangeAccent,
+          size: 24,
+        );
+        break;
+      case "debug":
+        level = "Debug";
+        icon = Icon(
+          Icons.bug_report,
+          color: Colors.green,
+          size: 24,
+        );
+        break;
+      case "trace":
+        level = "Trace";
+        icon = Icon(
+          Icons.title_rounded,
+          color: Colors.lightBlueAccent,
           size: 24,
         );
         break;
@@ -72,7 +112,7 @@ class EventsRow {
                     maxHeight: double.infinity,
                   ),
                   child: Text(
-                    'Device Reconnected',
+                    level,
                     style: FlutterFlowTheme.of(context).bodyText1.override(
                       fontFamily: 'Poppins',
                       color: Colors.black87,

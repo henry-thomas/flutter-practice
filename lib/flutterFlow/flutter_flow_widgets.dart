@@ -102,7 +102,7 @@ class _FFButtonWidgetState extends State<FFButtonWidget> {
       return Container(
         height: widget.options?.height,
         width: widget.options?.width,
-        child: ElevatedButton.icon(
+        child: RaisedButton.icon(
           icon: Padding(
             padding: widget.options?.iconPadding ?? EdgeInsets.zero,
             child: widget.icon ??
@@ -115,18 +115,18 @@ class _FFButtonWidgetState extends State<FFButtonWidget> {
           ),
           label: textWidget,
           onPressed: onPressed,
-          // shape: RoundedRectangleBorder(
-          //   borderRadius: BorderRadius.circular(widget.options!.borderRadius!),
-          //   side: widget.options?.borderSide ?? BorderSide.none,
-          // ),
-          // color: widget.options?.color,
-          // colorBrightness:
-          //     ThemeData.estimateBrightnessForColor(widget.options!.color!),
-          // textColor: widget.options?.textStyle?.color,
-          // disabledColor: widget.options?.disabledColor,
-          // disabledTextColor: widget.options?.disabledTextColor,
-          // elevation: widget.options?.elevation,
-          // splashColor: widget.options?.splashColor,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(widget.options!.borderRadius!),
+            side: widget.options?.borderSide ?? BorderSide.none,
+          ),
+          color: widget.options?.color,
+          colorBrightness:
+              ThemeData.estimateBrightnessForColor(widget.options!.color!),
+          textColor: widget.options?.textStyle?.color,
+          disabledColor: widget.options?.disabledColor,
+          disabledTextColor: widget.options?.disabledTextColor,
+          elevation: widget.options?.elevation,
+          splashColor: widget.options?.splashColor,
         ),
       );
     }
@@ -134,21 +134,21 @@ class _FFButtonWidgetState extends State<FFButtonWidget> {
     return Container(
       height: widget.options?.height,
       width: widget.options?.width,
-      child: ElevatedButton(
+      child: RaisedButton(
         onPressed: onPressed,
-        // shape: RoundedRectangleBorder(
-        //   borderRadius:
-        //   BorderRadius.circular(widget.options?.borderRadius ?? 28),
-        //   side: widget.options?.borderSide ?? BorderSide.none,
-        // ),
-        // textColor: widget.options?.textStyle?.color,
-        // color: widget.options?.color,
-        // colorBrightness:
-        // ThemeData.estimateBrightnessForColor(widget.options!.color!),
-        // disabledColor: widget.options?.disabledColor,
-        // disabledTextColor: widget.options?.disabledTextColor,
-        // padding: widget.options?.padding,
-        // elevation: widget.options?.elevation,
+        shape: RoundedRectangleBorder(
+          borderRadius:
+          BorderRadius.circular(widget.options?.borderRadius ?? 28),
+          side: widget.options?.borderSide ?? BorderSide.none,
+        ),
+        textColor: widget.options?.textStyle?.color,
+        color: widget.options?.color,
+        colorBrightness:
+        ThemeData.estimateBrightnessForColor(widget.options!.color!),
+        disabledColor: widget.options?.disabledColor,
+        disabledTextColor: widget.options?.disabledTextColor,
+        padding: widget.options?.padding,
+        elevation: widget.options?.elevation,
         child: textWidget,
       ),
     );
