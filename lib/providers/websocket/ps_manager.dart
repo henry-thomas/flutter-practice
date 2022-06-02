@@ -11,8 +11,8 @@ import '../../screens/dashboardScreen/dashboardAnimation/dashboard_animation_pro
 
 class PowerServiceManager extends ChangeNotifier {
   //<powerType, <powerList>>
-  final Map<String?, List<DevPowerSummary>> _powerTypeMap = {};
-  final Map<String?, DevPowerSummary> _livePowerTypeMap = {};
+  final Map<String?, List<DevPowerSummary>> _powerTypeMap = HashMap();
+  final Map<String?, DevPowerSummary> _livePowerTypeMap = HashMap();
 
   List<PowerType>? _powerTypeList = [];
 
@@ -69,14 +69,14 @@ class PowerServiceManager extends ChangeNotifier {
   double monthlyFinancial = 0;
   double totalFinancial = 0;
 
-  // Enviromental Benefits
+  // Environmental Benefits
   double c02Reduced = 0;
   double waterSaved = 0;
   double electricCar = 0;
 
   // Energy Efficiency
   String energyEfficiencyPercentageTxt = "0";
-  double energyEfeciancy = 0;
+  double energyEfficiency = 0;
   double energyLinePosition = 0;
   Color energyEfficiencyColor = Colors.red;
 
@@ -204,6 +204,12 @@ class PowerServiceManager extends ChangeNotifier {
       if (_livePowerTypeMap[pType.powerType] == null) {
         _livePowerTypeMap[pType.powerType] = new DevPowerSummary();
         _livePowerTypeMap[pType.powerType]!.powerW = 0;
+        _livePowerTypeMap[pType.powerType]!.ratedPowerW = 0;
+        _livePowerTypeMap[pType.powerType]!.dailyEnergyWh = 0;
+        _livePowerTypeMap[pType.powerType]!.monthlyEnergyWh = 0;
+        _livePowerTypeMap[pType.powerType]!.energyWh = 0;
+        _livePowerTypeMap[pType.powerType]!.voltageV = 0;
+        _livePowerTypeMap[pType.powerType]!.currentA = 0;
       }
 
       for (var j = 0; j < powerList!.length; j++) {
@@ -342,12 +348,12 @@ class PowerServiceManager extends ChangeNotifier {
     // Energy Efficiency
     // (total Grid / total load) *100
 
-    energyEfeciancy = 100 -((gridTotalEnergy / loadTotalEnergy) * 100);
-    if (energyEfeciancy.isNaN){
-      energyEfeciancy = 0;
+    energyEfficiency = 100 -((gridTotalEnergy / loadTotalEnergy) * 100);
+    if (energyEfficiency.isNaN){
+      energyEfficiency = 0;
     }
-    energyEfficiencyPercentageTxt = energyEfeciancy.toStringAsFixed(1);
-    energyLinePosition = (energyEfeciancy /100) *300;
+    energyEfficiencyPercentageTxt = energyEfficiency.toStringAsFixed(1);
+    energyLinePosition = (energyEfficiency /100) *300;
 
 
 

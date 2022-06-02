@@ -53,7 +53,7 @@ class EcoCardState extends State {
     final psManager = Provider.of<PowerServiceManager>(context);
 
     final energyEfficiencyPercentageTxt = psManager.energyEfficiencyPercentageTxt;
-    final energyEfficiencyPercentage = psManager.energyEfeciancy;
+    final energyEfficiencyPercentage = psManager.energyEfficiency;
     final gridEfficiency = 100-energyEfficiencyPercentage;
     final gridEfficiencyPercentageTxt = gridEfficiency.toStringAsFixed(1);
     return List.generate(2, (i) {

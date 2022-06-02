@@ -13,6 +13,7 @@ import 'package:provider_test/screens/dashboardScreen/dashboardComponents/energy
 import 'package:provider_test/screens/dashboardScreen/dashboardComponents/more_info_grid_card.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
+import '../EventsScreen/events_page_view.dart';
 import '../test_screen.dart';
 import '../weatherScreen/weatherControllers/weather_api.dart';
 import '../weatherScreen/weather_page_view.dart';
@@ -197,7 +198,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
     // );
     final energyEfficiencyPercentageTxt =
         psManager.energyEfficiencyPercentageTxt;
-    final energyEfficiencyPercentage = psManager.energyEfeciancy / 100;
+    final energyEfficiencyPercentage = psManager.energyEfficiency / 100;
     final energyLinePosition = psManager.energyLinePosition;
     // weatherData.queryWeather();
     // weatherData.queryForecast();
@@ -230,11 +231,14 @@ class _DashboardWidgetState extends State<DashboardWidget> {
         child: IconTheme(
           data: IconThemeData(color: Theme.of(context).colorScheme.onPrimary),
           child: Row(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
               IconButton(
                 tooltip: 'Dashboard',
                 icon: const Icon(
                   Icons.speed_sharp,
+                  color: Colors.white,
                   size: 24,
                 ),
                 onPressed: () {},
@@ -242,11 +246,47 @@ class _DashboardWidgetState extends State<DashboardWidget> {
               // if (centerLocations.contains(fabLocation)) const Spacer(),
               const DashbaordAnimationController(),
               IconButton(
-                tooltip: 'Card Dashboard',
+                tooltip: 'Weather',
                 icon: FaIcon(
                   FontAwesomeIcons.cloudSun,
                   color: FlutterFlowTheme.of(context).tertiaryColor,
                   size: 20,
+                ),
+                // icon: Icon(
+                //   Icons.dashboard,
+                //   color: FlutterFlowTheme.of(context).tertiaryColor,
+                //   size: 22,
+                // ),
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return const WeatherPage();
+                  }));
+                },
+              ),
+              IconButton(
+                tooltip: 'Events',
+                icon: Icon(
+                  Icons.event,
+                  color: FlutterFlowTheme.of(context).tertiaryColor,
+                  size: 20,
+                ),
+                // icon: Icon(
+                //   Icons.dashboard,
+                //   color: FlutterFlowTheme.of(context).tertiaryColor,
+                //   size: 22,
+                // ),
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return const EventsPageView();
+                  }));
+                },
+              ),
+              IconButton(
+                tooltip: 'Charts',
+                icon: FaIcon(
+                  FontAwesomeIcons.chartPie,
+                  color: FlutterFlowTheme.of(context).tertiaryColor,
+                  size: 18,
                 ),
                 // icon: Icon(
                 //   Icons.dashboard,
