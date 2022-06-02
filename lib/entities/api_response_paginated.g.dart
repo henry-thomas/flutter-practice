@@ -1,18 +1,20 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'api_response_power.dart';
+part of 'api_response_paginated.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-ApiResponsePower _$ApiResponsePowerFromJson(Map<String, dynamic> json) =>
-    ApiResponsePower()
+ApiResponsePaginated _$ApiResponsePaginatedFromJson(
+        Map<String, dynamic> json) =>
+    ApiResponsePaginated()
       ..success = json['success'] as bool?
       ..message = json['message'] as String?
       ..data = json['data'] as Map<String, dynamic>?;
 
-Map<String, dynamic> _$ApiResponsePowerToJson(ApiResponsePower instance) {
+Map<String, dynamic> _$ApiResponsePaginatedToJson(
+    ApiResponsePaginated instance) {
   final val = <String, dynamic>{};
 
   void writeNotNull(String key, dynamic value) {

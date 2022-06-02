@@ -11,10 +11,10 @@ class Logger {
   String? description;
   String? installationAddress;
   String? shortName;
-  String? lat;
-  String? lng;
+  double? lat;
+  double? lng;
   String? lastSeen;
-  String? connected;
+  bool? connected;
   String? swVersion;
   List<SubDevice>? devList;
 
