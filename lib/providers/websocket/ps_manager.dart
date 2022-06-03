@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:collection';
 import 'dart:convert';
 import 'dart:ffi';
@@ -9,6 +10,7 @@ import 'package:provider_test/entities/dev_power_summary.dart';
 import 'package:provider_test/entities/device_message.dart';
 import 'package:provider_test/entities/logger_config.dart';
 import 'package:provider_test/entities/power_type.dart';
+import 'package:provider_test/providers/websocket/ws_manager.dart';
 
 import '../../screens/dashboardScreen/dashboardAnimation/dashboard_animation_provider.dart';
 import '../device_manager.dart';
@@ -144,61 +146,80 @@ class PowerServiceManager extends ChangeNotifier {
         }
       }
     }
+
+    Timer.periodic(Duration(milliseconds: 3000), (timer) {
+      try {
+        requestBcMsg(context);
+      } catch (e) {}
+    });
   }
 
-  void onEnergyStorageMessageReceived(Map<String, dynamic> msg) {
-    if (msg['messageList'].length > 0) {
-      batStorage = (msg['messageList'][0]['capacityP']);
-      batPower = (msg['messageList'][0]['powerW']) / 1000;
-      batCurrent = (msg['messageList'][0]['currentA']);
-      batVoltage = (msg['messageList'][0]['voltageV']);
+  void requestBcMsg(BuildContext context) {
+    DevMessage webSocketMsg = DevMessage();
+    webSocketMsg.instr = "broadcastRequest";
+    webSocketMsg.msgType = "devInstruction";
+    webSocketMsg.devModel = 12;
+    webSocketMsg.devModelId = 12;
+    webSocketMsg.loggerSerial =
+        Provider.of<DeviceManager>(context, listen: false)
+            .getSelectedLogger!
+            .serNum;
 
-      double ratedCapacityAh = 0;
-      double ratedChargeCurrentC = 0;
-      double ratedVoltageV = 0;
-      ratedCapacityAh += ((msg['messageList'][0]['ratedCapacityAh']));
-      ratedChargeCurrentC += ((msg['messageList'][0]['ratedChargeCurrentC']));
-      ratedVoltageV += ((msg['messageList'][0]['ratedVoltageV']));
-
-      batRatedPower = ratedCapacityAh * ratedChargeCurrentC * ratedVoltageV;
-      batRatedPowerPercentage = ((batPower / batRatedPower) * 100);
-      if (batRatedPowerPercentage < 0) {
-        batRatedPowerPercentage = 0;
-      }
-      // Battery
-      // double stCharge = 0;
-      // if (_livePowerTypeMap["stCharge"]?.powerW != null) {
-      //   stCharge = _livePowerTypeMap["stCharge"]?.powerW as double;
-      // }
-      // double stDischarge = 0;
-      // if (_livePowerTypeMap["stDischarge"]?.powerW != null) {
-      //   stDischarge = _livePowerTypeMap["stDischarge"]?.powerW as double;
-      // }
-
-      // var totBat = stCharge - stDischarge;
-      // _batPower = totBat;
-      if (batPower > 0) {
-        batChargeDotActive = 1;
-      } else {
-        batChargeDotActive = 0;
-      }
-
-      if (batPower < 0) {
-        batDischargeDotActive = 1;
-      } else {
-        batDischargeDotActive = 0;
-      }
-    }
-
-    // for (var j = 0; j < storageList!.length; j++) {
-    // }
+    Provider.of<WsManager>(context, listen: false).sendWsMessage(webSocketMsg);
   }
+
+  // void onEnergyStorageMessageReceived(Map<String, dynamic> msg) {
+  //   if (msg['messageList'].length > 0) {
+  //     batPower = 0;
+  //     batStorage = (msg['messageList'][0]['capacityP']);
+  //     batPower = (msg['messageList'][0]['powerW']);
+  //     batCurrent = (msg['messageList'][0]['currentA']);
+  //     batVoltage = (msg['messageList'][0]['voltageV']);
+
+  //     double ratedCapacityAh = 0;
+  //     double ratedChargeCurrentC = 0;
+  //     double ratedVoltageV = 0;
+  //     ratedCapacityAh += ((msg['messageList'][0]['ratedCapacityAh']));
+  //     ratedChargeCurrentC += ((msg['messageList'][0]['ratedChargeCurrentC']));
+  //     ratedVoltageV += ((msg['messageList'][0]['ratedVoltageV']));
+
+  //     // Battery
+
+  //     batRatedPower = ratedCapacityAh * ratedChargeCurrentC * ratedVoltageV;
+  //     batRatedPowerPercentage = ((batPower / batRatedPower));
+  //     if (batRatedPowerPercentage < 0) {
+  //       batRatedPowerPercentage = 0;
+  //     }
+  //     // _batPower = totBat;
+  //     if (batPower > 0) {
+  //       batChargeDotActive = 1;
+  //     } else {
+  //       batChargeDotActive = 0;
+  //     }
+
+  //     if (batPower < 0) {
+  //       batDischargeDotActive = 1;
+  //     } else {
+  //       batDischargeDotActive = 0;
+  //     }
+  //   }
+
+  // for (var j = 0; j < storageList!.length; j++) {
+  // }
+  // }
 
   void onPsMessageReceived(Map<String, dynamic> msg) {
     DevMessage message = DevMessage.fromJson(msg);
-    List<DevPowerSummary>? powerList = message.messageList;
+    // List<DevPowerSummary>? powerList = message.messageList;
+    List<dynamic>? pList = message.messageList;
+    List<DevPowerSummary> powerList = [];
+    for (var i = 0; i < pList!.length; i++) {
+      powerList.add(DevPowerSummary.fromJson(pList[i]));
+    }
 
-    for (var i = 0; i < powerList!.length; i++) {
+    // powerList = powerList!.cast<DevPowerSummary>();
+
+    for (var i = 0; i < powerList.length; i++) {
       _livePowerMap[powerList[i].powerName] = powerList[i];
     }
 
@@ -333,6 +354,22 @@ class PowerServiceManager extends ChangeNotifier {
       gridDotActive = 0;
     }
 
+    double stCharge = 0;
+    if (_livePowerTypeMap["stCharge"]?.powerW != null) {
+      stCharge = (_livePowerTypeMap["stCharge"]?.powerW as double);
+    }
+    double stDischarge = 0;
+    if (_livePowerTypeMap["stDischarge"]?.powerW != null) {
+      stDischarge = (_livePowerTypeMap["stDischarge"]?.powerW as double);
+    }
+
+    var totBat = stCharge - stDischarge;
+    if (totBat > 0) {
+      batPower += totBat;
+    } else {
+      batPower -= totBat;
+    }
+
     // Financial Benefits calculations
     dailyFinancial = pvDailyEnergy * 1.46;
     monthlyFinancial = pvMonthlyEnergy * 1.46;
@@ -419,7 +456,6 @@ class PowerServiceManager extends ChangeNotifier {
       _calcPowerMap[powerName]!.powerType = expMap['powerType'];
       _calcPowerMap[powerName]!.powerName = powerName;
       _calcPowerList.add(_calcPowerMap[powerName]!);
-      debugPrint(_calcPowerMap[powerName]!.powerW.toString());
     }
     return _calcPowerList;
   }
@@ -454,7 +490,7 @@ class PowerServiceManager extends ChangeNotifier {
     resultPower.dailyEnergyWh =
         mathFunction(p1Value.dailyEnergyWh!, p2Value.dailyEnergyWh!);
     resultPower.energyWh = mathFunction(p1Value.energyWh!, p2Value.energyWh!);
-    resultPower.voltageV = mathFunction(p1Value.voltageV!, p2Value.voltageV!);
+    resultPower.voltageV = (p1Value.voltageV! + p2Value.voltageV!) / 2;
     resultPower.currentA = mathFunction(p1Value.currentA!, p2Value.currentA!);
     return resultPower;
   }

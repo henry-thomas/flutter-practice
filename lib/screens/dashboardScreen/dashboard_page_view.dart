@@ -11,6 +11,7 @@ import 'package:provider_test/flutterFlow/flutter_flow_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider_test/providers/device_manager.dart';
+import 'package:provider_test/providers/websocket/es_manager.dart';
 import 'package:provider_test/providers/websocket/ps_manager.dart';
 import 'package:provider_test/screens/dashboardScreen/dashboardComponents/energy_efficiency_indicator.dart';
 import 'package:provider_test/screens/dashboardScreen/dashboardComponents/more_info_grid_card.dart';
@@ -84,13 +85,25 @@ class _DashboardWidgetState extends State<DashboardWidget> {
     FloatingActionButtonLocation.centerFloat,
   ];
 
-  bool isInit = false;
+  bool isPsInit = false;
+  bool isEsInit = false;
 
   bool _initPsManager(BuildContext context) {
-    if (!isInit) {
-      isInit = true;
+    if (!isPsInit) {
+      isPsInit = true;
       infoCard.add(dailyEnergyCard);
       Provider.of<PowerServiceManager>(context, listen: false).init(context);
+      return true;
+    }
+
+    return false;
+  }
+
+  bool _initEsManager(BuildContext context) {
+    if (!isEsInit) {
+      isEsInit = true;
+      Provider.of<EnergyStorageServiceManager>(context, listen: false)
+          .init(context);
       return true;
     }
 
@@ -217,14 +230,16 @@ class _DashboardWidgetState extends State<DashboardWidget> {
     final pvToBatDotPosition = animProvider.pvToBatAnimationPositionVal;
 
     final psManager = Provider.of<PowerServiceManager>(context);
+    final esManager = Provider.of<EnergyStorageServiceManager>(context);
     String loadPower = (psManager.loadPower / 1000).toStringAsFixed(2);
     String pvPower = (psManager.pvPower / 1000).toStringAsFixed(2);
     String gridPower = (psManager.gridPower / 1000).toStringAsFixed(2);
     _initWs(context);
     _initPsManager(context);
-    String batPower = psManager.batPower.toStringAsFixed(2);
-    final batStorageTxt = psManager.batStorage.toStringAsFixed(1);
-    final batStorageLevel = psManager.batStorage / 100;
+    _initEsManager(context);
+    String batPower = (esManager.sumData.powerW / 1000).toStringAsFixed(2);
+    final batStorageTxt = esManager.sumData.capacityP.toStringAsFixed(1);
+    final batStorageLevel = esManager.sumData.capacityP / 100;
     // final weatherData = Provider.of<WeatherApi>(
     //   context,
     //   listen: false,

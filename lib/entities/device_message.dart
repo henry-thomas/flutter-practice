@@ -22,7 +22,7 @@ class DevMessage {
   String? faultMsg;
   bool? requiredAck;
   int? ackID;
-  List<DevPowerSummary>? messageList;
+  List? messageList;
   String? devSerial;
   int? devModelId;
   String? instr;

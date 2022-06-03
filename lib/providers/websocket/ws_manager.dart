@@ -9,6 +9,7 @@ import 'package:provider_test/api/api_service.dart';
 import 'package:provider_test/entities/device_message.dart';
 import 'package:provider_test/main.dart';
 import 'package:provider_test/providers/device_manager.dart';
+import 'package:provider_test/providers/websocket/es_manager.dart';
 import 'package:provider_test/providers/websocket/ps_manager.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:provider_test/screens/dashboardScreen/dashboard_page_view.dart';
@@ -50,25 +51,7 @@ class WsManager extends ChangeNotifier {
     return false;
   }
 
-  void requestBcMsg(channel, BuildContext context) {
-    DevMessage webSocketMsg = DevMessage();
-    webSocketMsg.instr = "broadcastRequest";
-    webSocketMsg.msgType = "devInstruction";
-    webSocketMsg.devModel = 12;
-    webSocketMsg.devModelId = 12;
-    webSocketMsg.loggerSerial =
-        Provider.of<DeviceManager>(context, listen: false)
-            .getSelectedLogger!
-            .serNum;
-
-    sendWsMessage(webSocketMsg, channel);
-  }
-
-  void onConnectionInit(channel, BuildContext context) {
-    Timer.periodic(Duration(milliseconds: 1000), (timer) {
-      requestBcMsg(channel, context);
-    });
-
+  void onConnectionInit(BuildContext context) {
     DevMessage webSocketMsg = DevMessage();
     webSocketMsg.instr = "";
     webSocketMsg.msgType = "conConfig";
@@ -79,29 +62,11 @@ class WsManager extends ChangeNotifier {
             .getSelectedLogger!
             .serNum;
 
-    _onConnectionInit(channel, context);
-    sendWsMessage(webSocketMsg, channel);
+    // _onConnectionInit(context);
+    sendWsMessage(webSocketMsg);
   }
 
-  void _onConnectionInit(channel, BuildContext context) {
-    Timer.periodic(Duration(milliseconds: 1000), (timer) {
-      requestBcMsg(channel, context);
-    });
-
-    DevMessage webSocketMsg = DevMessage();
-    webSocketMsg.instr = "broadcastRequest";
-    webSocketMsg.msgType = "devInstruction";
-    webSocketMsg.devModel = 11;
-    webSocketMsg.devModelId = 11;
-    webSocketMsg.loggerSerial =
-        Provider.of<DeviceManager>(context, listen: false)
-            .getSelectedLogger!
-            .serNum;
-
-    sendWsMessage(webSocketMsg, channel);
-  }
-
-  void sendWsMessage(DevMessage webSocketMsg, WebSocketChannel channel) {
+  void sendWsMessage(DevMessage webSocketMsg) {
     requestId++;
     webSocketMsg.requestID = requestId;
     var serilizedMsg = webSocketMsg.toJson();
@@ -115,7 +80,7 @@ class WsManager extends ChangeNotifier {
     switch (msgType) {
       case "connectionInit": //BroadcastData
         // startRandom();
-        onConnectionInit(channel, context);
+        onConnectionInit(context);
         break;
       case 0: //BroadcastData
         if (data['devModel'] == 12) {
@@ -154,7 +119,7 @@ class WsManager extends ChangeNotifier {
 
   void _processEnergyStorageMessage(
       BuildContext context, Map<String, dynamic> msg) {
-    Provider.of<PowerServiceManager>(context, listen: false)
+    Provider.of<EnergyStorageServiceManager>(context, listen: false)
         .onEnergyStorageMessageReceived(msg);
   }
 }
