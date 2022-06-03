@@ -4,6 +4,7 @@ import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../flutterFlow/flutter_flow_theme.dart';
+import '../chartScreen/chart_page_view.dart';
 import '../dashboardScreen/dashboard_page_view.dart';
 import '../loginScreen/login_page_view.dart';
 import '../weatherScreen/weather_page_view.dart';
@@ -25,19 +26,91 @@ class _EventsPageViewState extends State<EventsPageView> {
 
   String? selectedLevelValue;
   List<String> levelItems = [
-    "Info","Error", "Warning", "Debug","Trace", "CONFIG_ADV", "CONFIG"
+    "Info",
+    "Error",
+    "Warning",
+    "Debug",
+    "Trace",
+    "CONFIG_ADV",
+    "CONFIG"
   ];
   bool checkBox = false;
 
+  var info =  EventsRow().getEventRow( "info");
+  var error = EventsRow().getEventRow( "error");
+  var warning = EventsRow().getEventRow( "warning");
+  var debug = EventsRow().getEventRow( "debug");
+  var trace = EventsRow().getEventRow( "trace");
+
+
+
+ List eventsList = ["info", "error", "warning","warning", 'debug', 'trace'];
+  List<Widget> eventsListItem = [];
+
+ addWidgetListFromEventsLIst() {
+   for (var i = 0; i < eventsList.length; i++) {
+   if(eventsList[i] == "info") {
+     eventsListItem.add(info);
+   }
+   if(eventsList[i] == "error") {
+     eventsListItem.add(error);
+   }
+   if(eventsList[i] == "warning") {
+     eventsListItem.add(warning);
+   }
+   if(eventsList[i] == "debug") {
+     eventsListItem.add(debug);
+   }
+   if(eventsList[i] == "trace") {
+     eventsListItem.add(trace);
+   }
+   }
+ }
+
+
+
+
+
+  bool isAddEventsListInit = false;
+
+  addList() {
+    if (!isAddEventsListInit) {
+      isAddEventsListInit = true;
+      addWidgetListFromEventsLIst();
+    }
+    return eventsListItem;
+  }
+
+
+  eventsLevelFilter(value) {
+    print(value);
+    if (value == "Warning") {
+      for (var i = 0; i < eventsListItem.length; i++) {
+        if (eventsListItem[i] != warning) {
+          eventsListItem.remove(eventsListItem[i]);
+        }
+      }
+      // eventsListItem.remove(info);
+      // eventsListItem.remove(error);
+      // eventsListItem.remove(debug);
+      // eventsListItem.remove(trace);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    List<Widget> eventsList = [
-      EventsRow().getEventRow(context, "info"),
-      EventsRow().getEventRow(context, "error"),
-      EventsRow().getEventRow(context, "warning"),
-      EventsRow().getEventRow(context, "debug"),
-      EventsRow().getEventRow(context, "trace"),
-    ];
+    // List<Widget> eventsList = [
+    //   EventsRow().getEventRow(context, "info"),
+    //   EventsRow().getEventRow(context, "error"),
+    //   EventsRow().getEventRow(context, "warning"),
+    //   EventsRow().getEventRow(context, "debug"),
+    //   EventsRow().getEventRow(context, "trace"),
+    // ];
+
+    // eventsLevelFilterCheck(value) {
+    //   print()
+    // }
+    //
     return Scaffold(
       bottomNavigationBar: BottomAppBar(
         shape: _showNotch ? const CircularNotchedRectangle() : null,
@@ -109,7 +182,7 @@ class _EventsPageViewState extends State<EventsPageView> {
                 // ),
                 onPressed: () {
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return const WeatherPage();
+                    return const ChartsPageView();
                   }));
                 },
               ),
@@ -198,23 +271,21 @@ class _EventsPageViewState extends State<EventsPageView> {
       body: SafeArea(
         child: Column(
           children: [
-             Row(
-               mainAxisSize: MainAxisSize.max,
-               mainAxisAlignment: MainAxisAlignment.start,
-               children: [
-                 Padding(
-                   padding: const EdgeInsets.all(8.0),
-                   child: DropdownButtonHideUnderline(
+            Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: DropdownButtonHideUnderline(
                     child: DropdownButton2(
                       isExpanded: true,
                       hint: Row(
-                        children:  [
+                        children: [
                           Icon(
                             Icons.list,
                             size: 16,
-                            color: FlutterFlowTheme
-                                .of(context)
-                                .tertiaryColor,
+                            color: FlutterFlowTheme.of(context).tertiaryColor,
                           ),
                           SizedBox(
                             width: 4,
@@ -225,35 +296,37 @@ class _EventsPageViewState extends State<EventsPageView> {
                               style: FlutterFlowTheme.of(context)
                                   .bodyText1
                                   .override(
-                                fontFamily: 'Poppins',
-                                color: FlutterFlowTheme.of(context)
-                                    .secondaryText,
-                                fontSize: 11,
-                            ),
+                                    fontFamily: 'Poppins',
+                                    color: FlutterFlowTheme.of(context)
+                                        .secondaryText,
+                                    fontSize: 11,
+                                  ),
                             ),
                           ),
                         ],
                       ),
                       items: levelItems
                           .map((item) => DropdownMenuItem<String>(
-                        value: item,
-                        child: Text(
-                          item,
-                          style: FlutterFlowTheme.of(context)
-                              .bodyText1
-                              .override(
-                            fontFamily: 'Poppins',
-                            color: FlutterFlowTheme.of(context)
-                                .secondaryText,
-                            fontSize: 11,
-                          ),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ))
+                                value: item,
+                                child: Text(
+                                  item,
+                                  style: FlutterFlowTheme.of(context)
+                                      .bodyText1
+                                      .override(
+                                        fontFamily: 'Poppins',
+                                        color: FlutterFlowTheme.of(context)
+                                            .secondaryText,
+                                        fontSize: 11,
+                                      ),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ))
                           .toList(),
                       value: selectedLevelValue,
                       onChanged: (value) {
                         setState(() {
+                          // eventsLevelFilterCheck(value):
+                          eventsLevelFilter(value);
                           selectedLevelValue = value as String;
                         });
                       },
@@ -261,19 +334,15 @@ class _EventsPageViewState extends State<EventsPageView> {
                         Icons.arrow_forward_ios_outlined,
                       ),
                       iconSize: 14,
-                      iconEnabledColor:FlutterFlowTheme
-                          .of(context)
-                          .tertiaryColor,
+                      iconEnabledColor:
+                          FlutterFlowTheme.of(context).tertiaryColor,
                       iconDisabledColor: Colors.grey,
                       buttonHeight: 50,
                       buttonWidth: 130,
                       buttonPadding: const EdgeInsets.only(left: 14, right: 14),
                       buttonDecoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(6),
-
-                        color: FlutterFlowTheme.of(
-                            context)
-                            .primaryBackground,
+                        color: FlutterFlowTheme.of(context).primaryBackground,
                       ),
                       buttonElevation: 1,
                       itemHeight: 40,
@@ -283,9 +352,7 @@ class _EventsPageViewState extends State<EventsPageView> {
                       dropdownPadding: null,
                       dropdownDecoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(6),
-                        color: FlutterFlowTheme.of(
-                            context)
-                            .primaryBackground,
+                        color: FlutterFlowTheme.of(context).primaryBackground,
                       ),
                       dropdownElevation: 8,
                       scrollbarRadius: const Radius.circular(10),
@@ -293,14 +360,17 @@ class _EventsPageViewState extends State<EventsPageView> {
                       scrollbarAlwaysShow: true,
                       offset: const Offset(-20, 0),
                     ),
+                  ),
+                ),
+              ],
             ),
-                 ),
-               ],
-             ),
-            SingleChildScrollView(
-                child: Column(
-              children: eventsList,
-            )),
+            Container(
+              height: MediaQuery.of(context).size.height * 0.7,
+              child: SingleChildScrollView(
+                  child: Column(
+                children: addList(),
+              )),
+            )
           ],
         ),
       ),

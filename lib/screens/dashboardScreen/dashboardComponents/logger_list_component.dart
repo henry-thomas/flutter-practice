@@ -90,6 +90,7 @@ class LoggerListComponent {
       ),
       onTap: () {
         _onLoggerSelected(context, sn);
+        Navigator.pop(context);
         // loggerSN = sn;
         //
         // // getLoggerStatus ();
