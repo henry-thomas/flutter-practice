@@ -57,6 +57,7 @@ class EnergyStorageServiceManager extends ChangeNotifier {
         sumData.capacityP += storageList[i].capacityP;
         sumData.ratedCapacityAh += storageList[i].ratedCapacityAh;
         sumData.ratedVoltageV += storageList[i].ratedVoltageV;
+        sumData.remainingTimeSign += storageList[i].remainingTimeSign;
       } else {
         sumData.offlineSt = sumData.offlineSt! + 1;
       }
