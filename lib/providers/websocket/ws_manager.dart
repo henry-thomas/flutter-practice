@@ -51,27 +51,7 @@ class WsManager extends ChangeNotifier {
     return false;
   }
 
-  void requestBcMsg(BuildContext context) {
-    DevMessage webSocketMsg = DevMessage();
-    webSocketMsg.instr = "broadcastRequest";
-    webSocketMsg.msgType = "devInstruction";
-    webSocketMsg.devModel = 12;
-    webSocketMsg.devModelId = 12;
-    webSocketMsg.loggerSerial =
-        Provider.of<DeviceManager>(context, listen: false)
-            .getSelectedLogger!
-            .serNum;
-
-    sendWsMessage(webSocketMsg);
-  }
-
   void onConnectionInit(BuildContext context) {
-    // Timer.periodic(Duration(milliseconds: 1000), (timer) {
-    //   try {
-    //     requestBcMsg(context);
-    //   } catch (e) {}
-    // });
-
     DevMessage webSocketMsg = DevMessage();
     webSocketMsg.instr = "";
     webSocketMsg.msgType = "conConfig";
@@ -83,24 +63,6 @@ class WsManager extends ChangeNotifier {
             .serNum;
 
     // _onConnectionInit(context);
-    sendWsMessage(webSocketMsg);
-  }
-
-  void _onConnectionInit(BuildContext context) {
-    try {
-      requestBcMsg(context);
-    } catch (e) {}
-
-    DevMessage webSocketMsg = DevMessage();
-    webSocketMsg.instr = "broadcastRequest";
-    webSocketMsg.msgType = "devInstruction";
-    webSocketMsg.devModel = 11;
-    webSocketMsg.devModelId = 11;
-    webSocketMsg.loggerSerial =
-        Provider.of<DeviceManager>(context, listen: false)
-            .getSelectedLogger!
-            .serNum;
-
     sendWsMessage(webSocketMsg);
   }
 

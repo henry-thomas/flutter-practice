@@ -236,9 +236,9 @@ class _DashboardWidgetState extends State<DashboardWidget> {
     _initWs(context);
     _initPsManager(context);
     _initEsManager(context);
-    String batPower = esManager.sumData.powerW.toStringAsFixed(2);
-    final batStorageTxt = psManager.batStorage.toStringAsFixed(1);
-    final batStorageLevel = psManager.batStorage / 100;
+    String batPower = (esManager.sumData.powerW / 1000).toStringAsFixed(2);
+    final batStorageTxt = esManager.sumData.capacityP.toStringAsFixed(1);
+    final batStorageLevel = esManager.sumData.capacityP / 100;
     // final weatherData = Provider.of<WeatherApi>(
     //   context,
     //   listen: false,

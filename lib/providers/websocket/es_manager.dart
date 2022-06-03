@@ -15,16 +15,6 @@ class EnergyStorageServiceManager extends ChangeNotifier {
 
   EnergyStorage sumData = EnergyStorage();
 
-  // Battery
-  double batPower = 0;
-  double batChargeDotActive = 0;
-  double batDischargeDotActive = 0;
-  double batStorage = 0;
-  double batCurrent = 0;
-  double batVoltage = 0;
-  double batRatedPower = 0;
-  double batRatedPowerPercentage = 0;
-
   Future<List<DevPowerSummary>?> _getPowerList(BuildContext context) async {
     var powerTypes = await Provider.of<ApiController>(context, listen: false)
         .getPowerList(Provider.of<DeviceManager>(context, listen: false)
