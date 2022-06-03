@@ -620,30 +620,30 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                   ),
                   Material(
                     color: Colors.transparent,
-                    elevation: 5,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
+                    elevation: 1,
+                    // shape: RoundedRectangleBorder(
+                    //   borderRadius: BorderRadius.circular(10),
+                    // ),
                     child: Material(
                       color: Colors.transparent,
                       elevation: 5,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
+                      // shape: RoundedRectangleBorder(
+                      //   borderRadius: BorderRadius.circular(10),
+                      // ),
                       child: Container(
-                        width: MediaQuery.of(context).size.width * 0.9,
+                        width: MediaQuery.of(context).size.width * 1,
                         height: 210,
                         decoration: BoxDecoration(
-                          boxShadow: [
-                            BoxShadow(
-                              color: buttonAction.moreInfoColor,
-                              offset: Offset(0.0, buttonAction.offsetRadius),
-                              //(x,y)
-                              blurRadius: buttonAction.blurRadius,
-                            ),
-                          ],
+                          // boxShadow: [
+                          //   BoxShadow(
+                          //     color: buttonAction.moreInfoColor,
+                          //     offset: Offset(0.0, buttonAction.offsetRadius),
+                          //     //(x,y)
+                          //     blurRadius: buttonAction.blurRadius,
+                          //   ),
+                          // ],
                           color: FlutterFlowTheme.of(context).primaryBackground,
-                          borderRadius: BorderRadius.circular(10),
+                          // borderRadius: BorderRadius.circular(10),
                         ),
                         child: SizedBox(
                           width: double.infinity,
@@ -1822,7 +1822,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                                 padding: const EdgeInsetsDirectional.fromSTEB(
                                     0, 0, 0, 1),
                                 child: Opacity(
-                                  opacity: psManager.batChargeDotActive,
+                                  opacity: esManager.batChargeDotActive,
                                   child: const FaIcon(
                                     FontAwesomeIcons.solidCircle,
                                     color: Colors.orange,
@@ -1840,7 +1840,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                                 padding: const EdgeInsetsDirectional.fromSTEB(
                                     0, 0, 0, 1),
                                 child: Opacity(
-                                  opacity: psManager.batDischargeDotActive,
+                                  opacity: esManager.batDischargeDotActive,
                                   child: const FaIcon(
                                     FontAwesomeIcons.solidCircle,
                                     color: Colors.orange,
@@ -2023,8 +2023,9 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                                                 child: RotatedBox(
                                                   quarterTurns: -1,
                                                   child: LinearPercentIndicator(
-                                                      percent: psManager
-                                                          .batRatedPowerPercentage,
+                                                      percent: esManager.sumData
+                                                              .capacityP /
+                                                          100,
                                                       // percent:1,
                                                       //gridRatedPowerPercentageLevel / 100,
                                                       width: 70,

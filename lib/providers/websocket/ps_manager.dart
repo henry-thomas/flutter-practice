@@ -28,14 +28,14 @@ class PowerServiceManager extends ChangeNotifier {
   List<PowerType>? _powerTypeList = [];
 
   // Battery
-  double batPower = 0;
-  double batChargeDotActive = 0;
-  double batDischargeDotActive = 0;
-  double batStorage = 0;
-  double batCurrent = 0;
-  double batVoltage = 0;
-  double batRatedPower = 0;
-  double batRatedPowerPercentage = 0;
+  // double batPower = 0;
+  // double batChargeDotActive = 0;
+  // double batDischargeDotActive = 0;
+  // double batStorage = 0;
+  // double batCurrent = 0;
+  // double batVoltage = 0;
+  // double batRatedPower = 0;
+  // double batRatedPowerPercentage = 0;
 
   // GRID
   double gridPower = 0;
@@ -363,12 +363,12 @@ class PowerServiceManager extends ChangeNotifier {
       stDischarge = (_livePowerTypeMap["stDischarge"]?.powerW as double);
     }
 
-    var totBat = stCharge - stDischarge;
-    if (totBat > 0) {
-      batPower += totBat;
-    } else {
-      batPower -= totBat;
-    }
+    // var totBat = stCharge - stDischarge;
+    // if (totBat > 0) {
+    //   batPower += totBat;
+    // } else {
+    //   batPower -= totBat;
+    // }
 
     // Financial Benefits calculations
     dailyFinancial = pvDailyEnergy * 1.46;

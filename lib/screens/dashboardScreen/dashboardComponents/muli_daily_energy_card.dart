@@ -12,13 +12,10 @@ class DailyEnergyCard extends StatefulWidget {
   State<DailyEnergyCard> createState() => _DailyEnergyCardState();
 }
 
- 
-
 class _DailyEnergyCardState extends State<DailyEnergyCard> {
-  
   double pvIconOpacity = 1;
   Color pvIconColor = Colors.green;
-  
+
   @override
   Widget build(BuildContext context) {
     final psManager = Provider.of<PowerServiceManager>(
@@ -203,7 +200,6 @@ class _DailyEnergyCardState extends State<DailyEnergyCard> {
                         size: 11,
                       ),
                     ),
-
                     Text(
                       'Daily Load',
                       style: FlutterFlowTheme.of(context).bodyText1.override(
@@ -249,7 +245,6 @@ class _DailyEnergyCardState extends State<DailyEnergyCard> {
                   ],
                 ),
               ),
-              
             ],
           ),
         ),
@@ -263,10 +258,10 @@ class _DailyEnergyCardState extends State<DailyEnergyCard> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             Transform.translate(
-              offset:  Offset(0, 0),
-              child:  FaIcon(
+              offset: Offset(0, 0),
+              child: FaIcon(
                 FontAwesomeIcons.solarPanel,
-                color:pvIconColor.withOpacity(pvIconOpacity),
+                color: pvIconColor.withOpacity(pvIconOpacity),
                 size: 9,
               ),
             ),
@@ -274,21 +269,21 @@ class _DailyEnergyCardState extends State<DailyEnergyCard> {
               offset: const Offset(0, 0),
               child: const Icon(
                 Icons.offline_bolt_outlined,
-                color:Colors.red,
+                color: Colors.red,
                 size: 12,
               ),
             ),
             Transform.translate(
-              offset:  Offset(0, 0),
+              offset: Offset(0, 0),
               child: const FaIcon(
                 FontAwesomeIcons.house,
-                color:Colors.blue,
+                color: Colors.blue,
                 size: 9,
               ),
             ),
           ],
         ),
-         LivePvChart()
+        LivePvChart()
       ],
     );
   }
