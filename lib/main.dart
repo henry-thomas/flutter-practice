@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:provider_test/api/api_controller.dart';
 import 'package:provider_test/entities/device_message.dart';
 import 'package:provider_test/providers/device_manager.dart';
+import 'package:provider_test/providers/websocket/es_manager.dart';
 import 'package:provider_test/providers/websocket/ps_manager.dart';
 import 'package:provider_test/providers/websocket/ws_manager.dart';
 import 'package:provider_test/screens/dashboardScreen/dashboardAnimation/dashboard_animation_provider.dart';
@@ -46,6 +47,9 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider.value(
           value: DeviceManager(),
+        ),
+        ChangeNotifierProvider.value(
+          value: EnergyStorageServiceManager(),
         ),
       ],
       child: MaterialApp(

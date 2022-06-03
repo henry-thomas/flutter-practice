@@ -24,9 +24,7 @@ DevMessage _$DevMessageFromJson(Map<String, dynamic> json) => DevMessage()
   ..faultMsg = json['faultMsg'] as String?
   ..requiredAck = json['requiredAck'] as bool?
   ..ackID = json['ackID'] as int?
-  ..messageList = (json['messageList'] as List<dynamic>?)
-      ?.map((e) => DevPowerSummary.fromJson(e as Map<String, dynamic>))
-      .toList()
+  ..messageList = json['messageList'] as List<dynamic>?
   ..devSerial = json['devSerial'] as String?
   ..devModelId = json['devModelId'] as int?
   ..instr = json['instr'] as String?

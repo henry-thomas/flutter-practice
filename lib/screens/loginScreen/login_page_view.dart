@@ -27,8 +27,10 @@ class _LoginPageWidgetState extends State<LoginPageWidget>
 
   @override
   Widget build(BuildContext context) {
-    var usernameInput = emailAddressController!.text;
-    var passwordInput = passwordController!.text;
+    var usernameInput = "Henry_Thomas";
+    var passwordInput = "123456";
+    // var usernameInput = emailAddressController!.text;
+    // var passwordInput = passwordController!.text;
     return Scaffold(
       key: scaffoldKey,
       backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
