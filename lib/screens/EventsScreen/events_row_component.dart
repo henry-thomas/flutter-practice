@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../flutterFlow/flutter_flow_theme.dart';
 
 class EventsRow {
-  Column getEventRow(context, level) {
+  Column getEventRow( level) {
     // if (icon == "info"){
     //   icon = Icon(
     //     Icons.info_outline_rounded,
@@ -92,14 +92,8 @@ class EventsRow {
                   ),
                   child: Text(
                     'Axpert Ai',
-                    style: FlutterFlowTheme.of(context)
-                        .bodyText1
-                        .override(
-                      fontFamily: 'Poppins',
-                      color: FlutterFlowTheme.of(context)
-                          .secondaryText,
-                      fontSize: 11,
-                    ),
+
+
                   ),
                 ),
               ),
@@ -113,11 +107,7 @@ class EventsRow {
                   ),
                   child: Text(
                     level,
-                    style: FlutterFlowTheme.of(context).bodyText1.override(
-                      fontFamily: 'Poppins',
-                      color: Colors.black87,
-                      fontSize: 11,
-                    ),
+
                   ),
                 ),
               ),
@@ -126,7 +116,7 @@ class EventsRow {
           ),
           Text(
             '22-05-13 04:18:49',
-            style: FlutterFlowTheme.of(context).bodyText1,
+
           ),
 
         ],
@@ -135,7 +125,7 @@ class EventsRow {
         padding: const EdgeInsets.all(3.0),
         child: Container(
           height: 0.8,
-          width:MediaQuery.of(context).size.width * 0.95,
+
           color: Colors.black45,
         ),
       )

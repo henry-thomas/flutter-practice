@@ -18,6 +18,7 @@ import 'package:provider_test/screens/dashboardScreen/dashboardComponents/more_i
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 import '../EventsScreen/events_page_view.dart';
+import '../chartScreen/chart_page_view.dart';
 import '../test_screen.dart';
 import '../weatherScreen/weatherControllers/weather_api.dart';
 import '../weatherScreen/weather_page_view.dart';
@@ -343,7 +344,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                 // ),
                 onPressed: () {
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return const WeatherPage();
+                    return const ChartsPageView();
                   }));
                 },
               ),

@@ -100,7 +100,7 @@ class ApiController extends ChangeNotifier {
   Future<List<Logger>> getLoggerList() async {
     List<dynamic> getLoggerList = await _getLoggers();
     List<Logger> loggerList = [];
-    for (var i = 0; i < getLoggerList!.length; i++) {
+    for (var i = 0; i < getLoggerList.length; i++) {
       loggerList.add(Logger.fromJson(getLoggerList[i]));
     }
     return loggerList;

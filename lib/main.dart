@@ -6,6 +6,7 @@ import 'package:provider_test/providers/device_manager.dart';
 import 'package:provider_test/providers/websocket/es_manager.dart';
 import 'package:provider_test/providers/websocket/ps_manager.dart';
 import 'package:provider_test/providers/websocket/ws_manager.dart';
+import 'package:provider_test/screens/chartScreen/chart_controller.dart';
 import 'package:provider_test/screens/dashboardScreen/dashboardAnimation/dashboard_animation_provider.dart';
 import 'package:provider_test/screens/dashboardScreen/dashboardComponents/dashboard_button_actions.dart';
 import 'package:provider_test/screens/weatherScreen/weatherControllers/weather_controller.dart';
@@ -50,6 +51,9 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider.value(
           value: EnergyStorageServiceManager(),
+        ),
+        ChangeNotifierProvider.value(
+          value: ChartController(),
         ),
       ],
       child: MaterialApp(
