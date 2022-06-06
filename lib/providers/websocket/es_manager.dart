@@ -18,14 +18,6 @@ class EnergyStorageServiceManager extends ChangeNotifier {
   double batChargeDotActive = 0;
   double batDischargeDotActive = 0;
 
-  Future<List<DevPowerSummary>?> _getPowerList(BuildContext context) async {
-    var powerTypes = await Provider.of<ApiController>(context, listen: false)
-        .getPowerList(Provider.of<DeviceManager>(context, listen: false)
-            .getSelectedLogger!
-            .serNum);
-    return powerTypes;
-  }
-
   void init(BuildContext context) async {
     Timer.periodic(Duration(milliseconds: 3000), (timer) {
       try {

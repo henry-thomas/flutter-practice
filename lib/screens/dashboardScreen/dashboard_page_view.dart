@@ -17,6 +17,7 @@ import 'package:provider_test/screens/dashboardScreen/dashboardComponents/energy
 import 'package:provider_test/screens/dashboardScreen/dashboardComponents/more_info_grid_card.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
+import '../../providers/power_type_chart_manager.dart';
 import '../EventsScreen/events_page_view.dart';
 import '../chartScreen/chart_page_view.dart';
 import '../test_screen.dart';
@@ -343,6 +344,11 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                 //   size: 22,
                 // ),
                 onPressed: () {
+                  Provider.of<PowerTypeChartDataManager>(context, listen: false)
+                      .getPowerTypesFromDateRange(
+                          context,
+                          DateTime.parse('20220606'),
+                          DateTime.parse('20220606'));
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
                     return const ChartsPageView();
                   }));

@@ -103,14 +103,6 @@ class PowerServiceManager extends ChangeNotifier {
     return powerTypes;
   }
 
-  Future<List<DevPowerSummary>?> _getPowerList(BuildContext context) async {
-    var powerTypes = await Provider.of<ApiController>(context, listen: false)
-        .getPowerList(Provider.of<DeviceManager>(context, listen: false)
-            .getSelectedLogger!
-            .serNum);
-    return powerTypes;
-  }
-
   Future<List<LoggerConfig>?> _getPowerCalcs(BuildContext context) async {
     var powerCalcs = await Provider.of<ApiController>(context, listen: false)
         .getPowerCalcs(Provider.of<DeviceManager>(context, listen: false)
@@ -119,32 +111,25 @@ class PowerServiceManager extends ChangeNotifier {
     return powerCalcs;
   }
 
-  Future<List?> _getLoggerList(BuildContext context) async {
-    var powerTypes = await Provider.of<ApiController>(context, listen: false)
-        .getPowerList(Provider.of<DeviceManager>(context, listen: false)
-            .getSelectedLogger!
-            .serNum);
-    return powerTypes;
-  }
-
   //This is called after power types are recieved, only once on page load.
   void init(BuildContext context) async {
     List<PowerType>? powerTypeList = await _getPowerTypes(context);
-    List<DevPowerSummary>? powerList = await _getPowerList(context);
+    // List<DevPowerSummary>? powerList = await _getPowerList(context);
     List<LoggerConfig>? calcPowerList = await _getPowerCalcs(context);
     initCalcPowers(calcPowerList!);
 
     _powerTypeList = powerTypeList;
+    _powerTypeMap.clear();
     for (var i = 0; i < powerTypeList!.length; i++) {
       PowerType pType = powerTypeList[i];
       if (_powerTypeMap[pType.powerType] == null) {
         _powerTypeMap[pType.powerType] = [];
       }
-      for (var j = 0; j < powerList!.length; j++) {
-        if (powerList[j].powerName == powerTypeList[i].powerName) {
-          _powerTypeMap[pType.powerType]!.add(powerList[j]);
-        }
-      }
+      // for (var j = 0; j < powerList!.length; j++) {
+      //   if (powerList[j].powerName == powerTypeList[i].powerName) {
+      //     _powerTypeMap[pType.powerType]!.add(powerList[j]);
+      //   }
+      // }
     }
 
     Timer.periodic(Duration(milliseconds: 3000), (timer) {
@@ -167,46 +152,6 @@ class PowerServiceManager extends ChangeNotifier {
 
     Provider.of<WsManager>(context, listen: false).sendWsMessage(webSocketMsg);
   }
-
-  // void onEnergyStorageMessageReceived(Map<String, dynamic> msg) {
-  //   if (msg['messageList'].length > 0) {
-  //     batPower = 0;
-  //     batStorage = (msg['messageList'][0]['capacityP']);
-  //     batPower = (msg['messageList'][0]['powerW']);
-  //     batCurrent = (msg['messageList'][0]['currentA']);
-  //     batVoltage = (msg['messageList'][0]['voltageV']);
-
-  //     double ratedCapacityAh = 0;
-  //     double ratedChargeCurrentC = 0;
-  //     double ratedVoltageV = 0;
-  //     ratedCapacityAh += ((msg['messageList'][0]['ratedCapacityAh']));
-  //     ratedChargeCurrentC += ((msg['messageList'][0]['ratedChargeCurrentC']));
-  //     ratedVoltageV += ((msg['messageList'][0]['ratedVoltageV']));
-
-  //     // Battery
-
-  //     batRatedPower = ratedCapacityAh * ratedChargeCurrentC * ratedVoltageV;
-  //     batRatedPowerPercentage = ((batPower / batRatedPower));
-  //     if (batRatedPowerPercentage < 0) {
-  //       batRatedPowerPercentage = 0;
-  //     }
-  //     // _batPower = totBat;
-  //     if (batPower > 0) {
-  //       batChargeDotActive = 1;
-  //     } else {
-  //       batChargeDotActive = 0;
-  //     }
-
-  //     if (batPower < 0) {
-  //       batDischargeDotActive = 1;
-  //     } else {
-  //       batDischargeDotActive = 0;
-  //     }
-  //   }
-
-  // for (var j = 0; j < storageList!.length; j++) {
-  // }
-  // }
 
   void onPsMessageReceived(Map<String, dynamic> msg) {
     DevMessage message = DevMessage.fromJson(msg);
@@ -235,32 +180,31 @@ class PowerServiceManager extends ChangeNotifier {
 
       for (var j = 0; j < powerList.length; j++) {
         if (powerList[j].powerName == pType.powerName) {
-          _livePowerTypeMap[pType.powerType]?.powerW =
-              ((powerList[j].powerW as double) +
-                  (_livePowerTypeMap[pType.powerType]?.powerW as double));
+          _livePowerTypeMap[pType.powerType]?.powerW = ((powerList[j].powerW) +
+              (_livePowerTypeMap[pType.powerType]?.powerW as double));
 
           _livePowerTypeMap[pType.powerType]?.ratedPowerW =
-              ((powerList[j].ratedPowerW as double) +
+              ((powerList[j].ratedPowerW) +
                   (_livePowerTypeMap[pType.powerType]?.ratedPowerW as double));
 
           _livePowerTypeMap[pType.powerType]?.dailyEnergyWh = ((powerList[j]
-                  .dailyEnergyWh as double) +
+                  .dailyEnergyWh) +
               (_livePowerTypeMap[pType.powerType]?.dailyEnergyWh as double));
 
           _livePowerTypeMap[pType.powerType]?.monthlyEnergyWh = ((powerList[j]
-                  .monthlyEnergyWh as double) +
+                  .monthlyEnergyWh) +
               (_livePowerTypeMap[pType.powerType]?.monthlyEnergyWh as double));
 
           _livePowerTypeMap[pType.powerType]?.energyWh =
-              ((powerList[j].energyWh as double) +
+              ((powerList[j].energyWh) +
                   (_livePowerTypeMap[pType.powerType]?.energyWh as double));
 
           _livePowerTypeMap[pType.powerType]?.voltageV =
-              ((powerList[j].voltageV as double) +
+              ((powerList[j].voltageV) +
                   (_livePowerTypeMap[pType.powerType]?.voltageV as double));
 
           _livePowerTypeMap[pType.powerType]?.currentA =
-              ((powerList[j].currentA as double) +
+              ((powerList[j].currentA) +
                   (_livePowerTypeMap[pType.powerType]?.currentA as double));
         }
       }

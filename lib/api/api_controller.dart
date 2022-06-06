@@ -17,10 +17,10 @@ class ApiController extends ChangeNotifier {
   // static const BASE_URL = "http://192.168.100.18:8084/SolarMDApi/";
   // static const USERNAME = "kostadin";
   // static const PASSWORD = "1234";
-  static const START_DATE = "20220401";
-  static const END_DATE = "20220419";
+  static const START_DATE = "20220606";
+  static const END_DATE = "20220606";
   static const PAGE = 1;
-  static const PER_PAGE = 10;
+  static const PER_PAGE = 10000;
 
   static String jwt = "";
   ApiService service = ApiService();
@@ -106,9 +106,10 @@ class ApiController extends ChangeNotifier {
     return loggerList;
   }
 
-  Future<List<DevPowerSummary>?> getPowerList(String serial) async {
+  Future<List<DevPowerSummary>?> getPowerList(
+      String serial, String startDate, String endDate) async {
     List<dynamic>? getPowerList =
-        await _getPowerList(serial, START_DATE, END_DATE, PAGE, PER_PAGE);
+        await _getPowerList(serial, startDate, endDate, PAGE, PER_PAGE);
     List<DevPowerSummary> powerList = [];
     if (getPowerList != null) {
       for (var i = 0; i < getPowerList.length; i++) {
