@@ -12,13 +12,13 @@ import '../entities/power_type.dart';
 import 'device_manager.dart';
 
 class PowerTypeChartDataManager extends ChangeNotifier {
-  final List<DevPowerSummary> _calcPowerList = [];
   List<DevPowerSummary>? _powerList = [];
   final Map<String?, String?> _expressionPowerMap = {};
-  final Map<String?, List<DevPowerSummary?>> _calcPowerMap = {};
   final Map<String?, List<DevPowerSummary>> _powerTypeMap = {};
   final Map<String?, List<DevPowerSummary>> _powerMap = {};
   final Map<DateTime, List<DevPowerSummary>> _datePowerListMap = {};
+  DateTime? selectedDate = DateTime.now();
+  String selectedDateStr = "";
 
   Map<String?, List<DevPowerSummary>> get getPowerTypeMap {
     return _powerTypeMap;
@@ -54,15 +54,18 @@ class PowerTypeChartDataManager extends ChangeNotifier {
 
   void init(BuildContext context) async {}
 
-  Future<void> getPowerTypesFromDateRange(
-      BuildContext context, DateTime startDate, DateTime endDate) async {
+  Future<void> getPowerTypesFromDateRange(BuildContext context) async {
     List<PowerType>? powerTypeList = await _getPowerTypes(context);
     List<LoggerConfig>? calcPowerList = await _getPowerCalcs(context);
+    _datePowerListMap.clear();
     initCalcPowers(calcPowerList!);
 
-    DateFormat formatter = DateFormat('yyyymmdd');
-    String sDate = formatter.format(startDate);
-    String eDate = formatter.format(endDate);
+    DateFormat df = DateFormat("yyyy-MMMM-dd");
+    selectedDateStr = df.format(selectedDate!);
+
+    DateFormat formatter = DateFormat('yyyyMMdd');
+    String sDate = formatter.format(selectedDate!);
+    String eDate = formatter.format(selectedDate!);
 
     List<DevPowerSummary>? powerList =
         await _getPowerList(context, sDate, eDate);
@@ -79,13 +82,13 @@ class PowerTypeChartDataManager extends ChangeNotifier {
       if (_powerTypeMap[pType.powerType] == null) {
         _powerTypeMap[pType.powerType] = [];
       }
-      for (var j = 0; j < powerList!.length; j++) {
-        if (_powerMap[powerList[j].powerName] == null) {
-          _powerMap[powerList[j].powerName] = [];
+      for (var j = 0; j < _powerList!.length; j++) {
+        if (_powerMap[_powerList![j].powerName] == null) {
+          _powerMap[_powerList![j].powerName] = [];
         }
 
-        if (powerList[j].powerName == powerTypeList[i].powerName) {
-          _powerTypeMap[pType.powerType]!.add(powerList[j]);
+        if (_powerList![j].powerName == powerTypeList[i].powerName) {
+          _powerTypeMap[pType.powerType]!.add(_powerList![j]);
         }
       }
     }
@@ -108,67 +111,26 @@ class PowerTypeChartDataManager extends ChangeNotifier {
 
     _expressionPowerMap.forEach((pName, exp) {
       _datePowerListMap.forEach((date, pList) {
-        _powerList!.add(getExpRecursive(jsonDecode(exp!), date)!);
+        var expRecursive = getExpRecursive(jsonDecode(exp!), date);
+        if (expRecursive != null) {
+          expRecursive.powerName = pName;
+          _powerList!.add(expRecursive);
+        }
       });
     });
-
-    // bool isExist = false;
-    // for (var i = 0; i < powerList.length; i++) {
-    //   {
-    //     if (powerTypeSeriesPoint.time ==
-    //         DateTime.fromMillisecondsSinceEpoch(powerList[i].lastUpdate)) {
-    //       powerTypeSeriesPoint.value += powerList[i].powerW;
-    //       isExist = true;
-    //       break;
-    //     }
-    //   }
-    //   if (!isExist) {
-    //     ptspList.add(PowerTypeSeriesPoint(
-    //         DateTime.fromMillisecondsSinceEpoch(powerList[i].lastUpdate),
-    //         powerList[i].powerW));
-    //   }
-    // }
   }
 
   void initCalcPowers(List<LoggerConfig?> calcPowerList) {
     for (var i = 0; i < calcPowerList.length; i++) {
-      DevPowerSummary power = createEmptyPower();
-      power.powerName = calcPowerList[i]?.confKey;
-
-      // _calcPowerList.add(power); //not used yet
-      if (_calcPowerMap[power.powerName] == null) {
-        _calcPowerMap[power.powerName] = [];
-      }
-      _calcPowerMap[power.powerName]!.add(power);
-      _expressionPowerMap[power.powerName] = (calcPowerList[i]?.confValue);
+      _expressionPowerMap[calcPowerList[i]?.confKey] =
+          (calcPowerList[i]?.confValue);
     }
   }
-
-  // List<DevPowerSummary> calcExpressionPowers(List<DevPowerSummary>? pList) {
-  //   _calcPowerList.clear();
-  //   for (var item in _expressionPowerMap.entries) {
-  //     String? powerName = item.key;
-  //     String? expression = item.value;
-
-  //     for (var i = 0; i < _calcPowerMap[powerName]!.length; i++) {
-  //       _calcPowerMap[powerName]![i]!.powerName = powerName;
-  //       // _calcPowerMap[powerName]!.powerType = powerName;
-
-  //       Map<String, dynamic> expMap = jsonDecode(expression!);
-  //       _calcPowerMap[powerName]![i] = getExpRecursive(expMap);
-  //       _calcPowerMap[powerName]![i]!.powerType = expMap['powerType'];
-  //       _calcPowerMap[powerName]![i]!.powerName = powerName;
-  //       _calcPowerList.add(_calcPowerMap[powerName]![i]!);
-  //     }
-  //   }
-  //   return _calcPowerList;
-  // }
 
   DevPowerSummary? getExpRecursive(Map<String, dynamic> expMap, DateTime date) {
     var p1Value = null;
     if (expMap['p1'] is String) {
-      // for(var i = 0; )
-      p1Value = _datePowerListMap[date]![expMap['p1']];
+      p1Value = getPowerFromList(_datePowerListMap[date]!, expMap['p1']);
     } else if (expMap['p1'] is Map<String, dynamic>) {
       p1Value = getExpRecursive(expMap['p1'], date);
     } else if (expMap['p1'] is num) {
@@ -178,7 +140,7 @@ class PowerTypeChartDataManager extends ChangeNotifier {
 
     var p2Value = null;
     if (expMap['p2'] is String) {
-      p2Value = _datePowerListMap[date]![expMap['p2']];
+      p2Value = getPowerFromList(_datePowerListMap[date]!, expMap['p2']);
     } else if (expMap['p2'] is Map<String, dynamic>) {
       p2Value = getExpRecursive(expMap['p2'], date);
     } else if (expMap['p2'] is num) {
@@ -186,9 +148,14 @@ class PowerTypeChartDataManager extends ChangeNotifier {
       p2Value.powerW = expMap['p2'] * 1.0;
     }
 
-    DevPowerSummary resultPower = createEmptyPower();
+    DevPowerSummary? resultPower = createEmptyPower();
+
+    resultPower.lastUpdate = date.millisecondsSinceEpoch;
 
     var mathFunction = getMathFunction(expMap['op']);
+    if (p1Value == null || p2Value == null) {
+      return resultPower;
+    }
     resultPower.powerW = mathFunction(p1Value.powerW!, p2Value.powerW!);
     resultPower.ratedPowerW =
         mathFunction(p1Value.ratedPowerW!, p2Value.ratedPowerW!);
@@ -198,6 +165,16 @@ class PowerTypeChartDataManager extends ChangeNotifier {
     resultPower.voltageV = (p1Value.voltageV! + p2Value.voltageV!) / 2;
     resultPower.currentA = mathFunction(p1Value.currentA!, p2Value.currentA!);
     return resultPower;
+  }
+
+  DevPowerSummary? getPowerFromList(
+      List<DevPowerSummary?> pList, String pName) {
+    for (var i = 0; i < pList.length; i++) {
+      if (pList[i]!.powerName == pName) {
+        return pList[i];
+      }
+    }
+    return null;
   }
 
   double Function(double a, double b) getMathFunction(op) {
@@ -225,6 +202,19 @@ class PowerTypeChartDataManager extends ChangeNotifier {
     p.voltageV = 0;
     p.currentA = 0;
     return p;
+  }
+
+  Future<DateTime?> onDatePickerOpen(BuildContext context) async {
+    var dateTime = await showDatePicker(
+        context: context,
+        initialDate: selectedDate!,
+        firstDate: DateTime.now().subtract(const Duration(days: 365)),
+        lastDate: DateTime.now(),
+        helpText: "Query a specific day",
+        initialDatePickerMode: DatePickerMode.day);
+
+    selectedDate = dateTime;
+    return dateTime;
   }
 }
 

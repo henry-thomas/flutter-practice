@@ -345,10 +345,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                 // ),
                 onPressed: () {
                   Provider.of<PowerTypeChartDataManager>(context, listen: false)
-                      .getPowerTypesFromDateRange(
-                          context,
-                          DateTime.parse('20220606'),
-                          DateTime.parse('20220606'));
+                      .getPowerTypesFromDateRange(context);
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
                     return const ChartsPageView();
                   }));
