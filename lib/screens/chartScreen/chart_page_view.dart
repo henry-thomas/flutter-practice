@@ -6,16 +6,12 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:provider_test/flutterFlow/flutter_flow_theme.dart';
 import 'package:provider_test/providers/power_type_chart_manager.dart';
-import 'package:provider_test/screens/chartScreen/chart_controller.dart';
 import 'package:provider_test/screens/chartScreen/power_type_chart.dart';
 
-import '../../providers/websocket/ps_manager.dart';
 import '../EventsScreen/events_page_view.dart';
 import '../dashboardScreen/dashboard_page_view.dart';
 import '../loginScreen/login_page_view.dart';
 import '../weatherScreen/weather_page_view.dart';
-import 'chartComponents/date_picker_component.dart';
-import 'fl_chart_test.dart';
 
 class ChartsPageView extends StatefulWidget {
   const ChartsPageView({Key? key}) : super(key: key);

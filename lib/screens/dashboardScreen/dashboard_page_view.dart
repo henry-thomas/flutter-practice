@@ -13,19 +13,14 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider_test/providers/device_manager.dart';
 import 'package:provider_test/providers/websocket/es_manager.dart';
 import 'package:provider_test/providers/websocket/ps_manager.dart';
-import 'package:provider_test/screens/dashboardScreen/dashboardComponents/energy_efficiency_indicator.dart';
 import 'package:provider_test/screens/dashboardScreen/dashboardComponents/more_info_grid_card.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 import '../../providers/power_type_chart_manager.dart';
 import '../EventsScreen/events_page_view.dart';
 import '../chartScreen/chart_page_view.dart';
-import '../test_screen.dart';
-import '../weatherScreen/weatherControllers/weather_api.dart';
 import '../weatherScreen/weather_page_view.dart';
-import 'dashbaord_page_loading_view.dart';
 import 'package:provider_test/screens/loginScreen/login_page_view.dart';
-import 'package:provider_test/screens/dashboardScreen/dashboardComponents/battery_view.dart';
 import 'package:provider/provider.dart';
 import 'package:provider_test/providers/websocket/ws_manager.dart';
 
@@ -33,13 +28,11 @@ import 'dashboardAnimation/dashboard_animation_controller.dart';
 import 'dashboardAnimation/dashboard_animation_provider.dart';
 import 'dashboardComponents/dashboard_button_actions.dart';
 import 'dashboardComponents/eco_score_card.dart';
-import 'dashboardComponents/liveCharts/pv_live_chart.dart';
 import 'dashboardComponents/logger_list_component.dart';
 import 'dashboardComponents/more_info_bat_card.dart';
 import 'dashboardComponents/more_info_load_card.dart';
 import 'dashboardComponents/more_info_pv_card.dart';
 import 'dashboardComponents/muli_daily_energy_card.dart';
-import 'package:alan_voice/alan_voice.dart';
 
 class DashboardWidget extends StatefulWidget {
   const DashboardWidget({Key? key}) : super(key: key);
@@ -51,19 +44,6 @@ class DashboardWidget extends StatefulWidget {
 class _DashboardWidgetState extends State<DashboardWidget> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
-  // _DashboardWidgetState() {
-  //   AlanVoice.addButton("1e7b405a0b96f10a7038e5097548796f2e956eca572e1d8b807a3e2338fdd0dc/stage");
-  //   AlanVoice.onCommand.add((command) {
-  //     debugPrint("got new command ${command.toString()}");
-  //   });
-  // }
-
-  // _DashboardWidgetState({
-  //   this.fabLocation = FloatingActionButtonLocation.endDocked,
-  //   this.shape = const CircularNotchedRectangle(),
-  //  this.alan = const
-  // });
-
   bool greenEfficiencyVisibility = false;
 
   bool isWsInit = false;
@@ -74,12 +54,6 @@ class _DashboardWidgetState extends State<DashboardWidget> {
     }
   }
 
-  // Future __initDevManager(BuildContext context) async {
-  //   await Provider.of<DeviceManager>(context, listen: false).init(context);
-  // }
-
-  // final FloatingActionButtonLocation? fabLocation;
-  // final NotchedShape shape;
   static final List<FloatingActionButtonLocation> centerLocations =
       <FloatingActionButtonLocation>[
     FloatingActionButtonLocation.centerDocked,
@@ -241,40 +215,13 @@ class _DashboardWidgetState extends State<DashboardWidget> {
     String batPower = (esManager.sumData.powerW / 1000).toStringAsFixed(2);
     final batStorageTxt = esManager.sumData.capacityP.toStringAsFixed(1);
     final batStorageLevel = esManager.sumData.capacityP / 100;
-    // final weatherData = Provider.of<WeatherApi>(
-    //   context,
-    //   listen: false,
-    // );
+
     final energyEfficiencyPercentageTxt =
         psManager.energyEfficiencyPercentageTxt;
     final energyEfficiencyPercentage = psManager.energyEfficiency / 100;
     final energyLinePosition = psManager.energyLinePosition;
 
-    // weatherData.queryWeather();
-    // weatherData.queryForecast();
-    // String gridPower = Provider.of<PowerServiceManager>(context).getGridPower.toStringAsFixed(2);
-    // int random = Provider.of<WsManager>(context).getRandom;
-
     return Scaffold(
-      // floatingActionButton: _showFab
-      //     ? FloatingActionButton(
-      //         onPressed: () {
-      //           // Navigator.push(context, MaterialPageRoute(builder: (context) {
-      //           //   return  AlanTest();
-      //           // }));
-      //           // AddLoggerView.addLoggerDialog(context, setState);
-      //         },
-      //         backgroundColor:
-      //             FlutterFlowTheme.of(context).primaryColor?.withOpacity(0.9),
-      //         tooltip: 'Create',
-      //         child: Icon(
-      //           FontAwesomeIcons.chartPie,
-      //           size: 22,
-      //           color: FlutterFlowTheme.of(context).tertiaryColor,
-      //         ),
-      //       )
-      //     : null,
-      // floatingActionButtonLocation: _fabLocation,
       bottomNavigationBar: BottomAppBar(
         shape: _showNotch ? const CircularNotchedRectangle() : null,
         color: FlutterFlowTheme.of(context).primaryColor?.withOpacity(0.7),
@@ -496,140 +443,15 @@ class _DashboardWidgetState extends State<DashboardWidget> {
               child: Column(
                 mainAxisSize: MainAxisSize.max,
                 children: [
-                  Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: MediaQuery.of(context).size.height * 0.13,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        fit: BoxFit.fitWidth,
-                        image: FlutterFlowTheme.of(context).backDrop!.image,
-                      ),
-                    ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        Row(
-                          mainAxisSize: MainAxisSize.max,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsetsDirectional.fromSTEB(
-                                  0, 5, 0, 0),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.max,
-                                children: [
-                                  Padding(
-                                    padding:
-                                        const EdgeInsetsDirectional.fromSTEB(
-                                            45, 0, 0, 0),
-                                    child: Image.asset(
-                                      'assets/images/Rectangle_12.png',
-                                      width: 40,
-                                      height: 40,
-                                      fit: BoxFit.fitHeight,
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding:
-                                        const EdgeInsetsDirectional.fromSTEB(
-                                            5, 8, 0, 0),
-                                    child: Text(
-                                      Provider.of<DeviceManager>(context,
-                                              listen: false)
-                                          .getSelectedLogger!
-                                          .description,
-                                      style: FlutterFlowTheme.of(context)
-                                          .bodyText1
-                                          .override(
-                                            fontFamily: 'Poppins',
-                                            fontSize: 12,
-                                          ),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding:
-                                        const EdgeInsetsDirectional.fromSTEB(
-                                            5, 8, 0, 0),
-                                    child: Text(
-                                      Provider.of<DeviceManager>(context,
-                                              listen: false)
-                                          .getSelectedLogger!
-                                          .serNum,
-                                      style: FlutterFlowTheme.of(context)
-                                          .bodyText1
-                                          .override(
-                                            fontFamily: 'Poppins',
-                                            color: FlutterFlowTheme.of(context)
-                                                .secondaryText,
-                                            fontSize: 12,
-                                          ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                        Padding(
-                          padding:
-                              const EdgeInsetsDirectional.fromSTEB(0, 0, 0, 0),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.max,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsetsDirectional.fromSTEB(
-                                    45, 0, 0, 0),
-                                child: Image.asset(
-                                  'assets/images/Rectangle_22-9-7-7.png',
-                                  width: 40,
-                                  height: 30,
-                                  fit: BoxFit.fitHeight,
-                                ),
-                              ),
-                              LinearPercentIndicator(
-                                  percent: batStorageLevel,
-                                  //batteryLevel,
-                                  width: 140,
-                                  lineHeight: 15,
-                                  animation: false,
-                                  progressColor: Colors.green,
-                                  //batteryLevelColor,
-                                  backgroundColor: const Color(0x7DFFFFFF),
-                                  center: Text(
-                                    '$batStorageTxt%',
-                                    style: FlutterFlowTheme.of(context)
-                                        .bodyText1
-                                        .override(
-                                          fontFamily: 'Poppins',
-                                          color: FlutterFlowTheme.of(context)
-                                              .primaryText,
-                                          fontSize: 10,
-                                        ),
-                                  ),
-                                  barRadius: const Radius.circular(10)),
-                              const Padding(
-                                padding:
-                                    EdgeInsetsDirectional.fromSTEB(10, 0, 0, 0),
-                              ),
-                              Row(
-                                mainAxisSize: MainAxisSize.max,
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                // children: [],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
                   Material(
                     color: Colors.transparent,
-                    elevation: 1,
+                    // elevation: 1,
                     // shape: RoundedRectangleBorder(
                     //   borderRadius: BorderRadius.circular(10),
                     // ),
                     child: Material(
                       color: Colors.transparent,
-                      elevation: 5,
+                      // elevation: 5,
                       // shape: RoundedRectangleBorder(
                       //   borderRadius: BorderRadius.circular(10),
                       // ),
@@ -649,13 +471,13 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                           // borderRadius: BorderRadius.circular(10),
                         ),
                         child: SizedBox(
-                          width: double.infinity,
+                          width: MediaQuery.of(context).size.width,
                           height: 500,
                           child: Stack(
                             children: [
                               Padding(
                                 padding: const EdgeInsetsDirectional.fromSTEB(
-                                    0, 0, 0, 50),
+                                    0, 0, 0, 0),
                                 child: PageView(
                                   controller: pageViewController ??=
                                       PageController(initialPage: 0),
