@@ -78,10 +78,10 @@ class DashboardAnimImage extends StatelessWidget {
                               barRadius: const Radius.circular(0)),
                         ),
                       ),
-                      // Transform.translate(
-                      //   offset: const Offset(-37, 0),
-                      //   child: icon,
-                      // ),
+                      Transform.translate(
+                        offset: const Offset(-40, 0),
+                        child: icon,
+                      ),
                     ],
                   ),
                 ),
