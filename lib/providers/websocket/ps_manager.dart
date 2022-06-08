@@ -95,6 +95,10 @@ class PowerServiceManager extends ChangeNotifier {
     return _powerTypeMap;
   }
 
+  Map<String?, DevPowerSummary> get getLivePowerTypeMap {
+    return _livePowerTypeMap;
+  }
+
   Future<List<PowerType>?> _getPowerTypes(BuildContext context) async {
     var powerTypes = await Provider.of<ApiController>(context, listen: false)
         .getPowerTypeList(Provider.of<DeviceManager>(context, listen: false)
@@ -291,6 +295,21 @@ class PowerServiceManager extends ChangeNotifier {
     }
 
     var totGrid = gridConsume - gridFeed;
+
+    //Calc Grid Power
+    if (gridConsume > 0 || gridFeed > 0) {
+      _livePowerTypeMap['grid'] = DevPowerSummary();
+      if (totGrid < 0) {
+        _livePowerTypeMap['grid']!.powerW = -totGrid;
+        _livePowerTypeMap['grid']!.ratedPowerW =
+            _livePowerTypeMap['gridFeed']!.ratedPowerW;
+      } else {
+        _livePowerTypeMap['grid']!.powerW = totGrid;
+        _livePowerTypeMap['grid']!.ratedPowerW =
+            _livePowerTypeMap['gridConsume']!.ratedPowerW;
+      }
+    }
+
     gridPower = totGrid;
     if (gridPower > 0) {
       gridDotActive = 1;
@@ -320,27 +339,27 @@ class PowerServiceManager extends ChangeNotifier {
     totalFinancial = pvTotalEnergy * 1.46;
 
     // Environmental Benefits calculation
-    c02Reduced = ((pvTotalEnergy / 1000000) * 0.9) * 1000;
-    waterSaved = ((pvTotalEnergy / 1000000) * 1.35) * 1000;
-    electricCar = ((pvTotalEnergy / 1000000) * 8.2) * 1000;
+    c02Reduced = ((pvTotalEnergy) * 0.9);
+    waterSaved = ((pvTotalEnergy) * 1.35);
+    electricCar = ((pvTotalEnergy) * 8.2);
 
     // Energy Efficiency
     // (total Grid / total load) *100
 
-    energyEfficiency = 100 - ((gridTotalEnergy / loadTotalEnergy) * 100);
+    energyEfficiency = 100 - ((gridPower / loadPower) * 100);
     if (energyEfficiency.isNaN) {
       energyEfficiency = 0;
     }
     energyEfficiencyPercentageTxt = energyEfficiency.toStringAsFixed(1);
-    energyLinePosition = (energyEfficiency / 100) * 300;
+    energyLinePosition = (energyEfficiency / 100);
 
-    if (energyLinePosition < 100) {
+    if (energyLinePosition < 0.3) {
       energyEfficiencyColor = Colors.red;
     }
-    if (energyLinePosition > 100 && energyLinePosition < 200) {
+    if (energyLinePosition > 0.3 && energyLinePosition < 0.6) {
       energyEfficiencyColor = Colors.orange;
     }
-    if (energyLinePosition > 200) {
+    if (energyLinePosition > 0.6) {
       energyEfficiencyColor = Colors.green;
     }
 

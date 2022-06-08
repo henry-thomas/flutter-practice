@@ -158,8 +158,20 @@ class _PowerTypeChartState extends State<PowerTypeChart> {
         child: charts.TimeSeriesChart(
           widget.seriesList,
 
+          layoutConfig: charts.LayoutConfig(
+            leftMarginSpec: charts.MarginSpec.fixedPixel(0),
+            rightMarginSpec: charts.MarginSpec.fixedPixel(0),
+            bottomMarginSpec: charts.MarginSpec.fixedPixel(15),
+            topMarginSpec: charts.MarginSpec.fixedPixel(10),
+          ),
           primaryMeasureAxis: new charts.NumericAxisSpec(
-              tickFormatterSpec: simpleCurrencyFormatter),
+              tickFormatterSpec: simpleCurrencyFormatter,
+              renderSpec: charts.GridlineRendererSpec(
+                  labelJustification: charts.TickLabelJustification.outside,
+                  labelAnchor: charts.TickLabelAnchor.after,
+                  labelStyle:
+                      charts.TextStyleSpec(fontSize: 15, lineHeight: 0.2),
+                  labelOffsetFromAxisPx: -35)),
 
           defaultRenderer: new charts.LineRendererConfig(
               includeArea: true, areaOpacity: 0.1),

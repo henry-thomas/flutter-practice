@@ -221,7 +221,7 @@ class _ChartsPageViewState extends State<ChartsPageView> {
         child: Column(
           children: [
             Padding(
-              padding: const EdgeInsetsDirectional.fromSTEB(0, 20, 0, 5),
+              padding: const EdgeInsetsDirectional.fromSTEB(0, 10, 0, 5),
               child: Row(
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -233,7 +233,7 @@ class _ChartsPageViewState extends State<ChartsPageView> {
                   ),
                   InkWell(
                     child: Padding(
-                      padding: const EdgeInsetsDirectional.fromSTEB(2, 0, 2, 0),
+                      padding: const EdgeInsetsDirectional.fromSTEB(0, 0, 0, 0),
                       child: Container(
                         child: Row(
                           children: [
@@ -303,7 +303,7 @@ class _ChartsPageViewState extends State<ChartsPageView> {
                       color: FlutterFlowTheme.of(context).primaryBackground,
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    padding: EdgeInsets.all(10.0),
+                    padding: EdgeInsets.all(0.0),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[

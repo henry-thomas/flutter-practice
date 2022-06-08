@@ -20,6 +20,13 @@ class _BatCardState extends State<BatCard> {
     final batStorageLevel = esManager.sumData.capacityP;
     final batCurrent = esManager.sumData.currentA.toStringAsFixed(2);
     final batVoltage = esManager.sumData.voltageV.toStringAsFixed(2);
+
+    // String getBatState() {
+    //   if (esManager.sumData.powerW > 0) {
+    //     return "";
+    //   }
+    // }
+
     return Row(
       children: <Widget>[
         Expanded(
@@ -33,52 +40,6 @@ class _BatCardState extends State<BatCard> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: const <Widget>[],
-                  ),
-                  Padding(
-                    padding: const EdgeInsetsDirectional.fromSTEB(0, 10, 0, 0),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Row(
-                          mainAxisSize: MainAxisSize.max,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsetsDirectional.fromSTEB(
-                                  0, 0, 10, 0),
-                              child: Icon(
-                                Icons.battery_charging_full,
-                                color:
-                                    FlutterFlowTheme.of(context).tertiaryColor,
-                                size: 16,
-                              ),
-                            ),
-                            Text(
-                              "State",
-                              style: FlutterFlowTheme.of(context)
-                                  .bodyText1
-                                  .override(
-                                    fontFamily: 'Poppins',
-                                    color: FlutterFlowTheme.of(context)
-                                        .secondaryText,
-                                    fontSize: 11,
-                                  ),
-                            ),
-                            Text(
-                              '(batExport) kW',
-                              style: FlutterFlowTheme.of(context)
-                                  .bodyText1
-                                  .override(
-                                    fontFamily: 'Poppins',
-                                    color: const Color(0xFF3999D2),
-                                    fontSize: 18,
-                                  ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
                   ),
                   Padding(
                     padding: const EdgeInsetsDirectional.fromSTEB(10, 10, 0, 0),
@@ -134,7 +95,7 @@ class _BatCardState extends State<BatCard> {
                             mainAxisSize: MainAxisSize.max,
                             children: [
                               Container(
-                                width: 60,
+                                width: 80,
                                 height: 29,
                                 decoration: BoxDecoration(
                                   color: FlutterFlowTheme.of(context)
@@ -218,7 +179,7 @@ class _BatCardState extends State<BatCard> {
                             mainAxisSize: MainAxisSize.max,
                             children: [
                               Container(
-                                width: 60,
+                                width: 80,
                                 height: 29,
                                 decoration: BoxDecoration(
                                   color: FlutterFlowTheme.of(context)
@@ -302,7 +263,7 @@ class _BatCardState extends State<BatCard> {
                             mainAxisSize: MainAxisSize.max,
                             children: [
                               Container(
-                                width: 60,
+                                width: 80,
                                 height: 29,
                                 decoration: BoxDecoration(
                                   color: FlutterFlowTheme.of(context)

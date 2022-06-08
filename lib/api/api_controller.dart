@@ -77,7 +77,7 @@ class ApiController extends ChangeNotifier {
         await Provider.of<DeviceManager>(context, listen: false).init(context);
 
         Navigator.push(context, MaterialPageRoute(builder: (context) {
-          return DashboardWidget();
+          return const DashboardWidget();
         }));
       }
     } else {

@@ -1,8 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../flutterFlow/flutter_flow_theme.dart';
 
@@ -23,16 +19,17 @@ class DashInfoDFWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsetsDirectional.fromSTEB(0, 5, 0, 0),
+      padding: EdgeInsetsDirectional.fromSTEB(10, 10, 0, 0),
       child: Row(
         mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            width: 140,
+            width: 120,
             height: 30,
-            decoration: BoxDecoration(
-              color: FlutterFlowTheme.of(context).primaryBackground,
+            decoration: const BoxDecoration(
+              color: Colors.transparent,
             ),
             alignment: const AlignmentDirectional(0, 0),
             child: Row(
@@ -57,21 +54,21 @@ class DashInfoDFWidget extends StatelessWidget {
           Container(
             width: 150,
             height: 30,
-            decoration: BoxDecoration(
-              color: FlutterFlowTheme.of(context).primaryBackground,
+            decoration: const BoxDecoration(
+              color: Colors.transparent,
             ),
             alignment: const AlignmentDirectional(0, 0),
             child: Row(
               mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Container(
-                  width: 80,
+                  width: 100,
                   height: 29,
-                  decoration: BoxDecoration(
-                    color: FlutterFlowTheme.of(context).primaryBackground,
+                  decoration: const BoxDecoration(
+                    color: Colors.transparent,
                   ),
-                  alignment: const AlignmentDirectional(
-                      -0.050000000000000044, -0.050000000000000044),
+                  alignment: const AlignmentDirectional(-0.05, -0.05),
                   child: Text(
                     value.toStringAsFixed(2),
                     style: FlutterFlowTheme.of(context).bodyText1,
