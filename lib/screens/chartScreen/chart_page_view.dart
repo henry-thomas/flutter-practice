@@ -68,44 +68,44 @@ class _ChartsPageViewState extends State<ChartsPageView> {
                 },
               ),
               // if (centerLocations.contains(fabLocation)) const Spacer(),
+              // IconButton(
+              //   tooltip: 'Weather',
+              //   icon: FaIcon(
+              //     FontAwesomeIcons.cloudSun,
+              //     color: FlutterFlowTheme.of(context).tertiaryColor,
+              //     size: 20,
+              //   ),
+              //   // icon: Icon(
+              //   //   Icons.dashboard,
+              //   //   color: FlutterFlowTheme.of(context).tertiaryColor,
+              //   //   size: 22,
+              //   // ),
+              //   onPressed: () {
+              //     Navigator.push(context, MaterialPageRoute(builder: (context) {
+              //       return const WeatherPage();
+              //     }));
+              //   },
+              // ),
+              // IconButton(
+              //   tooltip: 'Events',
+              //   icon: Icon(
+              //     Icons.event,
+              //     color: FlutterFlowTheme.of(context).tertiaryColor,
+              //     size: 20,
+              //   ),
+              //   // icon: Icon(
+              //   //   Icons.dashboard,
+              //   //   color: FlutterFlowTheme.of(context).tertiaryColor,
+              //   //   size: 22,
+              //   // ),
+              //   onPressed: () {
+              //     Navigator.push(context, MaterialPageRoute(builder: (context) {
+              //       return const EventsPageView();
+              //     }));
+              //   },
+              // ),
               IconButton(
-                tooltip: 'Weather',
-                icon: FaIcon(
-                  FontAwesomeIcons.cloudSun,
-                  color: FlutterFlowTheme.of(context).tertiaryColor,
-                  size: 20,
-                ),
-                // icon: Icon(
-                //   Icons.dashboard,
-                //   color: FlutterFlowTheme.of(context).tertiaryColor,
-                //   size: 22,
-                // ),
-                onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return const WeatherPage();
-                  }));
-                },
-              ),
-              IconButton(
-                tooltip: 'Events',
-                icon: Icon(
-                  Icons.event,
-                  color: FlutterFlowTheme.of(context).tertiaryColor,
-                  size: 20,
-                ),
-                // icon: Icon(
-                //   Icons.dashboard,
-                //   color: FlutterFlowTheme.of(context).tertiaryColor,
-                //   size: 22,
-                // ),
-                onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return const EventsPageView();
-                  }));
-                },
-              ),
-              IconButton(
-                tooltip: 'Charts',
+                tooltip: 'Power Chart',
                 icon: const FaIcon(
                   FontAwesomeIcons.chartPie,
                   color: Colors.white,

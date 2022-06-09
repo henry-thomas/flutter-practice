@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:provider_test/screens/dashboardScreen/dashboardComponents/dash_info_data_field.dart';
 import '../../../flutterFlow/flutter_flow_theme.dart';
 import '../../../providers/websocket/ps_manager.dart';
+import 'liveCharts/pv_live_chart.dart';
 
 class DailyEnergyCard extends StatefulWidget {
   const DailyEnergyCard({Key? key}) : super(key: key);
@@ -27,7 +28,9 @@ class _DailyEnergyCardState extends State<DailyEnergyCard> {
       padding: const EdgeInsetsDirectional.fromSTEB(0, 10, 0, 0),
       child: Column(
         mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
+          // LivePvChart(),
           DashInfoDFWidget(
               value: psManager.pvDailyEnergy,
               unit: "kWh",

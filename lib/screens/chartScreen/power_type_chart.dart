@@ -244,10 +244,9 @@ class _PowerTypeChartState extends State<PowerTypeChart> {
                       charts.TextStyleSpec(fontSize: 12, lineHeight: 1)),
               tickFormatterSpec: new charts.AutoDateTimeTickFormatterSpec(
                   hour: new charts.TimeFormatterSpec(
-                      format: 'HH:mm', transitionFormat: 'MM/dd HH:mm'),
+                      format: 'HH:mm', transitionFormat: 'HH:mm'),
                   day: new charts.TimeFormatterSpec(
-                      format: 'MM/dd hh:mm',
-                      transitionFormat: 'MM/dd/yyyy HH:mm'))),
+                      format: 'hh:mm', transitionFormat: 'HH:mm'))),
 
           // Optionally pass in a [DateTimeFactory] used by the chart. The factory
           // should create the same type of [DateTime] as the data provided. If none

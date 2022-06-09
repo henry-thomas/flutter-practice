@@ -240,45 +240,44 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                 onPressed: () {},
               ),
               // if (centerLocations.contains(fabLocation)) const Spacer(),
-              const DashbaordAnimationController(),
+              // IconButton(
+              //   tooltip: 'Weather',
+              //   icon: FaIcon(
+              //     FontAwesomeIcons.cloudSun,
+              //     color: FlutterFlowTheme.of(context).tertiaryColor,
+              //     size: 20,
+              //   ),
+              //   // icon: Icon(
+              //   //   Icons.dashboard,
+              //   //   color: FlutterFlowTheme.of(context).tertiaryColor,
+              //   //   size: 22,
+              //   // ),
+              //   onPressed: () {
+              //     Navigator.push(context, MaterialPageRoute(builder: (context) {
+              //       return const WeatherPage();
+              //     }));
+              //   },
+              // ),
+              // IconButton(
+              //   tooltip: 'Events',
+              //   icon: Icon(
+              //     Icons.event,
+              //     color: FlutterFlowTheme.of(context).tertiaryColor,
+              //     size: 20,
+              //   ),
+              //   // icon: Icon(
+              //   //   Icons.dashboard,
+              //   //   color: FlutterFlowTheme.of(context).tertiaryColor,
+              //   //   size: 22,
+              //   // ),
+              //   onPressed: () {
+              //     Navigator.push(context, MaterialPageRoute(builder: (context) {
+              //       return const EventsPageView();
+              //     }));
+              //   },
+              // ),
               IconButton(
-                tooltip: 'Weather',
-                icon: FaIcon(
-                  FontAwesomeIcons.cloudSun,
-                  color: FlutterFlowTheme.of(context).tertiaryColor,
-                  size: 20,
-                ),
-                // icon: Icon(
-                //   Icons.dashboard,
-                //   color: FlutterFlowTheme.of(context).tertiaryColor,
-                //   size: 22,
-                // ),
-                onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return const WeatherPage();
-                  }));
-                },
-              ),
-              IconButton(
-                tooltip: 'Events',
-                icon: Icon(
-                  Icons.event,
-                  color: FlutterFlowTheme.of(context).tertiaryColor,
-                  size: 20,
-                ),
-                // icon: Icon(
-                //   Icons.dashboard,
-                //   color: FlutterFlowTheme.of(context).tertiaryColor,
-                //   size: 22,
-                // ),
-                onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return const EventsPageView();
-                  }));
-                },
-              ),
-              IconButton(
-                tooltip: 'Charts',
+                tooltip: 'Power Chart',
                 icon: FaIcon(
                   FontAwesomeIcons.chartPie,
                   color: FlutterFlowTheme.of(context).tertiaryColor,
@@ -439,629 +438,616 @@ class _DashboardWidgetState extends State<DashboardWidget> {
             color: FlutterFlowTheme.of(context).loadingBoxColor,
             backgroundColor: FlutterFlowTheme.of(context).primaryColor,
             child: SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  Material(
-                    color: Colors.transparent,
-                    // elevation: 1,
-                    // shape: RoundedRectangleBorder(
-                    //   borderRadius: BorderRadius.circular(10),
-                    // ),
-                    child: Material(
-                      color: Colors.transparent,
-                      // elevation: 5,
-                      // shape: RoundedRectangleBorder(
-                      //   borderRadius: BorderRadius.circular(10),
-                      // ),
-                      child: Padding(
-                        padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
-                        child: Container(
-                          width: MediaQuery.of(context).size.width * 1,
-                          height: 180,
-                          constraints:
-                              BoxConstraints.loose(const Size(530, 180)),
-                          decoration: BoxDecoration(
-                            // boxShadow: [
-                            //   BoxShadow(
-                            //     color: buttonAction.moreInfoColor,
-                            //     offset: Offset(0.0, buttonAction.offsetRadius),
-                            //     //(x,y)
-                            //     blurRadius: buttonAction.blurRadius,
-                            //   ),
-                            // ],
-                            color:
-                                FlutterFlowTheme.of(context).primaryBackground,
-                            // borderRadius: BorderRadius.circular(10),
+              child: Container(
+                constraints: const BoxConstraints(maxHeight: 700),
+                child: Column(
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    const DashbaordAnimationController(),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                      child: Container(
+                        width: MediaQuery.of(context).size.width * 1,
+                        // height: 180,
+                        constraints: BoxConstraints.loose(const Size(530, 180)),
+                        decoration: BoxDecoration(
+                          // boxShadow: [
+                          //   BoxShadow(
+                          //     color: buttonAction.moreInfoColor,
+                          //     offset: Offset(0.0, buttonAction.offsetRadius),
+                          //     //(x,y)
+                          //     blurRadius: buttonAction.blurRadius,
+                          //   ),
+                          // ],
+                          color: FlutterFlowTheme.of(context).primaryBackground,
+                          // borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: SizedBox(
+                          // width: MediaQuery.of(context).size.width,
+                          // height: 10,
+                          child: Stack(
+                            children: [
+                              PageView(
+                                controller: pageViewController ??=
+                                    PageController(initialPage: 0),
+                                scrollDirection: Axis.horizontal,
+                                children: [
+                                  Column(
+                                    children: infoCard,
+                                  ),
+                                  Container(
+                                    width: 100,
+                                    height: 100,
+                                    decoration: BoxDecoration(
+                                      color: const Color(0x00EEEEEE),
+                                      // backgroundBlendMode: BlendMode.src,
+                                      image: DecorationImage(
+                                        fit: BoxFit.fitHeight,
+
+                                        image: Image.asset(
+                                          'assets/images/rect1405.png',
+                                        ).image,
+                                        // opacity: 0.5
+                                      ),
+                                      borderRadius: const BorderRadius.only(
+                                        bottomLeft: Radius.circular(0),
+                                        bottomRight: Radius.circular(0),
+                                        topLeft: Radius.circular(5),
+                                        topRight: Radius.circular(5),
+                                      ),
+                                    ),
+                                    child: Padding(
+                                      padding:
+                                          const EdgeInsetsDirectional.fromSTEB(
+                                              0, 10, 0, 0),
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.max,
+                                        children: [
+                                          DashInfoDFWidget(
+                                              label: "CO2 reduced",
+                                              icon: FaIcon(
+                                                FontAwesomeIcons.cloudMeatball,
+                                                color:
+                                                    FlutterFlowTheme.of(context)
+                                                        .tertiaryColor,
+                                                size: 14,
+                                              ),
+                                              unit: "kg",
+                                              value: psManager.c02Reduced),
+                                          DashInfoDFWidget(
+                                              label: 'Electric Car Trip',
+                                              icon: Icon(
+                                                Icons.electric_car,
+                                                color:
+                                                    FlutterFlowTheme.of(context)
+                                                        .tertiaryColor,
+                                                size: 14,
+                                              ),
+                                              unit: "km",
+                                              value: psManager.electricCar),
+                                          DashInfoDFWidget(
+                                              label: "Water Saved",
+                                              icon: FaIcon(
+                                                FontAwesomeIcons
+                                                    .handHoldingDroplet,
+                                                color:
+                                                    FlutterFlowTheme.of(context)
+                                                        .tertiaryColor,
+                                                size: 14,
+                                              ),
+                                              unit: "L",
+                                              value: psManager.waterSaved),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  Container(
+                                    width: 100,
+                                    height: 100,
+                                    decoration: BoxDecoration(
+                                      color: const Color(0x00EEEEEE),
+                                      image: DecorationImage(
+                                        fit: BoxFit.fitHeight,
+                                        image: Image.asset(
+                                          'assets/images/moneyBackground.png',
+                                        ).image,
+
+                                        // opacity: 0.5
+                                      ),
+                                      borderRadius: const BorderRadius.only(
+                                        bottomLeft: Radius.circular(0),
+                                        bottomRight: Radius.circular(0),
+                                        topLeft: Radius.circular(5),
+                                        topRight: Radius.circular(5),
+                                      ),
+                                    ),
+                                    child: Padding(
+                                      padding:
+                                          const EdgeInsetsDirectional.fromSTEB(
+                                              0, 10, 0, 0),
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.max,
+                                        children: [
+                                          DashInfoDFWidget(
+                                              label: "Daily",
+                                              icon: FaIcon(
+                                                FontAwesomeIcons.coins,
+                                                color:
+                                                    FlutterFlowTheme.of(context)
+                                                        .tertiaryColor,
+                                                size: 14,
+                                              ),
+                                              unit: "Rand",
+                                              value: psManager.dailyFinancial),
+                                          DashInfoDFWidget(
+                                              label: "Monthly",
+                                              icon: FaIcon(
+                                                FontAwesomeIcons.coins,
+                                                color:
+                                                    FlutterFlowTheme.of(context)
+                                                        .tertiaryColor,
+                                                size: 14,
+                                              ),
+                                              unit: "Rand",
+                                              value:
+                                                  psManager.monthlyFinancial),
+                                          DashInfoDFWidget(
+                                              label: "Total",
+                                              icon: FaIcon(
+                                                FontAwesomeIcons.coins,
+                                                color:
+                                                    FlutterFlowTheme.of(context)
+                                                        .tertiaryColor,
+                                                size: 14,
+                                              ),
+                                              unit: "Rand",
+                                              value: psManager.totalFinancial),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Align(
+                                alignment: const AlignmentDirectional(0, 1),
+                                child: Padding(
+                                  padding: const EdgeInsetsDirectional.fromSTEB(
+                                      0, 0, 0, 0),
+                                  child: SmoothPageIndicator(
+                                    controller: pageViewController ??=
+                                        PageController(initialPage: 0),
+                                    count: 3,
+                                    axisDirection: Axis.horizontal,
+                                    onDotClicked: (i) {
+                                      pageViewController?.animateToPage(
+                                        i,
+                                        duration:
+                                            const Duration(milliseconds: 500),
+                                        curve: Curves.ease,
+                                      );
+                                    },
+                                    effect: const ScaleEffect(
+                                      dotHeight: 10,
+                                      dotWidth: 10,
+                                      // jumpScale: .7,
+                                      // verticalOffset: 15,
+                                      dotColor: Color(0xFF9E9E9E),
+                                      activeDotColor: Color(0xFFFFBC00),
+                                      paintStyle: PaintingStyle.fill,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
-                          child: SizedBox(
-                            // width: MediaQuery.of(context).size.width,
-                            // height: 10,
-                            child: Stack(
-                              children: [
-                                PageView(
-                                  controller: pageViewController ??=
-                                      PageController(initialPage: 0),
-                                  scrollDirection: Axis.horizontal,
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 5,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Row(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              DashboardAnimImage(
+                                onTap: insertPVInfoCard,
+                                icon: FaIcon(
+                                  FontAwesomeIcons.solarPanel,
+                                  color: FlutterFlowTheme.of(context)
+                                      .tertiaryColor,
+                                  size: 15,
+                                ),
+                                powerW:
+                                    psManager.getLivePowerTypeMap["pv"]?.powerW,
+                                ratedPowerW: psManager
+                                    .getLivePowerTypeMap["pv"]?.ratedPowerW,
+                              ),
+                            ],
+                          ),
+                          Row(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Padding(
+                                  padding: const EdgeInsetsDirectional.fromSTEB(
+                                      0, 15, 0, 0),
+                                  child: DashboardAnimImage(
+                                    onTap: insertGridInfoCard,
+                                    icon: Icon(
+                                      Icons.offline_bolt_outlined,
+                                      color: FlutterFlowTheme.of(context)
+                                          .tertiaryColor,
+                                      size: 20,
+                                    ),
+                                    powerW: psManager
+                                        .getLivePowerTypeMap["grid"]?.powerW,
+                                    ratedPowerW: psManager
+                                        .getLivePowerTypeMap["grid"]
+                                        ?.ratedPowerW,
+                                    fillColor: Colors.red,
+                                  )),
+                              Container(
+                                width: 150,
+                                height: 150,
+                                // child: const SpinKitCircle(
+                                //   color: Color(0xFFF2CC0D),
+                                //   size: 100.0,
+                                // ),
+                                decoration: BoxDecoration(
+                                  color: FlutterFlowTheme.of(context)
+                                      .primaryBackground,
+                                  image: DecorationImage(
+                                    fit: BoxFit.cover,
+                                    image: FlutterFlowTheme.of(context)
+                                        .dashboard!
+                                        .image,
+                                  ),
+                                ),
+                                alignment: const AlignmentDirectional(0, 0),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.max,
                                   children: [
-                                    Column(
-                                      children: infoCard,
-                                    ),
-                                    Container(
-                                      width: 100,
-                                      height: 100,
-                                      decoration: BoxDecoration(
-                                        color: const Color(0x00EEEEEE),
-                                        // backgroundBlendMode: BlendMode.src,
-                                        image: DecorationImage(
-                                          fit: BoxFit.fitHeight,
-
-                                          image: Image.asset(
-                                            'assets/images/rect1405.png',
-                                          ).image,
-                                          // opacity: 0.5
-                                        ),
-                                        borderRadius: const BorderRadius.only(
-                                          bottomLeft: Radius.circular(0),
-                                          bottomRight: Radius.circular(0),
-                                          topLeft: Radius.circular(5),
-                                          topRight: Radius.circular(5),
-                                        ),
-                                      ),
+                                    Transform.translate(
+                                      offset:
+                                          Offset(71.5, pvToBatDotPosition - 80),
                                       child: Padding(
                                         padding: const EdgeInsetsDirectional
-                                            .fromSTEB(0, 10, 0, 0),
-                                        child: Column(
-                                          mainAxisSize: MainAxisSize.max,
-                                          children: [
-                                            DashInfoDFWidget(
-                                                label: "CO2 reduced",
-                                                icon: FaIcon(
-                                                  FontAwesomeIcons
-                                                      .cloudMeatball,
-                                                  color: FlutterFlowTheme.of(
-                                                          context)
-                                                      .tertiaryColor,
-                                                  size: 14,
-                                                ),
-                                                unit: "kg",
-                                                value: psManager.c02Reduced),
-                                            DashInfoDFWidget(
-                                                label: 'Electric Car Trip',
-                                                icon: Icon(
-                                                  Icons.electric_car,
-                                                  color: FlutterFlowTheme.of(
-                                                          context)
-                                                      .tertiaryColor,
-                                                  size: 14,
-                                                ),
-                                                unit: "km",
-                                                value: psManager.electricCar),
-                                            DashInfoDFWidget(
-                                                label: "Water Saved",
-                                                icon: FaIcon(
-                                                  FontAwesomeIcons
-                                                      .handHoldingDroplet,
-                                                  color: FlutterFlowTheme.of(
-                                                          context)
-                                                      .tertiaryColor,
-                                                  size: 14,
-                                                ),
-                                                unit: "L",
-                                                value: psManager.waterSaved),
-                                          ],
+                                            .fromSTEB(0, 0, 0, 1),
+                                        child: Opacity(
+                                          opacity: psManager.pvToBatDotActive,
+                                          child: const FaIcon(
+                                            FontAwesomeIcons.solidCircle,
+                                            color: Colors.green,
+                                            size: 7,
+                                          ),
                                         ),
                                       ),
                                     ),
-                                    Container(
-                                      width: 100,
-                                      height: 100,
-                                      decoration: BoxDecoration(
-                                        color: const Color(0x00EEEEEE),
-                                        image: DecorationImage(
-                                          fit: BoxFit.fitHeight,
-                                          image: Image.asset(
-                                            'assets/images/moneyBackground.png',
-                                          ).image,
-
-                                          // opacity: 0.5
-                                        ),
-                                        borderRadius: const BorderRadius.only(
-                                          bottomLeft: Radius.circular(0),
-                                          bottomRight: Radius.circular(0),
-                                          topLeft: Radius.circular(5),
-                                          topRight: Radius.circular(5),
-                                        ),
-                                      ),
+                                    Transform.translate(
+                                      offset: Offset(
+                                          animProvider
+                                                  .gridAnimationPositionVal -
+                                              15,
+                                          1),
                                       child: Padding(
                                         padding: const EdgeInsetsDirectional
-                                            .fromSTEB(0, 10, 0, 0),
-                                        child: Column(
-                                          mainAxisSize: MainAxisSize.max,
-                                          children: [
-                                            DashInfoDFWidget(
-                                                label: "Daily",
-                                                icon: FaIcon(
-                                                  FontAwesomeIcons.coins,
-                                                  color: FlutterFlowTheme.of(
-                                                          context)
-                                                      .tertiaryColor,
-                                                  size: 14,
-                                                ),
-                                                unit: "Rand",
-                                                value:
-                                                    psManager.dailyFinancial),
-                                            DashInfoDFWidget(
-                                                label: "Monthly",
-                                                icon: FaIcon(
-                                                  FontAwesomeIcons.coins,
-                                                  color: FlutterFlowTheme.of(
-                                                          context)
-                                                      .tertiaryColor,
-                                                  size: 14,
-                                                ),
-                                                unit: "Rand",
-                                                value:
-                                                    psManager.monthlyFinancial),
-                                            DashInfoDFWidget(
-                                                label: "Total",
-                                                icon: FaIcon(
-                                                  FontAwesomeIcons.coins,
-                                                  color: FlutterFlowTheme.of(
-                                                          context)
-                                                      .tertiaryColor,
-                                                  size: 14,
-                                                ),
-                                                unit: "Rand",
-                                                value:
-                                                    psManager.totalFinancial),
-                                          ],
+                                            .fromSTEB(0, 0, 0, 1),
+                                        child: Opacity(
+                                          opacity: psManager.gridDotActive,
+                                          child: const FaIcon(
+                                            FontAwesomeIcons.solidCircle,
+                                            color: Colors.red,
+                                            size: 7,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    Transform.translate(
+                                      offset: Offset(
+                                          animProvider
+                                                  .loadAnimationPositionVal -
+                                              -57.5,
+                                          1),
+                                      child: Padding(
+                                        padding: const EdgeInsetsDirectional
+                                            .fromSTEB(0, 0, 0, 1),
+                                        child: Opacity(
+                                          opacity: psManager.loadDotActive,
+                                          child: const FaIcon(
+                                            FontAwesomeIcons.solidCircle,
+                                            color: Colors.blue,
+                                            size: 7,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    Transform.translate(
+                                      offset: Offset(
+                                          50,
+                                          animProvider
+                                              .batChargeAnimationPositionVal),
+                                      child: Padding(
+                                        padding: const EdgeInsetsDirectional
+                                            .fromSTEB(0, 0, 0, 1),
+                                        child: Opacity(
+                                          opacity: esManager.batChargeDotActive,
+                                          child: const FaIcon(
+                                            FontAwesomeIcons.solidCircle,
+                                            color: Colors.orange,
+                                            size: 7,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    Transform.translate(
+                                      offset: Offset(
+                                          43.5,
+                                          animProvider
+                                              .batDischargeAnimationPositionVal),
+                                      child: Padding(
+                                        padding: const EdgeInsetsDirectional
+                                            .fromSTEB(0, 0, 0, 1),
+                                        child: Opacity(
+                                          opacity:
+                                              esManager.batDischargeDotActive,
+                                          child: const FaIcon(
+                                            FontAwesomeIcons.solidCircle,
+                                            color: Colors.orange,
+                                            size: 7,
+                                          ),
                                         ),
                                       ),
                                     ),
                                   ],
                                 ),
-                                Align(
-                                  alignment: const AlignmentDirectional(0, 1),
-                                  child: Padding(
-                                    padding:
-                                        const EdgeInsetsDirectional.fromSTEB(
-                                            0, 0, 0, 10),
-                                    child: SmoothPageIndicator(
-                                      controller: pageViewController ??=
-                                          PageController(initialPage: 0),
-                                      count: 3,
-                                      axisDirection: Axis.horizontal,
-                                      onDotClicked: (i) {
-                                        pageViewController?.animateToPage(
-                                          i,
-                                          duration:
-                                              const Duration(milliseconds: 500),
-                                          curve: Curves.ease,
-                                        );
-                                      },
-                                      effect: const ScaleEffect(
-                                        dotHeight: 10,
-                                        dotWidth: 10,
-                                        // jumpScale: .7,
-                                        // verticalOffset: 15,
-                                        dotColor: Color(0xFF9E9E9E),
-                                        activeDotColor: Color(0xFFFFBC00),
-                                        paintStyle: PaintingStyle.fill,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
+                              ),
+                              Column(
+                                mainAxisSize: MainAxisSize.max,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Padding(
+                                      padding:
+                                          const EdgeInsetsDirectional.fromSTEB(
+                                              0, 15, 0, 0),
+                                      child: DashboardAnimImage(
+                                        onTap: insertLoadInfoCard,
+                                        icon: FaIcon(
+                                          FontAwesomeIcons.house,
+                                          color: FlutterFlowTheme.of(context)
+                                              .tertiaryColor,
+                                          size: 15,
+                                        ),
+                                        powerW: psManager
+                                            .getLivePowerTypeMap["load"]
+                                            ?.powerW,
+                                        ratedPowerW: psManager
+                                            .getLivePowerTypeMap["load"]
+                                            ?.ratedPowerW,
+                                        fillColor: Colors.blue,
+                                      )),
+                                ],
+                              ),
+                            ],
                           ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      DashboardAnimImage(
-                        onTap: insertPVInfoCard,
-                        icon: FaIcon(
-                          FontAwesomeIcons.solarPanel,
-                          color: FlutterFlowTheme.of(context).tertiaryColor,
-                          size: 15,
-                        ),
-                        powerW: psManager.getLivePowerTypeMap["pv"]?.powerW,
-                        ratedPowerW:
-                            psManager.getLivePowerTypeMap["pv"]?.ratedPowerW,
-                      ),
-                    ],
-                  ),
-                  Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Padding(
-                          padding:
-                              const EdgeInsetsDirectional.fromSTEB(0, 15, 0, 0),
-                          child: DashboardAnimImage(
-                            onTap: insertGridInfoCard,
-                            icon: Icon(
-                              Icons.offline_bolt_outlined,
-                              color: FlutterFlowTheme.of(context).tertiaryColor,
-                              size: 20,
-                            ),
-                            powerW:
-                                psManager.getLivePowerTypeMap["grid"]?.powerW,
-                            ratedPowerW: psManager
-                                .getLivePowerTypeMap["grid"]?.ratedPowerW,
-                            fillColor: Colors.red,
-                          )),
-                      Container(
-                        width: 150,
-                        height: 150,
-                        // child: const SpinKitCircle(
-                        //   color: Color(0xFFF2CC0D),
-                        //   size: 100.0,
-                        // ),
-                        decoration: BoxDecoration(
-                          color: FlutterFlowTheme.of(context).primaryBackground,
-                          image: DecorationImage(
-                            fit: BoxFit.cover,
-                            image:
-                                FlutterFlowTheme.of(context).dashboard!.image,
-                          ),
-                        ),
-                        alignment: const AlignmentDirectional(0, 0),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.max,
-                          children: [
-                            Transform.translate(
-                              offset: Offset(71.5, pvToBatDotPosition - 80),
-                              child: Padding(
-                                padding: const EdgeInsetsDirectional.fromSTEB(
-                                    0, 0, 0, 1),
-                                child: Opacity(
-                                  opacity: psManager.pvToBatDotActive,
-                                  child: const FaIcon(
-                                    FontAwesomeIcons.solidCircle,
-                                    color: Colors.green,
-                                    size: 7,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Transform.translate(
-                              offset: Offset(
-                                  animProvider.gridAnimationPositionVal - 15,
-                                  1),
-                              child: Padding(
-                                padding: const EdgeInsetsDirectional.fromSTEB(
-                                    0, 0, 0, 1),
-                                child: Opacity(
-                                  opacity: psManager.gridDotActive,
-                                  child: const FaIcon(
-                                    FontAwesomeIcons.solidCircle,
-                                    color: Colors.red,
-                                    size: 7,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Transform.translate(
-                              offset: Offset(
-                                  animProvider.loadAnimationPositionVal - -57.5,
-                                  1),
-                              child: Padding(
-                                padding: const EdgeInsetsDirectional.fromSTEB(
-                                    0, 0, 0, 1),
-                                child: Opacity(
-                                  opacity: psManager.loadDotActive,
-                                  child: const FaIcon(
-                                    FontAwesomeIcons.solidCircle,
-                                    color: Colors.blue,
-                                    size: 7,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Transform.translate(
-                              offset: Offset(50,
-                                  animProvider.batChargeAnimationPositionVal),
-                              child: Padding(
-                                padding: const EdgeInsetsDirectional.fromSTEB(
-                                    0, 0, 0, 1),
-                                child: Opacity(
-                                  opacity: esManager.batChargeDotActive,
-                                  child: const FaIcon(
-                                    FontAwesomeIcons.solidCircle,
-                                    color: Colors.orange,
-                                    size: 7,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Transform.translate(
-                              offset: Offset(
-                                  43.5,
-                                  animProvider
-                                      .batDischargeAnimationPositionVal),
-                              child: Padding(
-                                padding: const EdgeInsetsDirectional.fromSTEB(
-                                    0, 0, 0, 1),
-                                child: Opacity(
-                                  opacity: esManager.batDischargeDotActive,
-                                  child: const FaIcon(
-                                    FontAwesomeIcons.solidCircle,
-                                    color: Colors.orange,
-                                    size: 7,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Column(
-                        mainAxisSize: MainAxisSize.max,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                              padding: const EdgeInsetsDirectional.fromSTEB(
-                                  0, 15, 0, 0),
-                              child: DashboardAnimImage(
-                                onTap: insertLoadInfoCard,
-                                icon: FaIcon(
-                                  FontAwesomeIcons.house,
+                          Row(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Container(
+                                // width: 100,
+                                height: 90,
+                                decoration: BoxDecoration(
                                   color: FlutterFlowTheme.of(context)
-                                      .tertiaryColor,
-                                  size: 15,
+                                      .primaryBackground,
                                 ),
-                                powerW: psManager
-                                    .getLivePowerTypeMap["load"]?.powerW,
-                                ratedPowerW: psManager
-                                    .getLivePowerTypeMap["load"]?.ratedPowerW,
-                                fillColor: Colors.blue,
-                              )),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.max,
+                                  children: [
+                                    DashboardAnimImage(
+                                      onTap: insertBatInfoCard,
+                                      icon: Icon(
+                                        Icons.battery_charging_full_rounded,
+                                        color: FlutterFlowTheme.of(context)
+                                            .tertiaryColor,
+                                        size: 18,
+                                      ),
+                                      powerW: esManager.sumData.capacityP,
+                                      ratedPowerW: 100,
+                                      fillColor: Colors.orange,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
                         ],
                       ),
-                    ],
-                  ),
-                  Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        // width: 100,
-                        height: 90,
-                        decoration: BoxDecoration(
-                          color: FlutterFlowTheme.of(context).primaryBackground,
-                        ),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.max,
-                          children: [
-                            DashboardAnimImage(
-                              onTap: insertBatInfoCard,
-                              icon: Icon(
-                                Icons.battery_charging_full_rounded,
-                                color:
-                                    FlutterFlowTheme.of(context).tertiaryColor,
-                                size: 18,
-                              ),
-                              powerW: esManager.sumData.capacityP,
-                              ratedPowerW: 100,
-                              fillColor: Colors.orange,
-                            ),
-                          ],
-                        ),
+                    ),
+                    Container(
+                      constraints: const BoxConstraints(
+                        maxHeight: double.infinity,
                       ),
-                    ],
-                  ),
-                  Container(
-                    height: 20,
-                  ),
-                  Padding(
-                    padding: const EdgeInsetsDirectional.fromSTEB(0, 0, 0, 10),
-                    child: Material(
-                      color: Colors.transparent,
-                      elevation: 5,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Container(
-                        constraints: const BoxConstraints(
-                          maxHeight: double.infinity,
-                        ),
-                        width: MediaQuery.of(context).size.width * 0.9,
-                        decoration: BoxDecoration(
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.white10,
-                              offset: Offset(0.0, buttonAction.offsetRadius),
-                              //(x,y)
-                              blurRadius: buttonAction.blurRadius,
-                            ),
-                          ],
-                          color: FlutterFlowTheme.of(context).primaryBackground,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.max,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.max,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    // mainAxisSize: MainAxisSize.max,
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsetsDirectional
-                                            .fromSTEB(5, 0, 5, 0),
-                                        child: Text(
-                                          "Eco Score",
-                                          style: FlutterFlowTheme.of(context)
-                                              .bodyText1
-                                              .override(
-                                                fontFamily: 'Poppins',
-                                                color:
-                                                    FlutterFlowTheme.of(context)
-                                                        .secondaryText,
-                                                fontSize: 11,
-                                              ),
+                      width: MediaQuery.of(context).size.width * 0.9,
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.max,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Padding(
+                                  padding: EdgeInsetsDirectional.fromSTEB(
+                                      MediaQuery.of(context).size.width * 0.085,
+                                      0,
+                                      5,
+                                      0),
+                                  child: Text(
+                                    "Eco Score",
+                                    style: FlutterFlowTheme.of(context)
+                                        .bodyText1
+                                        .override(
+                                          fontFamily: 'Poppins',
+                                          color: FlutterFlowTheme.of(context)
+                                              .secondaryText,
+                                          fontSize: 11,
                                         ),
-                                      ),
-                                    ],
                                   ),
-                                  Row(
-                                    // mainAxisSize: MainAxisSize.max,
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      Text(
-                                        energyEfficiencyPercentageTxt,
+                                ),
+                                Row(
+                                  // mainAxisSize: MainAxisSize.max,
+                                  // mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    Text(
+                                      energyEfficiencyPercentageTxt,
+                                      style: FlutterFlowTheme.of(context)
+                                          .bodyText1
+                                          .override(
+                                            fontFamily: 'Poppins',
+                                            color:
+                                                psManager.energyEfficiencyColor,
+                                            fontSize: 14,
+                                          ),
+                                    ),
+                                    Padding(
+                                      padding:
+                                          const EdgeInsetsDirectional.fromSTEB(
+                                              1, 0, 0, 0),
+                                      child: Text(
+                                        '%',
                                         style: FlutterFlowTheme.of(context)
                                             .bodyText1
                                             .override(
                                               fontFamily: 'Poppins',
-                                              color: psManager
-                                                  .energyEfficiencyColor,
-                                              fontSize: 14,
+                                              color:
+                                                  FlutterFlowTheme.of(context)
+                                                      .secondaryText,
+                                              fontSize: 12,
                                             ),
                                       ),
-                                      Padding(
-                                        padding: const EdgeInsetsDirectional
-                                            .fromSTEB(1, 0, 0, 0),
-                                        child: Text(
-                                          '%',
-                                          style: FlutterFlowTheme.of(context)
-                                              .bodyText1
-                                              .override(
-                                                fontFamily: 'Poppins',
-                                                color:
-                                                    FlutterFlowTheme.of(context)
-                                                        .secondaryText,
-                                                fontSize: 12,
-                                              ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  InkWell(
-                                    child: Padding(
-                                      padding:
-                                          const EdgeInsetsDirectional.fromSTEB(
-                                              170, 0, 0, 0),
-                                      child: Icon(
-                                        Icons.info_outlined,
-                                        color: FlutterFlowTheme.of(context)
-                                            .tertiaryColor
-                                            ?.withOpacity(0.7),
-                                        size: 20,
-                                      ),
                                     ),
-                                    onTap: () {
-                                      if (greenEfficiencyVisibility == false) {
-                                        greenEfficiencyVisibility = true;
-                                      } else {
-                                        greenEfficiencyVisibility = false;
-                                      }
-                                    },
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Padding(
-                              padding:
-                                  EdgeInsetsDirectional.fromSTEB(0, 10, 0, 0),
-                              child: Container(
-                                width: MediaQuery.of(context).size.width * 0.83,
-                                height: 3,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(20),
-                                  gradient: const LinearGradient(
-                                    begin: Alignment.topLeft,
-                                    end: Alignment.bottomRight,
-                                    colors: [
-                                      Colors.red,
-                                      Colors.yellow,
-                                      Colors.green
-                                    ],
-                                  ),
+                                  ],
                                 ),
-                              ),
-                            ),
-                            Row(
-                              mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Transform.translate(
-                                  offset: Offset(energyLinePosition, -15),
+                                InkWell(
                                   child: Padding(
                                     padding:
                                         const EdgeInsetsDirectional.fromSTEB(
-                                            0, 0, 0, 1),
-                                    child: Opacity(
-                                        opacity: 1,
-                                        child: Neumorphic(
-                                          style: NeumorphicStyle(
-                                            shape: NeumorphicShape.concave,
-                                            boxShape:
-                                                NeumorphicBoxShape.roundRect(
-                                                    BorderRadius.circular(30)),
-                                            depth: 2,
-                                            lightSource: LightSource.top,
-                                            // shadowDarkColor: Colors.orange,
-                                            color: FlutterFlowTheme.of(context)
-                                                .primaryBackground,
-                                          ),
-                                          child: SizedBox(
-                                            width: 25,
-                                            height: 25,
-                                            child: Center(
-                                              child: FaIcon(
-                                                FontAwesomeIcons.cloudscale,
-                                                color: psManager
-                                                    .energyEfficiencyColor
-                                                    .withOpacity(0.7),
-                                                size: 22,
-                                              ),
-                                            ),
-                                          ),
-                                        )),
+                                            20, 0, 0, 0),
+                                    child: Icon(
+                                      Icons.info_outlined,
+                                      color: FlutterFlowTheme.of(context)
+                                          .tertiaryColor
+                                          ?.withOpacity(0.7),
+                                      size: 20,
+                                    ),
                                   ),
+                                  onTap: () {
+                                    if (greenEfficiencyVisibility == false) {
+                                      greenEfficiencyVisibility = true;
+                                    } else {
+                                      greenEfficiencyVisibility = false;
+                                    }
+                                  },
                                 ),
                               ],
                             ),
-                            Visibility(
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(
-                                  "Eco Score refers to how much of the electricity you use, comes from renewable sources like solar panels. ",
-                                  style: FlutterFlowTheme.of(context)
-                                      .bodyText1
-                                      .override(
-                                        fontFamily: 'Poppins',
-                                        color: FlutterFlowTheme.of(context)
-                                            .secondaryText,
-                                        fontSize: 11,
-                                      ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsetsDirectional.fromSTEB(
+                                0, 10, 0, 0),
+                            child: Container(
+                              width: MediaQuery.of(context).size.width * 0.83,
+                              height: 3,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20),
+                                gradient: const LinearGradient(
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                  colors: [
+                                    Colors.red,
+                                    Colors.yellow,
+                                    Colors.green
+                                  ],
                                 ),
                               ),
-                              visible: greenEfficiencyVisibility,
                             ),
-                            Visibility(
-                              child: EcoCard(),
-                              visible: greenEfficiencyVisibility,
-                            ),
-                          ],
-                        ),
+                          ),
+                          Row(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Transform.translate(
+                                offset: Offset(energyLinePosition, -15),
+                                child: Padding(
+                                  padding: const EdgeInsetsDirectional.fromSTEB(
+                                      0, 0, 0, 1),
+                                  child: Opacity(
+                                      opacity: 1,
+                                      child: Neumorphic(
+                                        style: NeumorphicStyle(
+                                          shape: NeumorphicShape.concave,
+                                          boxShape:
+                                              NeumorphicBoxShape.roundRect(
+                                                  BorderRadius.circular(30)),
+                                          depth: 2,
+                                          lightSource: LightSource.top,
+                                          // shadowDarkColor: Colors.orange,
+                                          color: FlutterFlowTheme.of(context)
+                                              .primaryBackground,
+                                        ),
+                                        child: SizedBox(
+                                          width: 25,
+                                          height: 25,
+                                          child: Center(
+                                            child: FaIcon(
+                                              FontAwesomeIcons.cloudscale,
+                                              color: psManager
+                                                  .energyEfficiencyColor
+                                                  .withOpacity(0.7),
+                                              size: 22,
+                                            ),
+                                          ),
+                                        ),
+                                      )),
+                                ),
+                              ),
+                            ],
+                          ),
+                          // Visibility(
+                          //   child: Padding(
+                          //     padding: const EdgeInsets.all(8.0),
+                          //     child: Text(
+                          //       "Eco Score refers to how much of the electricity you use, comes from renewable sources like solar panels. ",
+                          //       style: FlutterFlowTheme.of(context)
+                          //           .bodyText1
+                          //           .override(
+                          //             fontFamily: 'Poppins',
+                          //             color: FlutterFlowTheme.of(context)
+                          //                 .secondaryText,
+                          //             fontSize: 11,
+                          //           ),
+                          //     ),
+                          //   ),
+                          //   visible: greenEfficiencyVisibility,
+                          // ),
+                          // Visibility(
+                          //   child: EcoCard(),
+                          //   visible: greenEfficiencyVisibility,
+                          // ),
+                        ],
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),

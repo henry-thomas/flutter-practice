@@ -347,7 +347,7 @@ class PowerServiceManager extends ChangeNotifier {
     // (total Grid / total load) *100
 
     energyEfficiency = 100 - ((gridPower / loadPower) * 100);
-    if (energyEfficiency.isNaN) {
+    if (energyEfficiency.isNaN || energyEfficiency < 0) {
       energyEfficiency = 0;
     }
     energyEfficiencyPercentageTxt = energyEfficiency.toStringAsFixed(1);

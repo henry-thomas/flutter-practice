@@ -48,12 +48,14 @@ class DashboardAnimImage extends StatelessWidget {
           InkWell(
             child: Neumorphic(
               style: NeumorphicStyle(
-                shape: NeumorphicShape.concave,
+                shape: NeumorphicShape.flat,
                 boxShape:
                     NeumorphicBoxShape.roundRect(BorderRadius.circular(60)),
-                depth: 2,
-                lightSource: LightSource.top,
+                // depth: 2,
+                // lightSource: LightSource.top,
                 color: FlutterFlowTheme.of(context).primaryBackground,
+                border: NeumorphicBorder(
+                    width: 2, color: fillColor!.withOpacity(0.5)),
               ),
               child: SizedBox(
                 width: 60,
