@@ -40,17 +40,9 @@ class _ChartsPageViewState extends State<ChartsPageView> {
 
   @override
   Widget build(BuildContext context) {
-    var powerTypeMap =
-        Provider.of<PowerTypeChartDataManager>(context).getPowerTypeMap;
-    // final chartController = Provider.of<ChartController>(context);
-    // final pvColor = chartController.pvPowerTypeIconSelectorColor;
-    // final gridColor = chartController.gridPowerTypeIconSelectorColor;
-    // final loadColor = chartController.loadPowerTypeIconSelectorColor;
-    // final batColor = chartController.batPowerTypeIconSelectorColor;
-    // final pvIconDepth = chartController.pvIconDepth;
-    // final gridIconDepth = chartController.gridIconDepth;
-    // final loadIconDepth = chartController.loadIconDepth;
-    // final batIconDepth = chartController.batIconDepth;
+    var ptcdm = Provider.of<PowerTypeChartDataManager>(context);
+    var eStorageList = ptcdm.getEStorageList;
+    var powerTypeMap = ptcdm.getPowerTypeMap;
     return Scaffold(
       bottomNavigationBar: BottomAppBar(
         shape: _showNotch ? const CircularNotchedRectangle() : null,
@@ -352,7 +344,7 @@ class _ChartsPageViewState extends State<ChartsPageView> {
                 ),
               ),
             ),
-            PowerTypeChart.buildChart(powerTypeMap),
+            PowerTypeChart.buildChart(powerTypeMap, eStorageList),
           ],
         ),
       ),

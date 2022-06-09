@@ -5,14 +5,17 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:provider_test/api/api_controller.dart';
 import 'package:provider_test/entities/dev_power_summary.dart';
+import 'package:provider_test/entities/energy_storage.dart';
 import 'package:provider_test/flutterFlow/flutter_flow_util.dart';
 
+import '../entities/energy_storage_db.dart';
 import '../entities/logger_config.dart';
 import '../entities/power_type.dart';
 import 'device_manager.dart';
 
 class PowerTypeChartDataManager extends ChangeNotifier {
   List<DevPowerSummary>? _powerList = [];
+  final List<EnergyStorageDb> _eStorageList = [];
   final Map<String?, String?> _expressionPowerMap = {};
   final Map<String?, List<DevPowerSummary>> _powerTypeMap = {};
   final Map<String?, List<DevPowerSummary>> _powerMap = {};
@@ -22,6 +25,10 @@ class PowerTypeChartDataManager extends ChangeNotifier {
 
   Map<String?, List<DevPowerSummary>> get getPowerTypeMap {
     return _powerTypeMap;
+  }
+
+  List<EnergyStorageDb> get getEStorageList {
+    return _eStorageList;
   }
 
   Future<List<DevPowerSummary>?> _getPowerList(
@@ -34,6 +41,18 @@ class PowerTypeChartDataManager extends ChangeNotifier {
             startDatem,
             endDate);
     return powerTypes;
+  }
+
+  Future<List<EnergyStorageDb>?> _getEStorageList(
+      BuildContext context, String startDatem, String endDate) async {
+    var eStorageList = await Provider.of<ApiController>(context, listen: false)
+        .getEStorageList(
+            Provider.of<DeviceManager>(context, listen: false)
+                .getSelectedLogger!
+                .serNum,
+            startDatem,
+            endDate);
+    return eStorageList;
   }
 
   Future<List<PowerType>?> _getPowerTypes(BuildContext context) async {
@@ -55,6 +74,7 @@ class PowerTypeChartDataManager extends ChangeNotifier {
   void init(BuildContext context) async {}
 
   Future<void> getPowerTypesFromDateRange(BuildContext context) async {
+    _eStorageList.clear();
     List<PowerType>? powerTypeList = await _getPowerTypes(context);
     List<LoggerConfig>? calcPowerList = await _getPowerCalcs(context);
     _datePowerListMap.clear();
@@ -69,7 +89,6 @@ class PowerTypeChartDataManager extends ChangeNotifier {
 
     List<DevPowerSummary>? powerList =
         await _getPowerList(context, sDate, eDate);
-
     _powerList = powerList;
 
     createChartData();
@@ -92,7 +111,10 @@ class PowerTypeChartDataManager extends ChangeNotifier {
         }
       }
     }
-
+    List<EnergyStorageDb>? eStorageList =
+        await _getEStorageList(context, sDate, eDate);
+    _eStorageList.addAll(eStorageList!);
+    alignDates();
     notifyListeners();
   }
 
@@ -118,6 +140,17 @@ class PowerTypeChartDataManager extends ChangeNotifier {
         }
       });
     });
+  }
+
+  void alignDates() {
+    debugPrint(_eStorageList.length.toString());
+    debugPrint(_datePowerListMap.keys.length.toString());
+    _datePowerListMap.forEach((date, power) {});
+    for (var i = 0; i < _eStorageList.length; i++) {
+      if (i < _datePowerListMap.keys.length) {
+        _eStorageList[i].lastUpdate = _datePowerListMap.keys.elementAt(i);
+      }
+    }
   }
 
   void initCalcPowers(List<LoggerConfig?> calcPowerList) {

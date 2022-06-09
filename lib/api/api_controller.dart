@@ -5,6 +5,8 @@ import 'package:provider_test/entities/api_login_response.dart';
 import 'package:provider_test/entities/api_response.dart';
 import 'package:provider_test/entities/api_response_paginated.dart';
 import 'package:provider_test/entities/dev_power_summary.dart';
+import 'package:provider_test/entities/energy_storage.dart';
+import 'package:provider_test/entities/energy_storage_db.dart';
 import 'package:provider_test/entities/logger.dart';
 import 'package:provider_test/entities/logger_config.dart';
 import 'package:provider_test/providers/device_manager.dart';
@@ -51,6 +53,17 @@ class ApiController extends ChangeNotifier {
       String endDate, int page, int perPage) async {
     ApiResponsePaginated? response =
         await service.getPowerList(serial, startDate, endDate, page, perPage);
+    if (response != null) {
+      return response.data!["requests"];
+    } else {
+      return null;
+    }
+  }
+
+  Future<List<dynamic>?> _getEStorageList(String serial, String startDate,
+      String endDate, int page, int perPage) async {
+    ApiResponsePaginated? response = await service.getEStorageList(
+        serial, startDate, endDate, page, perPage);
     if (response != null) {
       return response.data!["requests"];
     } else {
@@ -117,6 +130,19 @@ class ApiController extends ChangeNotifier {
       }
     }
     return powerList;
+  }
+
+  Future<List<EnergyStorageDb>?> getEStorageList(
+      String serial, String startDate, String endDate) async {
+    List<dynamic>? getEStorageList =
+        await _getEStorageList(serial, startDate, endDate, PAGE, PER_PAGE);
+    List<EnergyStorageDb> eStorageList = [];
+    if (getEStorageList != null) {
+      for (var i = 0; i < getEStorageList.length; i++) {
+        eStorageList.add(EnergyStorageDb.fromJson(getEStorageList[i]));
+      }
+    }
+    return eStorageList;
   }
 
   Future<List<LoggerConfig>?> getPowerCalcs(String serial) async {

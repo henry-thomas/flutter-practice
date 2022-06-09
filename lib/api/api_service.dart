@@ -4,6 +4,7 @@ import 'package:provider_test/api/api_controller.dart';
 import 'package:provider_test/entities/api_login_response.dart';
 import 'package:provider_test/entities/api_response.dart';
 import 'package:provider_test/entities/api_response_paginated.dart';
+import 'package:provider_test/entities/energy_storage.dart';
 
 class ApiService {
   Future<ApiLoginResponse?> sendLoginRequest(
@@ -56,6 +57,28 @@ class ApiService {
             'rest/loggers/' +
             serial +
             "/powers?startDate=" +
+            startDate +
+            "&endDate=" +
+            endDate +
+            "&currentPage=" +
+            currentPage.toString() +
+            "&perPage=" +
+            perPage.toString()));
+
+    request.headers.addAll(headers);
+
+    return sendRequestPaginated(request);
+  }
+
+  Future<ApiResponsePaginated?> getEStorageList(String serial, String startDate,
+      String endDate, int currentPage, int perPage) async {
+    var headers = {'Authorization': 'Bearer ' + ApiController.jwt};
+    var request = http.Request(
+        'GET',
+        Uri.parse(ApiController.BASE_URL +
+            'rest/loggers/' +
+            serial +
+            "/storages?startDate=" +
             startDate +
             "&endDate=" +
             endDate +
