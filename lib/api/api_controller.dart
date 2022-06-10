@@ -5,6 +5,8 @@ import 'package:provider_test/entities/api_login_response.dart';
 import 'package:provider_test/entities/api_response.dart';
 import 'package:provider_test/entities/api_response_paginated.dart';
 import 'package:provider_test/entities/dev_power_summary.dart';
+import 'package:provider_test/entities/energy_storage.dart';
+import 'package:provider_test/entities/energy_storage_db.dart';
 import 'package:provider_test/entities/logger.dart';
 import 'package:provider_test/entities/logger_config.dart';
 import 'package:provider_test/providers/device_manager.dart';
@@ -17,10 +19,10 @@ class ApiController extends ChangeNotifier {
   // static const BASE_URL = "http://192.168.100.18:8084/SolarMDApi/";
   // static const USERNAME = "kostadin";
   // static const PASSWORD = "1234";
-  static const START_DATE = "20220401";
-  static const END_DATE = "20220419";
+  static const START_DATE = "20220606";
+  static const END_DATE = "20220606";
   static const PAGE = 1;
-  static const PER_PAGE = 10;
+  static const PER_PAGE = 10000;
 
   static String jwt = "";
   ApiService service = ApiService();
@@ -58,6 +60,17 @@ class ApiController extends ChangeNotifier {
     }
   }
 
+  Future<List<dynamic>?> _getEStorageList(String serial, String startDate,
+      String endDate, int page, int perPage) async {
+    ApiResponsePaginated? response = await service.getEStorageList(
+        serial, startDate, endDate, page, perPage);
+    if (response != null) {
+      return response.data!["requests"];
+    } else {
+      return null;
+    }
+  }
+
   Future<List<dynamic>?> _getPowerCalcs(String serial) async {
     ApiResponse? response = await service.getPowerCalcs(serial);
     if (response != null) {
@@ -77,7 +90,7 @@ class ApiController extends ChangeNotifier {
         await Provider.of<DeviceManager>(context, listen: false).init(context);
 
         Navigator.push(context, MaterialPageRoute(builder: (context) {
-          return DashboardWidget();
+          return const DashboardWidget();
         }));
       }
     } else {
@@ -106,9 +119,10 @@ class ApiController extends ChangeNotifier {
     return loggerList;
   }
 
-  Future<List<DevPowerSummary>?> getPowerList(String serial) async {
+  Future<List<DevPowerSummary>?> getPowerList(
+      String serial, String startDate, String endDate) async {
     List<dynamic>? getPowerList =
-        await _getPowerList(serial, START_DATE, END_DATE, PAGE, PER_PAGE);
+        await _getPowerList(serial, startDate, endDate, PAGE, PER_PAGE);
     List<DevPowerSummary> powerList = [];
     if (getPowerList != null) {
       for (var i = 0; i < getPowerList.length; i++) {
@@ -116,6 +130,19 @@ class ApiController extends ChangeNotifier {
       }
     }
     return powerList;
+  }
+
+  Future<List<EnergyStorageDb>?> getEStorageList(
+      String serial, String startDate, String endDate) async {
+    List<dynamic>? getEStorageList =
+        await _getEStorageList(serial, startDate, endDate, PAGE, PER_PAGE);
+    List<EnergyStorageDb> eStorageList = [];
+    if (getEStorageList != null) {
+      for (var i = 0; i < getEStorageList.length; i++) {
+        eStorageList.add(EnergyStorageDb.fromJson(getEStorageList[i]));
+      }
+    }
+    return eStorageList;
   }
 
   Future<List<LoggerConfig>?> getPowerCalcs(String serial) async {

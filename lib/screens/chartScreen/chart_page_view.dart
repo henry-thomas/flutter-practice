@@ -5,13 +5,13 @@ import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:provider_test/flutterFlow/flutter_flow_theme.dart';
-import 'package:provider_test/screens/chartScreen/chart_controller.dart';
+import 'package:provider_test/providers/power_type_chart_manager.dart';
+import 'package:provider_test/screens/chartScreen/power_type_chart.dart';
 
 import '../EventsScreen/events_page_view.dart';
 import '../dashboardScreen/dashboard_page_view.dart';
 import '../loginScreen/login_page_view.dart';
 import '../weatherScreen/weather_page_view.dart';
-import 'chartComponents/date_picker_component.dart';
 
 class ChartsPageView extends StatefulWidget {
   const ChartsPageView({Key? key}) : super(key: key);
@@ -29,28 +29,20 @@ class _ChartsPageViewState extends State<ChartsPageView> {
 
   bool datePickerVisibility = false;
 
-  DatePickerController _controller = DatePickerController();
+  final DatePickerController _controller = DatePickerController();
   DateTime today = DateTime.now();
 
   DateTime _selectedValue = DateTime.now();
 
-  setDatePicker() {
-    Future.delayed(const Duration(milliseconds: 50), () {
+  setDatePicker() async {
     _controller.animateToSelection();
-    });
   }
 
   @override
   Widget build(BuildContext context) {
-    final chartController = Provider.of<ChartController>(context);
-    final pvColor = chartController.pvPowerTypeIconSelectorColor;
-    final gridColor = chartController.gridPowerTypeIconSelectorColor;
-    final loadColor = chartController.loadPowerTypeIconSelectorColor;
-    final batColor = chartController.batPowerTypeIconSelectorColor;
-    final pvIconDepth = chartController.pvIconDepth;
-    final gridIconDepth = chartController.gridIconDepth;
-    final loadIconDepth = chartController.loadIconDepth;
-    final batIconDepth = chartController.batIconDepth;
+    var ptcdm = Provider.of<PowerTypeChartDataManager>(context);
+    var eStorageList = ptcdm.getEStorageList;
+    var powerTypeMap = ptcdm.getPowerTypeMap;
     return Scaffold(
       bottomNavigationBar: BottomAppBar(
         shape: _showNotch ? const CircularNotchedRectangle() : null,
@@ -76,45 +68,45 @@ class _ChartsPageViewState extends State<ChartsPageView> {
                 },
               ),
               // if (centerLocations.contains(fabLocation)) const Spacer(),
+              // IconButton(
+              //   tooltip: 'Weather',
+              //   icon: FaIcon(
+              //     FontAwesomeIcons.cloudSun,
+              //     color: FlutterFlowTheme.of(context).tertiaryColor,
+              //     size: 20,
+              //   ),
+              //   // icon: Icon(
+              //   //   Icons.dashboard,
+              //   //   color: FlutterFlowTheme.of(context).tertiaryColor,
+              //   //   size: 22,
+              //   // ),
+              //   onPressed: () {
+              //     Navigator.push(context, MaterialPageRoute(builder: (context) {
+              //       return const WeatherPage();
+              //     }));
+              //   },
+              // ),
+              // IconButton(
+              //   tooltip: 'Events',
+              //   icon: Icon(
+              //     Icons.event,
+              //     color: FlutterFlowTheme.of(context).tertiaryColor,
+              //     size: 20,
+              //   ),
+              //   // icon: Icon(
+              //   //   Icons.dashboard,
+              //   //   color: FlutterFlowTheme.of(context).tertiaryColor,
+              //   //   size: 22,
+              //   // ),
+              //   onPressed: () {
+              //     Navigator.push(context, MaterialPageRoute(builder: (context) {
+              //       return const EventsPageView();
+              //     }));
+              //   },
+              // ),
               IconButton(
-                tooltip: 'Weather',
-                icon: FaIcon(
-                  FontAwesomeIcons.cloudSun,
-                  color: FlutterFlowTheme.of(context).tertiaryColor,
-                  size: 20,
-                ),
-                // icon: Icon(
-                //   Icons.dashboard,
-                //   color: FlutterFlowTheme.of(context).tertiaryColor,
-                //   size: 22,
-                // ),
-                onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return const WeatherPage();
-                  }));
-                },
-              ),
-              IconButton(
-                tooltip: 'Events',
-                icon: Icon(
-                  Icons.event,
-                  color: FlutterFlowTheme.of(context).tertiaryColor,
-                  size: 20,
-                ),
-                // icon: Icon(
-                //   Icons.dashboard,
-                //   color: FlutterFlowTheme.of(context).tertiaryColor,
-                //   size: 22,
-                // ),
-                onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return const EventsPageView();
-                  }));
-                },
-              ),
-              IconButton(
-                tooltip: 'Charts',
-                icon: FaIcon(
+                tooltip: 'Power Chart',
+                icon: const FaIcon(
                   FontAwesomeIcons.chartPie,
                   color: Colors.white,
                   size: 18,
@@ -125,9 +117,14 @@ class _ChartsPageViewState extends State<ChartsPageView> {
                 //   size: 22,
                 // ),
                 onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return const WeatherPage();
-                  }));
+                  // Provider.of<PowerTypeChartDataManager>(context, listen: false)
+                  //     .getPowerTypesFromDateRange(
+                  //         context,
+                  //         DateTime.parse('20220606'),
+                  //         DateTime.parse('20220606'));
+                  // Navigator.push(context, MaterialPageRoute(builder: (context) {
+                  //   return const WeatherPage();
+                  // }));
                 },
               ),
             ],
@@ -216,7 +213,7 @@ class _ChartsPageViewState extends State<ChartsPageView> {
         child: Column(
           children: [
             Padding(
-              padding: const EdgeInsetsDirectional.fromSTEB(0, 20, 0, 5),
+              padding: const EdgeInsetsDirectional.fromSTEB(0, 10, 0, 5),
               child: Row(
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -228,12 +225,14 @@ class _ChartsPageViewState extends State<ChartsPageView> {
                   ),
                   InkWell(
                     child: Padding(
-                      padding: const EdgeInsetsDirectional.fromSTEB(2, 0, 2, 0),
+                      padding: const EdgeInsetsDirectional.fromSTEB(0, 0, 0, 0),
                       child: Container(
                         child: Row(
                           children: [
                             Text(
-                              "Today",
+                              Provider.of<PowerTypeChartDataManager>(context,
+                                      listen: false)
+                                  .selectedDateStr,
                               style: FlutterFlowTheme.of(context)
                                   .bodyText1
                                   .override(
@@ -255,16 +254,15 @@ class _ChartsPageViewState extends State<ChartsPageView> {
                     highlightColor:
                         FlutterFlowTheme.of(context).primaryBackground,
                     splashColor: FlutterFlowTheme.of(context).primaryBackground,
-                    onTap: () {
-                      // buttonAction.showMoreInfo();
-                      setState(() {
-                        if (datePickerVisibility == false) {
-                          datePickerVisibility = true;
-                        } else {
-                          datePickerVisibility = false;
-                        }
-                        setDatePicker();
-                      });
+                    onTap: () async {
+                      DateTime? selectedDate =
+                          await Provider.of<PowerTypeChartDataManager>(context,
+                                  listen: false)
+                              .onDatePickerOpen(context);
+
+                      Provider.of<PowerTypeChartDataManager>(context,
+                              listen: false)
+                          .getPowerTypesFromDateRange(context);
                     },
                   ),
                   Container(
@@ -289,7 +287,7 @@ class _ChartsPageViewState extends State<ChartsPageView> {
                     width: MediaQuery.of(context).size.width * 0.9,
                     height: 110,
                     decoration: BoxDecoration(
-                      boxShadow: [
+                      boxShadow: const [
                         BoxShadow(
                           color: Colors.white10,
                         ),
@@ -297,22 +295,13 @@ class _ChartsPageViewState extends State<ChartsPageView> {
                       color: FlutterFlowTheme.of(context).primaryBackground,
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    padding: EdgeInsets.all(10.0),
+                    padding: EdgeInsets.all(0.0),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        // Text("You Selected:"),
-                        // Padding(
-                        //   padding: EdgeInsets.all(5),
-                        // ),
-                        // Text(_selectedValue.toString()),
-                        // Padding(
-                        //   padding: EdgeInsets.all(10),
-                        // ),
                         Container(
                           child: DatePicker(
-                            today.subtract(Duration(days: 100)),
-
+                            DateTime.now(),
                             monthTextStyle:
                                 FlutterFlowTheme.of(context).bodyText1.override(
                                       fontFamily: 'Poppins',
@@ -334,20 +323,13 @@ class _ChartsPageViewState extends State<ChartsPageView> {
                                           .secondaryText,
                                       fontSize: 19,
                                     ),
-
-                            daysCount: 101,
-
+                            // daysCount: 101,
                             width: 60,
                             height: 80,
                             controller: _controller,
                             initialSelectedDate: DateTime.now(),
                             selectionColor: Color(0xFFFFBC00).withOpacity(0.7),
                             selectedTextColor: Colors.white,
-                            // inactiveDates: [
-                            //   DateTime.now().add(Duration(days: 3)),
-                            //   DateTime.now().add(Duration(days: 4)),
-                            //   DateTime.now().add(Duration(days: 7))
-                            // ],
                             onDateChange: (date) {
                               // New date selected
                               setState(() {
@@ -362,138 +344,7 @@ class _ChartsPageViewState extends State<ChartsPageView> {
                 ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  InkWell(
-                    child: Neumorphic(
-                      style: NeumorphicStyle(
-                        shape: NeumorphicShape.concave,
-                        boxShape: NeumorphicBoxShape.roundRect(
-                            BorderRadius.circular(30)),
-                        depth: gridIconDepth,
-                        lightSource: LightSource.top,
-                        shadowDarkColor: gridColor,
-                        color: FlutterFlowTheme.of(context).primaryBackground,
-                      ),
-                      child: SizedBox(
-                        width: 35,
-                        height: 35,
-                        child: Center(
-                          child: Icon(
-                            Icons.offline_bolt_outlined,
-                            color: FlutterFlowTheme.of(context).tertiaryColor,
-                            size: 25,
-                          ),
-                        ),
-                      ),
-                    ),
-                    highlightColor:
-                        FlutterFlowTheme.of(context).primaryBackground,
-                    splashColor: FlutterFlowTheme.of(context).primaryBackground,
-                    onTap: () {
-                      // buttonAction.showMoreInfo();
-                      chartController.gridSelected();
-                    },
-                  ),
-                  InkWell(
-                    child: Neumorphic(
-                      style: NeumorphicStyle(
-                        shape: NeumorphicShape.concave,
-                        boxShape: NeumorphicBoxShape.roundRect(
-                            BorderRadius.circular(30)),
-                        depth: pvIconDepth,
-                        lightSource: LightSource.top,
-                        shadowDarkColor: pvColor,
-                        color: FlutterFlowTheme.of(context).primaryBackground,
-                      ),
-                      child: SizedBox(
-                        width: 35,
-                        height: 35,
-                        child: Center(
-                          child: FaIcon(
-                            FontAwesomeIcons.solarPanel,
-                            color: FlutterFlowTheme.of(context).tertiaryColor,
-                            size: 15,
-                          ),
-                        ),
-                      ),
-                    ),
-                    highlightColor:
-                        FlutterFlowTheme.of(context).primaryBackground,
-                    splashColor: FlutterFlowTheme.of(context).primaryBackground,
-                    onTap: () {
-                      // buttonAction.showMoreInfo();
-                      chartController.pvSelected();
-                    },
-                  ),
-                  InkWell(
-                    child: Neumorphic(
-                      style: NeumorphicStyle(
-                        shape: NeumorphicShape.concave,
-                        boxShape: NeumorphicBoxShape.roundRect(
-                            BorderRadius.circular(30)),
-                        depth: loadIconDepth,
-                        lightSource: LightSource.top,
-                        shadowDarkColor: loadColor,
-                        color: FlutterFlowTheme.of(context).primaryBackground,
-                      ),
-                      child: SizedBox(
-                        width: 35,
-                        height: 35,
-                        child: Center(
-                          child: FaIcon(
-                            FontAwesomeIcons.house,
-                            color: FlutterFlowTheme.of(context).tertiaryColor,
-                            size: 15,
-                          ),
-                        ),
-                      ),
-                    ),
-                    highlightColor:
-                        FlutterFlowTheme.of(context).primaryBackground,
-                    splashColor: FlutterFlowTheme.of(context).primaryBackground,
-                    onTap: () {
-                      // buttonAction.showMoreInfo();
-                      chartController.loadSelected();
-                    },
-                  ),
-                  InkWell(
-                    child: Neumorphic(
-                      style: NeumorphicStyle(
-                        shape: NeumorphicShape.concave,
-                        boxShape: NeumorphicBoxShape.roundRect(
-                            BorderRadius.circular(30)),
-                        depth: batIconDepth,
-                        lightSource: LightSource.top,
-                        shadowDarkColor: batColor,
-                        color: FlutterFlowTheme.of(context).primaryBackground,
-                      ),
-                      child: SizedBox(
-                        width: 35,
-                        height: 35,
-                        child: Center(
-                            child: Icon(
-                          Icons.battery_charging_full_rounded,
-                          color: FlutterFlowTheme.of(context).tertiaryColor,
-                          size: 18,
-                        )),
-                      ),
-                    ),
-                    highlightColor:
-                        FlutterFlowTheme.of(context).primaryBackground,
-                    splashColor: FlutterFlowTheme.of(context).primaryBackground,
-                    onTap: () {
-                      chartController.batSelected();
-                      // buttonAction.showMoreInfo();
-                    },
-                  ),
-                ],
-              ),
-            )
+            PowerTypeChart.buildChart(powerTypeMap, eStorageList),
           ],
         ),
       ),

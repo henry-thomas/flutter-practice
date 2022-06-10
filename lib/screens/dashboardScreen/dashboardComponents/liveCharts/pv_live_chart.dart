@@ -28,15 +28,13 @@ class _LivePvChartState extends State<LivePvChart> {
   final gridPowerPoints = <FlSpot>[];
   final loadPowerPoints = <FlSpot>[];
 
-
-
   addPowerPoints(pvPower, gridPower, loadPower) {
     pvPowerPoints.add(FlSpot(xValue, pvPower));
     gridPowerPoints.add(FlSpot(xValue, gridPower));
     loadPowerPoints.add(FlSpot(xValue, loadPower));
   }
 
-  double xValue = 0;
+  double xValue = 1;
   double step = 0.05;
 
   late Timer timer;
@@ -75,12 +73,9 @@ class _LivePvChartState extends State<LivePvChart> {
         ? Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const SizedBox(
-                height: 0,
-              ),
               SizedBox(
-                width:MediaQuery.of(context).size.width * 0.8,
-                height: 52,
+                width: MediaQuery.of(context).size.width * 0.9,
+                height: 120,
                 child: LineChart(
                   LineChartData(
                     minY: 0,
@@ -90,16 +85,19 @@ class _LivePvChartState extends State<LivePvChart> {
                     lineTouchData: LineTouchData(
                       touchTooltipData: LineTouchTooltipData(
                           maxContentWidth: 100,
-                          tooltipBgColor:  FlutterFlowTheme.of(context).loadingBoxColor?.withOpacity(0.7),
+                          tooltipBgColor: FlutterFlowTheme.of(context)
+                              .loadingBoxColor
+                              ?.withOpacity(0.7),
                           getTooltipItems: (touchedSpots) {
                             return touchedSpots.map((LineBarSpot touchedSpot) {
                               final textStyle = TextStyle(
-                                color:touchedSpot.bar.gradient?.colors[1],
+                                color: touchedSpot.bar.gradient?.colors[1],
                                 fontWeight: FontWeight.bold,
                                 fontSize: 14,
                               );
-                              return LineTooltipItem( // ${touchedSpot.x.toStringAsFixed(0)}
-                                  ' ${(touchedSpot.y /1000).toStringAsFixed(2)} kW',
+                              return LineTooltipItem(
+                                  // ${touchedSpot.x.toStringAsFixed(0)}
+                                  ' ${(touchedSpot.y / 1000).toStringAsFixed(2)} kW',
                                   textStyle);
                             }).toList();
                           }),

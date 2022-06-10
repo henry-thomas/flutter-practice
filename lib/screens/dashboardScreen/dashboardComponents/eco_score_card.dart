@@ -7,7 +7,6 @@ import 'package:provider/provider.dart';
 import '../../../flutterFlow/flutter_flow_theme.dart';
 import '../../../providers/websocket/ps_manager.dart';
 
-
 class EcoCard extends StatefulWidget {
   const EcoCard({Key? key}) : super(key: key);
 
@@ -27,17 +26,17 @@ class EcoCardState extends State {
           PieChartData(
               pieTouchData: PieTouchData(
                   touchCallback: (FlTouchEvent event, pieTouchResponse) {
-                    setState(() {
-                      if (!event.isInterestedForInteractions ||
-                          pieTouchResponse == null ||
-                          pieTouchResponse.touchedSection == null) {
-                        touchedIndex = -1;
-                        return;
-                      }
-                      touchedIndex =
-                          pieTouchResponse.touchedSection!.touchedSectionIndex;
-                    });
-                  }),
+                setState(() {
+                  if (!event.isInterestedForInteractions ||
+                      pieTouchResponse == null ||
+                      pieTouchResponse.touchedSection == null) {
+                    touchedIndex = -1;
+                    return;
+                  }
+                  touchedIndex =
+                      pieTouchResponse.touchedSection!.touchedSectionIndex;
+                });
+              }),
               borderData: FlBorderData(
                 show: false,
               ),
@@ -52,9 +51,10 @@ class EcoCardState extends State {
   List<PieChartSectionData> showingSections() {
     final psManager = Provider.of<PowerServiceManager>(context);
 
-    final energyEfficiencyPercentageTxt = psManager.energyEfficiencyPercentageTxt;
+    final energyEfficiencyPercentageTxt =
+        psManager.energyEfficiencyPercentageTxt;
     final energyEfficiencyPercentage = psManager.energyEfficiency;
-    final gridEfficiency = 100-energyEfficiencyPercentage;
+    final gridEfficiency = 100 - energyEfficiencyPercentage;
     final gridEfficiencyPercentageTxt = gridEfficiency.toStringAsFixed(1);
     return List.generate(2, (i) {
       final isTouched = i == touchedIndex;
@@ -65,7 +65,7 @@ class EcoCardState extends State {
       switch (i) {
         case 0:
           return PieChartSectionData(
-            color:Colors.red,
+            color: Colors.red,
             value: gridEfficiency,
             title: '$gridEfficiencyPercentageTxt%',
             radius: radius,
@@ -76,23 +76,20 @@ class EcoCardState extends State {
             badgeWidget: Neumorphic(
               style: NeumorphicStyle(
                 shape: NeumorphicShape.concave,
-                boxShape: NeumorphicBoxShape.roundRect(
-                    BorderRadius.circular(30)),
+                boxShape:
+                    NeumorphicBoxShape.roundRect(BorderRadius.circular(30)),
                 depth: 2,
                 lightSource: LightSource.top,
                 // shadowDarkColor: Colors.orange,
-                color: FlutterFlowTheme.of(context)
-                    .primaryBackground,
+                color: FlutterFlowTheme.of(context).primaryBackground,
               ),
               child: SizedBox(
                 width: 39,
                 height: 39,
                 child: Center(
-                  child:Icon(
+                  child: Icon(
                     Icons.offline_bolt_outlined,
-                    color:
-                    FlutterFlowTheme.of(context)
-                        .tertiaryColor,
+                    color: FlutterFlowTheme.of(context).tertiaryColor,
                     size: 25,
                   ),
                 ),
@@ -113,23 +110,20 @@ class EcoCardState extends State {
             badgeWidget: Neumorphic(
               style: NeumorphicStyle(
                 shape: NeumorphicShape.concave,
-                boxShape: NeumorphicBoxShape.roundRect(
-                    BorderRadius.circular(30)),
+                boxShape:
+                    NeumorphicBoxShape.roundRect(BorderRadius.circular(30)),
                 depth: 2,
                 lightSource: LightSource.top,
                 // shadowDarkColor: Colors.orange,
-                color: FlutterFlowTheme.of(context)
-                    .primaryBackground,
+                color: FlutterFlowTheme.of(context).primaryBackground,
               ),
               child: SizedBox(
                 width: 39,
                 height: 39,
                 child: Center(
-                  child:FaIcon(
+                  child: FaIcon(
                     FontAwesomeIcons.leaf,
-                    color:
-                    FlutterFlowTheme.of(context)
-                        .tertiaryColor,
+                    color: FlutterFlowTheme.of(context).tertiaryColor,
                     size: 20,
                   ),
                 ),
@@ -150,11 +144,11 @@ class _Badge extends StatelessWidget {
   final Color borderColor;
 
   const _Badge(
-      this.svgAsset, {
-        Key? key,
-        required this.size,
-        required this.borderColor,
-      }) : super(key: key);
+    this.svgAsset, {
+    Key? key,
+    required this.size,
+    required this.borderColor,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -180,31 +174,26 @@ class _Badge extends StatelessWidget {
       padding: EdgeInsets.all(size * .15),
       child: Center(
           child: Neumorphic(
-            style: NeumorphicStyle(
-              shape: NeumorphicShape.concave,
-              boxShape: NeumorphicBoxShape.roundRect(
-                  BorderRadius.circular(30)),
-              depth: 2,
-              lightSource: LightSource.top,
-              // shadowDarkColor: Colors.orange,
-              color: FlutterFlowTheme.of(context)
-                  .primaryBackground,
+        style: NeumorphicStyle(
+          shape: NeumorphicShape.concave,
+          boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(30)),
+          depth: 2,
+          lightSource: LightSource.top,
+          // shadowDarkColor: Colors.orange,
+          color: FlutterFlowTheme.of(context).primaryBackground,
+        ),
+        child: SizedBox(
+          width: 49,
+          height: 49,
+          child: Center(
+            child: FaIcon(
+              FontAwesomeIcons.house,
+              color: FlutterFlowTheme.of(context).tertiaryColor,
+              size: 15,
             ),
-            child: SizedBox(
-              width: 49,
-              height: 49,
-              child: Center(
-                child:FaIcon(
-                  FontAwesomeIcons.house,
-                  color:
-                  FlutterFlowTheme.of(context)
-                      .tertiaryColor,
-                  size: 15,
-                ),
-              ),
-            ),
-          )
-      ),
+          ),
+        ),
+      )),
     );
   }
 }

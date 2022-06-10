@@ -15,13 +15,8 @@ class EnergyStorageServiceManager extends ChangeNotifier {
 
   EnergyStorage sumData = EnergyStorage();
 
-  Future<List<DevPowerSummary>?> _getPowerList(BuildContext context) async {
-    var powerTypes = await Provider.of<ApiController>(context, listen: false)
-        .getPowerList(Provider.of<DeviceManager>(context, listen: false)
-            .getSelectedLogger!
-            .serNum);
-    return powerTypes;
-  }
+  double batChargeDotActive = 0;
+  double batDischargeDotActive = 0;
 
   void init(BuildContext context) async {
     Timer.periodic(Duration(milliseconds: 3000), (timer) {
@@ -57,6 +52,7 @@ class EnergyStorageServiceManager extends ChangeNotifier {
         sumData.capacityP += storageList[i].capacityP;
         sumData.ratedCapacityAh += storageList[i].ratedCapacityAh;
         sumData.ratedVoltageV += storageList[i].ratedVoltageV;
+        sumData.remainingTimeSign += storageList[i].remainingTimeSign;
       } else {
         sumData.offlineSt = sumData.offlineSt! + 1;
       }
@@ -73,6 +69,18 @@ class EnergyStorageServiceManager extends ChangeNotifier {
       sumData.ratedPowerW = sumData.ratedChargeCurrentC *
           sumData.ratedCapacityAh *
           sumData.ratedVoltageV;
+    }
+
+    if (sumData.powerW > 0) {
+      batChargeDotActive = 1;
+    } else {
+      batChargeDotActive = 0;
+    }
+
+    if (sumData.powerW < 0) {
+      batDischargeDotActive = 1;
+    } else {
+      batDischargeDotActive = 0;
     }
 
     notifyListeners();

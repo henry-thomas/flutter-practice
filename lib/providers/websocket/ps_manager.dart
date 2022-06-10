@@ -28,14 +28,14 @@ class PowerServiceManager extends ChangeNotifier {
   List<PowerType>? _powerTypeList = [];
 
   // Battery
-  double batPower = 0;
-  double batChargeDotActive = 0;
-  double batDischargeDotActive = 0;
-  double batStorage = 0;
-  double batCurrent = 0;
-  double batVoltage = 0;
-  double batRatedPower = 0;
-  double batRatedPowerPercentage = 0;
+  // double batPower = 0;
+  // double batChargeDotActive = 0;
+  // double batDischargeDotActive = 0;
+  // double batStorage = 0;
+  // double batCurrent = 0;
+  // double batVoltage = 0;
+  // double batRatedPower = 0;
+  // double batRatedPowerPercentage = 0;
 
   // GRID
   double gridPower = 0;
@@ -95,17 +95,13 @@ class PowerServiceManager extends ChangeNotifier {
     return _powerTypeMap;
   }
 
+  Map<String?, DevPowerSummary> get getLivePowerTypeMap {
+    return _livePowerTypeMap;
+  }
+
   Future<List<PowerType>?> _getPowerTypes(BuildContext context) async {
     var powerTypes = await Provider.of<ApiController>(context, listen: false)
         .getPowerTypeList(Provider.of<DeviceManager>(context, listen: false)
-            .getSelectedLogger!
-            .serNum);
-    return powerTypes;
-  }
-
-  Future<List<DevPowerSummary>?> _getPowerList(BuildContext context) async {
-    var powerTypes = await Provider.of<ApiController>(context, listen: false)
-        .getPowerList(Provider.of<DeviceManager>(context, listen: false)
             .getSelectedLogger!
             .serNum);
     return powerTypes;
@@ -119,32 +115,25 @@ class PowerServiceManager extends ChangeNotifier {
     return powerCalcs;
   }
 
-  Future<List?> _getLoggerList(BuildContext context) async {
-    var powerTypes = await Provider.of<ApiController>(context, listen: false)
-        .getPowerList(Provider.of<DeviceManager>(context, listen: false)
-            .getSelectedLogger!
-            .serNum);
-    return powerTypes;
-  }
-
   //This is called after power types are recieved, only once on page load.
   void init(BuildContext context) async {
     List<PowerType>? powerTypeList = await _getPowerTypes(context);
-    List<DevPowerSummary>? powerList = await _getPowerList(context);
+    // List<DevPowerSummary>? powerList = await _getPowerList(context);
     List<LoggerConfig>? calcPowerList = await _getPowerCalcs(context);
     initCalcPowers(calcPowerList!);
 
     _powerTypeList = powerTypeList;
+    _powerTypeMap.clear();
     for (var i = 0; i < powerTypeList!.length; i++) {
       PowerType pType = powerTypeList[i];
       if (_powerTypeMap[pType.powerType] == null) {
         _powerTypeMap[pType.powerType] = [];
       }
-      for (var j = 0; j < powerList!.length; j++) {
-        if (powerList[j].powerName == powerTypeList[i].powerName) {
-          _powerTypeMap[pType.powerType]!.add(powerList[j]);
-        }
-      }
+      // for (var j = 0; j < powerList!.length; j++) {
+      //   if (powerList[j].powerName == powerTypeList[i].powerName) {
+      //     _powerTypeMap[pType.powerType]!.add(powerList[j]);
+      //   }
+      // }
     }
 
     Timer.periodic(Duration(milliseconds: 3000), (timer) {
@@ -167,46 +156,6 @@ class PowerServiceManager extends ChangeNotifier {
 
     Provider.of<WsManager>(context, listen: false).sendWsMessage(webSocketMsg);
   }
-
-  // void onEnergyStorageMessageReceived(Map<String, dynamic> msg) {
-  //   if (msg['messageList'].length > 0) {
-  //     batPower = 0;
-  //     batStorage = (msg['messageList'][0]['capacityP']);
-  //     batPower = (msg['messageList'][0]['powerW']);
-  //     batCurrent = (msg['messageList'][0]['currentA']);
-  //     batVoltage = (msg['messageList'][0]['voltageV']);
-
-  //     double ratedCapacityAh = 0;
-  //     double ratedChargeCurrentC = 0;
-  //     double ratedVoltageV = 0;
-  //     ratedCapacityAh += ((msg['messageList'][0]['ratedCapacityAh']));
-  //     ratedChargeCurrentC += ((msg['messageList'][0]['ratedChargeCurrentC']));
-  //     ratedVoltageV += ((msg['messageList'][0]['ratedVoltageV']));
-
-  //     // Battery
-
-  //     batRatedPower = ratedCapacityAh * ratedChargeCurrentC * ratedVoltageV;
-  //     batRatedPowerPercentage = ((batPower / batRatedPower));
-  //     if (batRatedPowerPercentage < 0) {
-  //       batRatedPowerPercentage = 0;
-  //     }
-  //     // _batPower = totBat;
-  //     if (batPower > 0) {
-  //       batChargeDotActive = 1;
-  //     } else {
-  //       batChargeDotActive = 0;
-  //     }
-
-  //     if (batPower < 0) {
-  //       batDischargeDotActive = 1;
-  //     } else {
-  //       batDischargeDotActive = 0;
-  //     }
-  //   }
-
-  // for (var j = 0; j < storageList!.length; j++) {
-  // }
-  // }
 
   void onPsMessageReceived(Map<String, dynamic> msg) {
     DevMessage message = DevMessage.fromJson(msg);
@@ -235,32 +184,31 @@ class PowerServiceManager extends ChangeNotifier {
 
       for (var j = 0; j < powerList.length; j++) {
         if (powerList[j].powerName == pType.powerName) {
-          _livePowerTypeMap[pType.powerType]?.powerW =
-              ((powerList[j].powerW as double) +
-                  (_livePowerTypeMap[pType.powerType]?.powerW as double));
+          _livePowerTypeMap[pType.powerType]?.powerW = ((powerList[j].powerW) +
+              (_livePowerTypeMap[pType.powerType]?.powerW as double));
 
           _livePowerTypeMap[pType.powerType]?.ratedPowerW =
-              ((powerList[j].ratedPowerW as double) +
+              ((powerList[j].ratedPowerW) +
                   (_livePowerTypeMap[pType.powerType]?.ratedPowerW as double));
 
           _livePowerTypeMap[pType.powerType]?.dailyEnergyWh = ((powerList[j]
-                  .dailyEnergyWh as double) +
+                  .dailyEnergyWh) +
               (_livePowerTypeMap[pType.powerType]?.dailyEnergyWh as double));
 
           _livePowerTypeMap[pType.powerType]?.monthlyEnergyWh = ((powerList[j]
-                  .monthlyEnergyWh as double) +
+                  .monthlyEnergyWh) +
               (_livePowerTypeMap[pType.powerType]?.monthlyEnergyWh as double));
 
           _livePowerTypeMap[pType.powerType]?.energyWh =
-              ((powerList[j].energyWh as double) +
+              ((powerList[j].energyWh) +
                   (_livePowerTypeMap[pType.powerType]?.energyWh as double));
 
           _livePowerTypeMap[pType.powerType]?.voltageV =
-              ((powerList[j].voltageV as double) +
+              ((powerList[j].voltageV) +
                   (_livePowerTypeMap[pType.powerType]?.voltageV as double));
 
           _livePowerTypeMap[pType.powerType]?.currentA =
-              ((powerList[j].currentA as double) +
+              ((powerList[j].currentA) +
                   (_livePowerTypeMap[pType.powerType]?.currentA as double));
         }
       }
@@ -347,6 +295,21 @@ class PowerServiceManager extends ChangeNotifier {
     }
 
     var totGrid = gridConsume - gridFeed;
+
+    //Calc Grid Power
+    if (gridConsume > 0 || gridFeed > 0) {
+      _livePowerTypeMap['grid'] = DevPowerSummary();
+      if (totGrid < 0) {
+        _livePowerTypeMap['grid']!.powerW = -totGrid;
+        _livePowerTypeMap['grid']!.ratedPowerW =
+            _livePowerTypeMap['gridFeed']!.ratedPowerW;
+      } else {
+        _livePowerTypeMap['grid']!.powerW = totGrid;
+        _livePowerTypeMap['grid']!.ratedPowerW =
+            _livePowerTypeMap['gridConsume']!.ratedPowerW;
+      }
+    }
+
     gridPower = totGrid;
     if (gridPower > 0) {
       gridDotActive = 1;
@@ -363,12 +326,12 @@ class PowerServiceManager extends ChangeNotifier {
       stDischarge = (_livePowerTypeMap["stDischarge"]?.powerW as double);
     }
 
-    var totBat = stCharge - stDischarge;
-    if (totBat > 0) {
-      batPower += totBat;
-    } else {
-      batPower -= totBat;
-    }
+    // var totBat = stCharge - stDischarge;
+    // if (totBat > 0) {
+    //   batPower += totBat;
+    // } else {
+    //   batPower -= totBat;
+    // }
 
     // Financial Benefits calculations
     dailyFinancial = pvDailyEnergy * 1.46;
@@ -376,27 +339,27 @@ class PowerServiceManager extends ChangeNotifier {
     totalFinancial = pvTotalEnergy * 1.46;
 
     // Environmental Benefits calculation
-    c02Reduced = ((pvTotalEnergy / 1000000) * 0.9) * 1000;
-    waterSaved = ((pvTotalEnergy / 1000000) * 1.35) * 1000;
-    electricCar = ((pvTotalEnergy / 1000000) * 8.2) * 1000;
+    c02Reduced = ((pvTotalEnergy) * 0.9);
+    waterSaved = ((pvTotalEnergy) * 1.35);
+    electricCar = ((pvTotalEnergy) * 8.2);
 
     // Energy Efficiency
     // (total Grid / total load) *100
 
-    energyEfficiency = 100 - ((gridTotalEnergy / loadTotalEnergy) * 100);
-    if (energyEfficiency.isNaN) {
+    energyEfficiency = 100 - ((gridPower / loadPower) * 100);
+    if (energyEfficiency.isNaN || energyEfficiency < 0) {
       energyEfficiency = 0;
     }
     energyEfficiencyPercentageTxt = energyEfficiency.toStringAsFixed(1);
-    energyLinePosition = (energyEfficiency / 100) * 300;
+    energyLinePosition = (energyEfficiency / 100);
 
-    if (energyLinePosition < 100) {
+    if (energyLinePosition < 0.3) {
       energyEfficiencyColor = Colors.red;
     }
-    if (energyLinePosition > 100 && energyLinePosition < 200) {
+    if (energyLinePosition > 0.3 && energyLinePosition < 0.6) {
       energyEfficiencyColor = Colors.orange;
     }
-    if (energyLinePosition > 200) {
+    if (energyLinePosition > 0.6) {
       energyEfficiencyColor = Colors.green;
     }
 

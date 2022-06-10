@@ -15,12 +15,13 @@ class LoggerListComponent {
     return InkWell(
       child: Container(
         width: MediaQuery.of(context).size.width * 0.8,
-        height: 100,
+        // height: 100,
         decoration: BoxDecoration(
           color: Color(0x00EEEEEE),
         ),
         child: Column(
-          mainAxisSize: MainAxisSize.max,
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.end,
           children: [
             Row(
               mainAxisSize: MainAxisSize.max,
