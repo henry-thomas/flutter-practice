@@ -4,8 +4,8 @@
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:flutter/material.dart';
 import 'package:provider_test/entities/dev_power_summary.dart';
+import 'package:provider_test/flutterFlow/flutter_flow_theme.dart';
 
-import '../../entities/energy_storage.dart';
 import '../../entities/energy_storage_db.dart';
 import '../../flutterFlow/flutter_flow_util.dart';
 
@@ -187,6 +187,16 @@ class _PowerTypeChartState extends State<PowerTypeChart> {
         new charts.BasicNumericTickFormatterSpec.fromNumberFormat(
             new NumberFormat.percentPattern());
 
+    var domainAxis = new charts.DateTimeAxisSpec(
+        renderSpec: charts.GridlineRendererSpec(
+            minimumPaddingBetweenLabelsPx: 10,
+            labelStyle: charts.TextStyleSpec(fontSize: 12, lineHeight: 1)),
+        tickFormatterSpec: new charts.AutoDateTimeTickFormatterSpec(
+            hour: new charts.TimeFormatterSpec(
+                format: 'HH:mm', transitionFormat: 'HH:mm'),
+            day: new charts.TimeFormatterSpec(
+                format: 'hh:mm', transitionFormat: 'HH:mm')));
+
     final children = <Widget>[
       SizedBox(
         height: MediaQuery.of(context).size.height * 0.7,
@@ -208,7 +218,15 @@ class _PowerTypeChartState extends State<PowerTypeChart> {
             renderSpec: charts.GridlineRendererSpec(
                 labelJustification: charts.TickLabelJustification.outside,
                 labelAnchor: charts.TickLabelAnchor.after,
-                labelStyle: charts.TextStyleSpec(fontSize: 15, lineHeight: 0.2),
+                // labelStyle: charts.TextStyleSpec(
+                //     fontSize: 15,
+                //     lineHeight: 0.2,
+                //     fontFamily: "Poppins",
+                //     color: charts.Color.fromHex(
+                //         code: FlutterFlowTheme.of(context)
+                //             .secondaryText!
+                //             .value
+                //             .toRadixString(16))),
                 labelOffsetFromAxisPx: -35),
             showAxisLine: false,
           ),
@@ -239,7 +257,7 @@ class _PowerTypeChartState extends State<PowerTypeChart> {
           // ],
           domainAxis: new charts.DateTimeAxisSpec(
               renderSpec: charts.GridlineRendererSpec(
-                  minimumPaddingBetweenLabelsPx: 1,
+                  minimumPaddingBetweenLabelsPx: 10,
                   labelStyle:
                       charts.TextStyleSpec(fontSize: 12, lineHeight: 1)),
               tickFormatterSpec: new charts.AutoDateTimeTickFormatterSpec(
@@ -255,6 +273,7 @@ class _PowerTypeChartState extends State<PowerTypeChart> {
           behaviors: [
             new charts.SeriesLegend(
               horizontalFirst: false,
+              entryTextStyle: charts.TextStyleSpec(),
               measureFormatter: (measure) {
                 if (measure != null) {
                   return ((measure).toStringAsFixed(2) + " kW");
