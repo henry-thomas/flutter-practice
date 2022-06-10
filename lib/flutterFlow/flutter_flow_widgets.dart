@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:provider_test/flutterFlow/flutter_flow_theme.dart';
 
+import 'flutter_flow_theme.dart';
+
 class FFButtonOptions {
   const FFButtonOptions({
     this.textStyle,
