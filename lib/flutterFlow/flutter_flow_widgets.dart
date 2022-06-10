@@ -1,6 +1,7 @@
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:provider_test/flutterFlow/flutter_flow_theme.dart';
 
 class FFButtonOptions {
   const FFButtonOptions({
@@ -115,6 +116,8 @@ class _FFButtonWidgetState extends State<FFButtonWidget> {
           ),
           label: textWidget,
           onPressed: onPressed,
+          style: ElevatedButton.styleFrom(
+              primary: FlutterFlowTheme.of(context).primaryBackground),
           // shape: RoundedRectangleBorder(
           //   borderRadius: BorderRadius.circular(widget.options!.borderRadius!),
           //   side: widget.options?.borderSide ?? BorderSide.none,
@@ -136,6 +139,8 @@ class _FFButtonWidgetState extends State<FFButtonWidget> {
       width: widget.options?.width,
       child: ElevatedButton(
         onPressed: onPressed,
+        style: ElevatedButton.styleFrom(
+            primary: FlutterFlowTheme.of(context).primaryBackground),
         // shape: RoundedRectangleBorder(
         //   borderRadius:
         //   BorderRadius.circular(widget.options?.borderRadius ?? 28),

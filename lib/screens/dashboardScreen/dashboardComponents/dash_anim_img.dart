@@ -33,6 +33,10 @@ class DashboardAnimImage extends StatelessWidget {
         perc = (powerW! / ratedPowerW!);
       }
 
+      if (perc > 1) {
+        perc = 1;
+      }
+
       return perc;
     }
 

@@ -218,7 +218,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
     //Calc value of energy eff with screen width value
     final energyLinePosition = (psManager.energyEfficiency / 100) *
         MediaQuery.of(context).size.width *
-        0.83;
+        0.90;
 
     return Scaffold(
       bottomNavigationBar: BottomAppBar(
