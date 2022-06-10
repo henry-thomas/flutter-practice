@@ -209,6 +209,11 @@ class _DashboardWidgetState extends State<DashboardWidget> {
       // await __initDevManager(context);
 
       // loggerListItem.clear();
+      final weatherData = Provider.of<WeatherApi>(
+        context,
+        listen: false,
+      );
+      weatherData.queryWeather();
       final devManager = Provider.of<DeviceManager>(context, listen: false);
 
       List<Logger> getLoggerList = devManager.getLoggerList;

@@ -17,7 +17,7 @@ class ChartController extends ChangeNotifier {
   batSelected() {
     if (batPowerTypeIconSelectorColor == Colors.orange){
       batPowerTypeIconSelectorColor = Colors.white;
-      batIconDepth = -2;
+      batIconDepth = -10;
     }else {
       batPowerTypeIconSelectorColor = Colors.orange;
       batIconDepth = 2;
@@ -27,7 +27,7 @@ class ChartController extends ChangeNotifier {
   gridSelected() {
     if (gridPowerTypeIconSelectorColor == Colors.red){
       gridPowerTypeIconSelectorColor = Colors.white;
-      gridIconDepth = -2;
+      gridIconDepth = -10;
     }else {
       gridPowerTypeIconSelectorColor = Colors.red;
       gridIconDepth = 2;
@@ -38,7 +38,7 @@ class ChartController extends ChangeNotifier {
   loadSelected() {
     if (loadPowerTypeIconSelectorColor == Colors.blue){
       loadPowerTypeIconSelectorColor = Colors.white;
-      loadIconDepth = -2;
+      loadIconDepth = -10;
     }else {
       loadPowerTypeIconSelectorColor = Colors.blue;
       loadIconDepth = 2;
@@ -48,7 +48,7 @@ class ChartController extends ChangeNotifier {
   pvSelected() {
     if (pvPowerTypeIconSelectorColor == Colors.green){
       pvPowerTypeIconSelectorColor = Colors.white;
-      pvIconDepth = -2;
+      pvIconDepth =  -10;
     }else {
       pvPowerTypeIconSelectorColor = Colors.green;
       pvIconDepth = 2;

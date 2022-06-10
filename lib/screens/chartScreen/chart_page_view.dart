@@ -34,8 +34,10 @@ class _ChartsPageViewState extends State<ChartsPageView> {
 
   DateTime _selectedValue = DateTime.now();
 
-  setDatePicker() async {
+  setDatePicker() {
+    Future.delayed(const Duration(milliseconds: 50), () {
     _controller.animateToSelection();
+    });
   }
 
   @override
@@ -225,47 +227,44 @@ class _ChartsPageViewState extends State<ChartsPageView> {
                     color: FlutterFlowTheme.of(context).secondaryColor,
                   ),
                   InkWell(
-                 child:Padding(
-                    padding: const EdgeInsetsDirectional.fromSTEB(2, 0, 2, 0),
-                    child: Container(
-                      child: Row(
-                        children: [
-                          Text(
-                            "Today",
-                            style: FlutterFlowTheme.of(context)
-                                .bodyText1
-                                .override(
-                              fontFamily: 'Poppins',
-                              color: FlutterFlowTheme.of(context)
-                                  .secondaryText,
-                              fontSize: 11,
+                    child: Padding(
+                      padding: const EdgeInsetsDirectional.fromSTEB(2, 0, 2, 0),
+                      child: Container(
+                        child: Row(
+                          children: [
+                            Text(
+                              "Today",
+                              style: FlutterFlowTheme.of(context)
+                                  .bodyText1
+                                  .override(
+                                    fontFamily: 'Poppins',
+                                    color: FlutterFlowTheme.of(context)
+                                        .secondaryText,
+                                    fontSize: 11,
+                                  ),
                             ),
-                          ),
-                          Icon(
-                            Icons.arrow_drop_down_rounded,
-                            color: FlutterFlowTheme.of(context)
-                                .secondaryText,
-                            size: 24,
-                          )
-                        ],
+                            Icon(
+                              Icons.arrow_drop_down_rounded,
+                              color: FlutterFlowTheme.of(context).secondaryText,
+                              size: 24,
+                            )
+                          ],
+                        ),
                       ),
                     ),
-                  ),
                     highlightColor:
-                    FlutterFlowTheme.of(context).primaryBackground,
+                        FlutterFlowTheme.of(context).primaryBackground,
                     splashColor: FlutterFlowTheme.of(context).primaryBackground,
                     onTap: () {
                       // buttonAction.showMoreInfo();
                       setState(() {
                         if (datePickerVisibility == false) {
                           datePickerVisibility = true;
-
-
-                        }else {
+                        } else {
                           datePickerVisibility = false;
                         }
+                        setDatePicker();
                       });
-                      setDatePicker();
                     },
                   ),
                   Container(
@@ -314,30 +313,27 @@ class _ChartsPageViewState extends State<ChartsPageView> {
                           child: DatePicker(
                             today.subtract(Duration(days: 100)),
 
-                            monthTextStyle:  FlutterFlowTheme.of(context)
-                                .bodyText1
-                                .override(
-                              fontFamily: 'Poppins',
-                              color: FlutterFlowTheme.of(context)
-                                  .secondaryText,
-                              fontSize: 10,
-                            ),
-                            dayTextStyle: FlutterFlowTheme.of(context)
-                                .bodyText1
-                                .override(
-                              fontFamily: 'Poppins',
-                              color: FlutterFlowTheme.of(context)
-                                  .secondaryText,
-                              fontSize: 10,
-                            ),
-                            dateTextStyle:FlutterFlowTheme.of(context)
-                                .bodyText1
-                                .override(
-                              fontFamily: 'Poppins',
-                              color: FlutterFlowTheme.of(context)
-                                  .secondaryText,
-                              fontSize: 19,
-                            ),
+                            monthTextStyle:
+                                FlutterFlowTheme.of(context).bodyText1.override(
+                                      fontFamily: 'Poppins',
+                                      color: FlutterFlowTheme.of(context)
+                                          .secondaryText,
+                                      fontSize: 10,
+                                    ),
+                            dayTextStyle:
+                                FlutterFlowTheme.of(context).bodyText1.override(
+                                      fontFamily: 'Poppins',
+                                      color: FlutterFlowTheme.of(context)
+                                          .secondaryText,
+                                      fontSize: 10,
+                                    ),
+                            dateTextStyle:
+                                FlutterFlowTheme.of(context).bodyText1.override(
+                                      fontFamily: 'Poppins',
+                                      color: FlutterFlowTheme.of(context)
+                                          .secondaryText,
+                                      fontSize: 19,
+                                    ),
 
                             daysCount: 101,
 
@@ -356,7 +352,6 @@ class _ChartsPageViewState extends State<ChartsPageView> {
                               // New date selected
                               setState(() {
                                 _selectedValue = date;
-
                               });
                             },
                           ),
