@@ -81,7 +81,7 @@ class DashboardAnimImage extends StatelessWidget {
                         ),
                       ),
                       Transform.translate(
-                        offset: const Offset(-40, 0),
+                        offset: const Offset(-39, 0),
                         child: icon,
                       ),
                     ],
@@ -96,7 +96,7 @@ class DashboardAnimImage extends StatelessWidget {
           Padding(
             padding: const EdgeInsetsDirectional.fromSTEB(0, 0, 0, 0),
             child: Row(
-              mainAxisSize: MainAxisSize.max,
+              mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(

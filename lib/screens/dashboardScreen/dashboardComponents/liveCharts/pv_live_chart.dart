@@ -34,7 +34,7 @@ class _LivePvChartState extends State<LivePvChart> {
     loadPowerPoints.add(FlSpot(xValue, loadPower));
   }
 
-  double xValue = 0;
+  double xValue = 1;
   double step = 0.05;
 
   late Timer timer;

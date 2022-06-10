@@ -74,6 +74,10 @@ class PowerTypeChartDataManager extends ChangeNotifier {
   void init(BuildContext context) async {}
 
   Future<void> getPowerTypesFromDateRange(BuildContext context) async {
+    if (selectedDate == null) {
+      return;
+    }
+
     _eStorageList.clear();
     List<PowerType>? powerTypeList = await _getPowerTypes(context);
     List<LoggerConfig>? calcPowerList = await _getPowerCalcs(context);
@@ -143,8 +147,6 @@ class PowerTypeChartDataManager extends ChangeNotifier {
   }
 
   void alignDates() {
-    debugPrint(_eStorageList.length.toString());
-    debugPrint(_datePowerListMap.keys.length.toString());
     _datePowerListMap.forEach((date, power) {});
     for (var i = 0; i < _eStorageList.length; i++) {
       if (i < _datePowerListMap.keys.length) {
@@ -238,6 +240,7 @@ class PowerTypeChartDataManager extends ChangeNotifier {
   }
 
   Future<DateTime?> onDatePickerOpen(BuildContext context) async {
+    selectedDate ??= DateTime.now();
     var dateTime = await showDatePicker(
         context: context,
         initialDate: selectedDate!,
