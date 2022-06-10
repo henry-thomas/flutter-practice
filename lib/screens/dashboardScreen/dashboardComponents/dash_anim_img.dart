@@ -53,6 +53,8 @@ class DashboardAnimImage extends StatelessWidget {
             child: Neumorphic(
               style: NeumorphicStyle(
                 shape: NeumorphicShape.flat,
+                intensity: 0,
+                surfaceIntensity: 5,
                 boxShape:
                     NeumorphicBoxShape.roundRect(BorderRadius.circular(60)),
                 // depth: 2,

@@ -65,7 +65,7 @@ class _LoginPageWidgetState extends State<LoginPageWidget>
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Transform.translate(
-                                  offset: const Offset(-100, 35),
+                                  offset: const Offset(0, 35),
                                   child: Padding(
                                     padding:
                                         const EdgeInsetsDirectional.fromSTEB(
