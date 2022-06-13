@@ -26,7 +26,7 @@ class DashInfoDFWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            width: 120,
+            width: 112,
             height: 30,
             decoration: const BoxDecoration(
               color: Colors.transparent,
@@ -52,7 +52,7 @@ class DashInfoDFWidget extends StatelessWidget {
             ),
           ),
           Container(
-            width: 150,
+            width: 120,
             height: 30,
             decoration: const BoxDecoration(
               color: Colors.transparent,
@@ -63,7 +63,7 @@ class DashInfoDFWidget extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Container(
-                  width: 100,
+                  width: 80,
                   height: 29,
                   decoration: const BoxDecoration(
                     color: Colors.transparent,

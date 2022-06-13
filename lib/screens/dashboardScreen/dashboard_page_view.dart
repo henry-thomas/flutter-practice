@@ -11,20 +11,13 @@ import 'package:provider_test/screens/chartScreen/chartComponents/chart_selector
 import 'package:provider_test/screens/dashboardScreen/dashboardComponents/dash_anim_img.dart';
 import 'package:provider_test/screens/dashboardScreen/dashboardComponents/more_info_grid_card.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-
-import '../../providers/power_type_chart_manager.dart';
-import '../EventsScreen/events_page_view.dart';
-import '../chartScreen/chart_page_view.dart';
-import '../weatherScreen/weather_page_view.dart';
 import 'package:provider_test/screens/loginScreen/login_page_view.dart';
 import 'package:provider/provider.dart';
 import 'package:provider_test/providers/websocket/ws_manager.dart';
-
 import 'dashboardAnimation/dashboard_animation_controller.dart';
 import 'dashboardAnimation/dashboard_animation_provider.dart';
 import 'dashboardComponents/dash_info_data_field.dart';
 import 'dashboardComponents/dashboard_button_actions.dart';
-import 'dashboardComponents/eco_score_card.dart';
 import 'dashboardComponents/logger_list_component.dart';
 import 'dashboardComponents/more_info_bat_card.dart';
 import 'dashboardComponents/more_info_load_card.dart';
@@ -225,87 +218,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
     final energyLinePosition = (psManager.energyEfficiency / 100) *
         MediaQuery.of(context).size.width *
         0.90;
-
     return Scaffold(
-      bottomNavigationBar: BottomAppBar(
-        shape: _showNotch ? const CircularNotchedRectangle() : null,
-        color: FlutterFlowTheme.of(context).primaryColor?.withOpacity(0.7),
-        child: IconTheme(
-          data: IconThemeData(color: Theme.of(context).colorScheme.onPrimary),
-          child: Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
-              IconButton(
-                tooltip: 'Dashboard',
-                icon: const Icon(
-                  Icons.speed_sharp,
-                  color: Colors.white,
-                  size: 24,
-                ),
-                onPressed: () {},
-              ),
-              // if (centerLocations.contains(fabLocation)) const Spacer(),
-              // IconButton(
-              //   tooltip: 'Weather',
-              //   icon: FaIcon(
-              //     FontAwesomeIcons.cloudSun,
-              //     color: FlutterFlowTheme.of(context).tertiaryColor,
-              //     size: 20,
-              //   ),
-              //   // icon: Icon(
-              //   //   Icons.dashboard,
-              //   //   color: FlutterFlowTheme.of(context).tertiaryColor,
-              //   //   size: 22,
-              //   // ),
-              //   onPressed: () {
-              //     Navigator.push(context, MaterialPageRoute(builder: (context) {
-              //       return const WeatherPage();
-              //     }));
-              //   },
-              // ),
-              // IconButton(
-              //   tooltip: 'Events',
-              //   icon: Icon(
-              //     Icons.event,
-              //     color: FlutterFlowTheme.of(context).tertiaryColor,
-              //     size: 20,
-              //   ),
-              //   // icon: Icon(
-              //   //   Icons.dashboard,
-              //   //   color: FlutterFlowTheme.of(context).tertiaryColor,
-              //   //   size: 22,
-              //   // ),
-              //   onPressed: () {
-              //     Navigator.push(context, MaterialPageRoute(builder: (context) {
-              //       return const EventsPageView();
-              //     }));
-              //   },
-              // ),
-              IconButton(
-                tooltip: 'Power Chart',
-                icon: FaIcon(
-                  FontAwesomeIcons.chartPie,
-                  color: FlutterFlowTheme.of(context).tertiaryColor,
-                  size: 18,
-                ),
-                // icon: Icon(
-                //   Icons.dashboard,
-                //   color: FlutterFlowTheme.of(context).tertiaryColor,
-                //   size: 22,
-                // ),
-                onPressed: () {
-                  Provider.of<PowerTypeChartDataManager>(context, listen: false)
-                      .getPowerTypesFromDateRange(context);
-                  Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return const ChartsPageView();
-                  }));
-                },
-              ),
-            ],
-          ),
-        ),
-      ),
       key: scaffoldKey,
       appBar: AppBar(
         backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
@@ -881,7 +794,6 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                                     ),
                                   ],
                                 ),
-
                               ],
                             ),
                           ),
@@ -905,7 +817,6 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                               ),
                             ),
                           ),
-
                           Row(
                             mainAxisSize: MainAxisSize.max,
                             mainAxisAlignment: MainAxisAlignment.start,
@@ -947,28 +858,6 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                               ),
                             ],
                           ),
-
-                          // Visibility(
-                          //   child: Padding(
-                          //     padding: const EdgeInsets.all(8.0),
-                          //     child: Text(
-                          //       "Eco Score refers to how much of the electricity you use, comes from renewable sources like solar panels. ",
-                          //       style: FlutterFlowTheme.of(context)
-                          //           .bodyText1
-                          //           .override(
-                          //             fontFamily: 'Poppins',
-                          //             color: FlutterFlowTheme.of(context)
-                          //                 .secondaryText,
-                          //             fontSize: 11,
-                          //           ),
-                          //     ),
-                          //   ),
-                          //   visible: greenEfficiencyVisibility,
-                          // ),
-                          // Visibility(
-                          //   child: EcoCard(),
-                          //   visible: greenEfficiencyVisibility,
-                          // ),
                         ],
                       ),
                     ),

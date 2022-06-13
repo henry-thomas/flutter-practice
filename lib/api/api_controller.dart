@@ -14,6 +14,8 @@ import 'package:provider_test/screens/loginScreen/login_components.dart';
 import '../entities/power_type.dart';
 import 'package:provider_test/screens/dashboardScreen/dashboard_page_view.dart';
 
+import '../naviagation_bar.dart';
+
 class ApiController extends ChangeNotifier {
   static const BASE_URL = "http://cweb1.mypower24.co.za/SolarMDApi/";
   // static const BASE_URL = "http://192.168.100.18:8084/SolarMDApi/";
@@ -90,7 +92,7 @@ class ApiController extends ChangeNotifier {
         await Provider.of<DeviceManager>(context, listen: false).init(context);
 
         Navigator.push(context, MaterialPageRoute(builder: (context) {
-          return const DashboardWidget();
+          return  NavBarPage();
         }));
       }
     } else {
