@@ -59,8 +59,9 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider.value(
           value: PowerTypeChartDataManager(),
-        ),ChangeNotifierProvider.value(
-          value: chartActions(),
+        ),
+        ChangeNotifierProvider.value(
+          value: ChartActions(),
         ),
       ],
       child: MaterialApp(

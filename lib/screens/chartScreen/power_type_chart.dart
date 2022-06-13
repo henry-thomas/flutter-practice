@@ -16,8 +16,6 @@ class PowerTypeChart extends StatefulWidget {
   final List<charts.Series<dynamic, DateTime>> seriesList;
   final bool? animate;
 
-
-
   const PowerTypeChart(this.seriesList, {Key? key, this.animate})
       : super(key: key);
 
@@ -183,46 +181,46 @@ class _PowerTypeChartState extends State<PowerTypeChart> {
 
   @override
   Widget build(BuildContext context) {
-    var chartsActions = Provider.of<chartActions>(context);
-    bool isOpen = chartsActions.menuIsOpen;
+    var chartsActions = Provider.of<ChartActions>(context);
+    bool isOpen = chartsActions.isPowerTypeChartMenuOpen;
     var chartHeight = MediaQuery.of(context).size.height * 0.7;
     var chartWidth = MediaQuery.of(context).size.width * 1;
     var fontSize = 11;
     var margin = 0;
-    List <ChartBehavior<DateTime>> behaviors = [];
+    List<ChartBehavior<DateTime>> behaviors = [];
 
     setState(() {
-
-    if (isOpen == false) {
-      margin = 0;
-      fontSize = 0;
-      chartHeight = 70;
-      chartWidth = 100;
-      behaviors.remove(0);
-
-    } else{
-      fontSize = 11;
-      margin = 15;
-      chartHeight = MediaQuery.of(context).size.height * 0.7;
-      chartWidth =MediaQuery.of(context).size.width * 1;
-      behaviors.add(new charts.SeriesLegend(
-        horizontalFirst: false,
-        measureFormatter: (measure) {
-          if (measure != null) {
-            return ((measure).toStringAsFixed(2) + " kW");
-          }
-          return "";
-        },
-        position: charts.BehaviorPosition.bottom,
-        showMeasures: true,
-        secondaryMeasureFormatter: (measure) {
-          if (measure != null) {
-            return ((measure * 100).toStringAsFixed(2) + " %");
-          }
-          return "";
-        },
-      ),);
-    }
+      if (isOpen == false) {
+        margin = 0;
+        fontSize = 0;
+        chartHeight = 70;
+        chartWidth = 100;
+        behaviors.remove(0);
+      } else {
+        fontSize = 11;
+        margin = 15;
+        chartHeight = MediaQuery.of(context).size.height * 0.7;
+        chartWidth = MediaQuery.of(context).size.width * 1;
+        behaviors.add(
+          new charts.SeriesLegend(
+            horizontalFirst: false,
+            measureFormatter: (measure) {
+              if (measure != null) {
+                return ((measure).toStringAsFixed(2) + " kW");
+              }
+              return "";
+            },
+            position: charts.BehaviorPosition.bottom,
+            showMeasures: true,
+            secondaryMeasureFormatter: (measure) {
+              if (measure != null) {
+                return ((measure * 100).toStringAsFixed(2) + " %");
+              }
+              return "";
+            },
+          ),
+        );
+      }
     });
     // ignore: unnecessary_new
     final charts.NumericTickFormatterSpec simpleFormatter =
@@ -253,7 +251,8 @@ class _PowerTypeChartState extends State<PowerTypeChart> {
             renderSpec: charts.GridlineRendererSpec(
                 labelJustification: charts.TickLabelJustification.outside,
                 labelAnchor: charts.TickLabelAnchor.after,
-                labelStyle: charts.TextStyleSpec(fontSize: fontSize, lineHeight: 0.2),
+                labelStyle:
+                    charts.TextStyleSpec(fontSize: fontSize, lineHeight: 0.2),
                 labelOffsetFromAxisPx: -35),
             showAxisLine: false,
           ),
@@ -265,7 +264,8 @@ class _PowerTypeChartState extends State<PowerTypeChart> {
             renderSpec: charts.GridlineRendererSpec(
               labelJustification: charts.TickLabelJustification.outside,
               labelAnchor: charts.TickLabelAnchor.after,
-              labelStyle: charts.TextStyleSpec(fontSize: fontSize, lineHeight: 0.2),
+              labelStyle:
+                  charts.TextStyleSpec(fontSize: fontSize, lineHeight: 0.2),
             ),
             showAxisLine: false,
           ),
