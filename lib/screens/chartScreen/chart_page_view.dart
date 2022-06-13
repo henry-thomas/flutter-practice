@@ -12,6 +12,8 @@ import '../EventsScreen/events_page_view.dart';
 import '../dashboardScreen/dashboard_page_view.dart';
 import '../loginScreen/login_page_view.dart';
 import '../weatherScreen/weather_page_view.dart';
+import 'chartComponents/chart_selector_card.dart';
+import 'chartComponents/live_chart_selector_card.dart';
 
 class ChartsPageView extends StatefulWidget {
   const ChartsPageView({Key? key}) : super(key: key);
@@ -210,143 +212,156 @@ class _ChartsPageViewState extends State<ChartsPageView> {
       ),
       backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
       body: SafeArea(
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsetsDirectional.fromSTEB(0, 10, 0, 5),
-              child: Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    width: 120,
-                    height: 1,
-                    color: FlutterFlowTheme.of(context).secondaryColor,
-                  ),
-                  InkWell(
-                    child: Padding(
-                      padding: const EdgeInsetsDirectional.fromSTEB(0, 0, 0, 0),
-                      child: Container(
-                        child: Row(
-                          children: [
-                            Text(
-                              Provider.of<PowerTypeChartDataManager>(context,
-                                      listen: false)
-                                  .selectedDateStr,
-                              style: FlutterFlowTheme.of(context)
-                                  .bodyText1
-                                  .override(
-                                    fontFamily: 'Poppins',
-                                    color: FlutterFlowTheme.of(context)
-                                        .secondaryText,
-                                    fontSize: 11,
-                                  ),
-                            ),
-                            Icon(
-                              Icons.arrow_drop_down_rounded,
-                              color: FlutterFlowTheme.of(context).secondaryText,
-                              size: 24,
-                            )
-                          ],
-                        ),
-                      ),
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsetsDirectional.fromSTEB(0, 10, 0, 5),
+                child: Row(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      width: 120,
+                      height: 1,
+                      color: FlutterFlowTheme.of(context).secondaryColor,
                     ),
-                    highlightColor:
-                        FlutterFlowTheme.of(context).primaryBackground,
-                    splashColor: FlutterFlowTheme.of(context).primaryBackground,
-                    onTap: () async {
-                      DateTime? selectedDate =
-                          await Provider.of<PowerTypeChartDataManager>(context,
-                                  listen: false)
-                              .onDatePickerOpen(context);
-
-                      Provider.of<PowerTypeChartDataManager>(context,
-                              listen: false)
-                          .getPowerTypesFromDateRange(context);
-                    },
-                  ),
-                  Container(
-                    width: 120,
-                    height: 1,
-                    color: FlutterFlowTheme.of(context).secondaryColor,
-                  ),
-                ],
-              ),
-            ),
-            Visibility(
-              visible: datePickerVisibility,
-              child: Padding(
-                padding: const EdgeInsetsDirectional.fromSTEB(0, 2, 0, 10),
-                child: Material(
-                  color: Colors.transparent,
-                  elevation: 5,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Container(
-                    width: MediaQuery.of(context).size.width * 0.9,
-                    height: 110,
-                    decoration: BoxDecoration(
-                      boxShadow: const [
-                        BoxShadow(
-                          color: Colors.white10,
-                        ),
-                      ],
-                      color: FlutterFlowTheme.of(context).primaryBackground,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    padding: EdgeInsets.all(0.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Container(
-                          child: DatePicker(
-                            DateTime.now(),
-                            monthTextStyle:
-                                FlutterFlowTheme.of(context).bodyText1.override(
-                                      fontFamily: 'Poppins',
-                                      color: FlutterFlowTheme.of(context)
-                                          .secondaryText,
-                                      fontSize: 10,
-                                    ),
-                            dayTextStyle:
-                                FlutterFlowTheme.of(context).bodyText1.override(
-                                      fontFamily: 'Poppins',
-                                      color: FlutterFlowTheme.of(context)
-                                          .secondaryText,
-                                      fontSize: 10,
-                                    ),
-                            dateTextStyle:
-                                FlutterFlowTheme.of(context).bodyText1.override(
-                                      fontFamily: 'Poppins',
-                                      color: FlutterFlowTheme.of(context)
-                                          .secondaryText,
-                                      fontSize: 19,
-                                    ),
-                            // daysCount: 101,
-                            width: 60,
-                            height: 80,
-                            controller: _controller,
-                            initialSelectedDate: DateTime.now(),
-                            selectionColor: Color(0xFFFFBC00).withOpacity(0.7),
-                            selectedTextColor: Colors.white,
-                            onDateChange: (date) {
-                              // New date selected
-                              setState(() {
-                                _selectedValue = date;
-                              });
-                            },
+                    InkWell(
+                      child: Padding(
+                        padding: const EdgeInsetsDirectional.fromSTEB(0, 0, 0, 0),
+                        child: Container(
+                          child: Row(
+                            children: [
+                              Text(
+                                Provider.of<PowerTypeChartDataManager>(context,
+                                    listen: false)
+                                    .selectedDateStr,
+                                style: FlutterFlowTheme.of(context)
+                                    .bodyText1
+                                    .override(
+                                  fontFamily: 'Poppins',
+                                  color: FlutterFlowTheme.of(context)
+                                      .secondaryText,
+                                  fontSize: 11,
+                                ),
+                              ),
+                              Icon(
+                                Icons.arrow_drop_down_rounded,
+                                color: FlutterFlowTheme.of(context).secondaryText,
+                                size: 24,
+                              )
+                            ],
                           ),
                         ),
-                      ],
+                      ),
+                      highlightColor:
+                      FlutterFlowTheme.of(context).primaryBackground,
+                      splashColor: FlutterFlowTheme.of(context).primaryBackground,
+                      onTap: () async {
+                        DateTime? selectedDate =
+                        await Provider.of<PowerTypeChartDataManager>(context,
+                            listen: false)
+                            .onDatePickerOpen(context);
+
+                        Provider.of<PowerTypeChartDataManager>(context,
+                            listen: false)
+                            .getPowerTypesFromDateRange(context);
+                      },
+                    ),
+                    Container(
+                      width: 120,
+                      height: 1,
+                      color: FlutterFlowTheme.of(context).secondaryColor,
+                    ),
+                  ],
+                ),
+              ),
+              Visibility(
+                visible: datePickerVisibility,
+                child: Padding(
+                  padding: const EdgeInsetsDirectional.fromSTEB(0, 2, 0, 10),
+                  child: Material(
+                    color: Colors.transparent,
+                    elevation: 5,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Container(
+                      width: MediaQuery.of(context).size.width * 0.9,
+                      height: 110,
+                      decoration: BoxDecoration(
+                        boxShadow: const [
+                          BoxShadow(
+                            color: Colors.white10,
+                          ),
+                        ],
+                        color: FlutterFlowTheme.of(context).primaryBackground,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      padding: EdgeInsets.all(0.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Container(
+                            child: DatePicker(
+                              DateTime.now(),
+                              monthTextStyle:
+                              FlutterFlowTheme.of(context).bodyText1.override(
+                                fontFamily: 'Poppins',
+                                color: FlutterFlowTheme.of(context)
+                                    .secondaryText,
+                                fontSize: 10,
+                              ),
+                              dayTextStyle:
+                              FlutterFlowTheme.of(context).bodyText1.override(
+                                fontFamily: 'Poppins',
+                                color: FlutterFlowTheme.of(context)
+                                    .secondaryText,
+                                fontSize: 10,
+                              ),
+                              dateTextStyle:
+                              FlutterFlowTheme.of(context).bodyText1.override(
+                                fontFamily: 'Poppins',
+                                color: FlutterFlowTheme.of(context)
+                                    .secondaryText,
+                                fontSize: 19,
+                              ),
+                              // daysCount: 101,
+                              width: 60,
+                              height: 80,
+                              controller: _controller,
+                              initialSelectedDate: DateTime.now(),
+                              selectionColor: Color(0xFFFFBC00).withOpacity(0.7),
+                              selectedTextColor: Colors.white,
+                              onDateChange: (date) {
+                                // New date selected
+                                setState(() {
+                                  _selectedValue = date;
+                                });
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
-            PowerTypeChart.buildChart(powerTypeMap, eStorageList),
-          ],
-        ),
+              // PowerTypeChart.buildChart(powerTypeMap, eStorageList),
+              Padding(
+                padding: const EdgeInsetsDirectional.fromSTEB(
+                    0, 8, 0, 8),
+                child: ChartMenuItem(),
+              ),
+              Padding(
+                padding:  const EdgeInsetsDirectional.fromSTEB(
+                    0, 8, 0, 8),
+                child: LiveChartMenuItem(),
+              ),
+            ],
+          ),
+        )
+
       ),
     );
   }

@@ -2,7 +2,7 @@
 package="com.example.provider_test">
 <uses-permission android:name="android.permission.INTERNET" />
    <application
-        android:label="provider_test"
+        android:label="mypower24"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

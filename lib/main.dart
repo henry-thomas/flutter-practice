@@ -7,6 +7,7 @@ import 'package:provider_test/providers/power_type_chart_manager.dart';
 import 'package:provider_test/providers/websocket/es_manager.dart';
 import 'package:provider_test/providers/websocket/ps_manager.dart';
 import 'package:provider_test/providers/websocket/ws_manager.dart';
+import 'package:provider_test/screens/chartScreen/chartComponents/chart_actions.dart';
 import 'package:provider_test/screens/chartScreen/chart_controller.dart';
 import 'package:provider_test/screens/dashboardScreen/dashboardAnimation/dashboard_animation_provider.dart';
 import 'package:provider_test/screens/dashboardScreen/dashboardComponents/dashboard_button_actions.dart';
@@ -58,6 +59,8 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider.value(
           value: PowerTypeChartDataManager(),
+        ),ChangeNotifierProvider.value(
+          value: chartActions(),
         ),
       ],
       child: MaterialApp(

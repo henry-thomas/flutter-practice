@@ -7,6 +7,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider_test/providers/device_manager.dart';
 import 'package:provider_test/providers/websocket/es_manager.dart';
 import 'package:provider_test/providers/websocket/ps_manager.dart';
+import 'package:provider_test/screens/chartScreen/chartComponents/chart_selector_card.dart';
 import 'package:provider_test/screens/dashboardScreen/dashboardComponents/dash_anim_img.dart';
 import 'package:provider_test/screens/dashboardScreen/dashboardComponents/more_info_grid_card.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
@@ -444,7 +445,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
             backgroundColor: FlutterFlowTheme.of(context).primaryColor,
             child: SingleChildScrollView(
               child: Container(
-                constraints: const BoxConstraints(maxHeight: 700),
+                constraints: const BoxConstraints(maxHeight: 690),
                 child: Column(
                   mainAxisSize: MainAxisSize.max,
                   children: [
@@ -478,74 +479,12 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                                 scrollDirection: Axis.horizontal,
                                 children: [
                                   Column(
-                                    children: infoCard,
-                                  ),
-                                  Container(
-                                    width: 100,
-                                    height: 100,
-                                    decoration: BoxDecoration(
-                                      color: const Color(0x00EEEEEE),
-                                      // backgroundBlendMode: BlendMode.src,
-                                      image: DecorationImage(
-                                        fit: BoxFit.fitHeight,
+                                    children:
 
-                                        image: Image.asset(
-                                          'assets/images/rect1405.png',
-                                        ).image,
-                                        // opacity: 0.5
-                                      ),
-                                      borderRadius: const BorderRadius.only(
-                                        bottomLeft: Radius.circular(0),
-                                        bottomRight: Radius.circular(0),
-                                        topLeft: Radius.circular(5),
-                                        topRight: Radius.circular(5),
-                                      ),
-                                    ),
-                                    child: Padding(
-                                      padding:
-                                          const EdgeInsetsDirectional.fromSTEB(
-                                              0, 10, 0, 0),
-                                      child: Column(
-                                        mainAxisSize: MainAxisSize.max,
-                                        children: [
-                                          DashInfoDFWidget(
-                                              label: "CO2 reduced",
-                                              icon: FaIcon(
-                                                FontAwesomeIcons.cloudMeatball,
-                                                color:
-                                                    FlutterFlowTheme.of(context)
-                                                        .tertiaryColor,
-                                                size: 14,
-                                              ),
-                                              unit: "kg",
-                                              value: psManager.c02Reduced),
-                                          DashInfoDFWidget(
-                                              label: 'Electric Car Trip',
-                                              icon: Icon(
-                                                Icons.electric_car,
-                                                color:
-                                                    FlutterFlowTheme.of(context)
-                                                        .tertiaryColor,
-                                                size: 14,
-                                              ),
-                                              unit: "km",
-                                              value: psManager.electricCar),
-                                          DashInfoDFWidget(
-                                              label: "Water Saved",
-                                              icon: FaIcon(
-                                                FontAwesomeIcons
-                                                    .handHoldingDroplet,
-                                                color:
-                                                    FlutterFlowTheme.of(context)
-                                                        .tertiaryColor,
-                                                size: 14,
-                                              ),
-                                              unit: "L",
-                                              value: psManager.waterSaved),
-                                        ],
-                                      ),
-                                    ),
+                                    infoCard,
+
                                   ),
+
                                   Container(
                                     width: 100,
                                     height: 100,
@@ -621,7 +560,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                                   child: SmoothPageIndicator(
                                     controller: pageViewController ??=
                                         PageController(initialPage: 0),
-                                    count: 3,
+                                    count: 2,
                                     axisDirection: Axis.horizontal,
                                     onDotClicked: (i) {
                                       pageViewController?.animateToPage(
@@ -649,7 +588,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                       ),
                     ),
                     Expanded(
-                      flex: 5,
+                      flex: 3,
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -860,8 +799,8 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                                             .tertiaryColor,
                                         size: 18,
                                       ),
-                                      powerW: esManager.sumData.capacityP,
-                                      ratedPowerW: 100,
+                                      powerW: esManager.sumData.powerW,
+                                      ratedPowerW: esManager.sumData.ratedPowerW,
                                       fillColor: Colors.orange,
                                     ),
                                   ],
@@ -885,7 +824,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Padding(
-                            padding: const EdgeInsets.all(8.0),
+                            padding: const EdgeInsets.all(4.0),
                             child: Row(
                               mainAxisSize: MainAxisSize.max,
                               mainAxisAlignment: MainAxisAlignment.start,
@@ -942,27 +881,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                                     ),
                                   ],
                                 ),
-                                InkWell(
-                                  child: Padding(
-                                    padding:
-                                        const EdgeInsetsDirectional.fromSTEB(
-                                            20, 0, 0, 0),
-                                    child: Icon(
-                                      Icons.info_outlined,
-                                      color: FlutterFlowTheme.of(context)
-                                          .tertiaryColor
-                                          ?.withOpacity(0.7),
-                                      size: 20,
-                                    ),
-                                  ),
-                                  onTap: () {
-                                    if (greenEfficiencyVisibility == false) {
-                                      greenEfficiencyVisibility = true;
-                                    } else {
-                                      greenEfficiencyVisibility = false;
-                                    }
-                                  },
-                                ),
+
                               ],
                             ),
                           ),
@@ -986,6 +905,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                               ),
                             ),
                           ),
+
                           Row(
                             mainAxisSize: MainAxisSize.max,
                             mainAxisAlignment: MainAxisAlignment.start,
@@ -1027,6 +947,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                               ),
                             ],
                           ),
+
                           // Visibility(
                           //   child: Padding(
                           //     padding: const EdgeInsets.all(8.0),
@@ -1051,6 +972,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                         ],
                       ),
                     ),
+
                   ],
                 ),
               ),
