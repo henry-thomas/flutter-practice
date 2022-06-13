@@ -33,9 +33,9 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider.value(
           value: weatherController(),
         ),
-        ChangeNotifierProvider.value(
-          value: WeatherApi(),
-        ),
+        // ChangeNotifierProvider.value(
+        //   value: WeatherApi(),
+        // ),
         ChangeNotifierProvider.value(
           value: DashboardAnimationProvider(),
         ),

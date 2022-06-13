@@ -36,40 +36,34 @@ class _EventsPageViewState extends State<EventsPageView> {
   ];
   bool checkBox = false;
 
-  var info =  EventsRow().getEventRow( "info");
-  var error = EventsRow().getEventRow( "error");
-  var warning = EventsRow().getEventRow( "warning");
-  var debug = EventsRow().getEventRow( "debug");
-  var trace = EventsRow().getEventRow( "trace");
+  var info = EventsRow().getEventRow("info");
+  var error = EventsRow().getEventRow("error");
+  var warning = EventsRow().getEventRow("warning");
+  var debug = EventsRow().getEventRow("debug");
+  var trace = EventsRow().getEventRow("trace");
 
-
-
- List eventsList = ["info", "error", "warning","warning", 'debug', 'trace'];
+  List eventsList = ["info", "error", "warning", "warning", 'debug', 'trace'];
   List<Widget> eventsListItem = [];
 
- addWidgetListFromEventsLIst() {
-   for (var i = 0; i < eventsList.length; i++) {
-   if(eventsList[i] == "info") {
-     eventsListItem.add(info);
-   }
-   if(eventsList[i] == "error") {
-     eventsListItem.add(error);
-   }
-   if(eventsList[i] == "warning") {
-     eventsListItem.add(warning);
-   }
-   if(eventsList[i] == "debug") {
-     eventsListItem.add(debug);
-   }
-   if(eventsList[i] == "trace") {
-     eventsListItem.add(trace);
-   }
-   }
- }
-
-
-
-
+  addWidgetListFromEventsLIst() {
+    for (var i = 0; i < eventsList.length; i++) {
+      if (eventsList[i] == "info") {
+        eventsListItem.add(info);
+      }
+      if (eventsList[i] == "error") {
+        eventsListItem.add(error);
+      }
+      if (eventsList[i] == "warning") {
+        eventsListItem.add(warning);
+      }
+      if (eventsList[i] == "debug") {
+        eventsListItem.add(debug);
+      }
+      if (eventsList[i] == "trace") {
+        eventsListItem.add(trace);
+      }
+    }
+  }
 
   bool isAddEventsListInit = false;
 
@@ -80,7 +74,6 @@ class _EventsPageViewState extends State<EventsPageView> {
     }
     return eventsListItem;
   }
-
 
   eventsLevelFilter(value) {
     print(value);
@@ -136,24 +129,24 @@ class _EventsPageViewState extends State<EventsPageView> {
                 },
               ),
               // if (centerLocations.contains(fabLocation)) const Spacer(),
-              IconButton(
-                tooltip: 'Weather',
-                icon: FaIcon(
-                  FontAwesomeIcons.cloudSun,
-                  color: FlutterFlowTheme.of(context).tertiaryColor,
-                  size: 20,
-                ),
-                // icon: Icon(
-                //   Icons.dashboard,
-                //   color: FlutterFlowTheme.of(context).tertiaryColor,
-                //   size: 22,
-                // ),
-                onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return const WeatherPage();
-                  }));
-                },
-              ),
+              // IconButton(
+              //   tooltip: 'Weather',
+              //   icon: FaIcon(
+              //     FontAwesomeIcons.cloudSun,
+              //     color: FlutterFlowTheme.of(context).tertiaryColor,
+              //     size: 20,
+              //   ),
+              //   // icon: Icon(
+              //   //   Icons.dashboard,
+              //   //   color: FlutterFlowTheme.of(context).tertiaryColor,
+              //   //   size: 22,
+              //   // ),
+              //   onPressed: () {
+              //     Navigator.push(context, MaterialPageRoute(builder: (context) {
+              //       return const WeatherPage();
+              //     }));
+              //   },
+              // ),
               IconButton(
                 tooltip: 'Events',
                 icon: Icon(

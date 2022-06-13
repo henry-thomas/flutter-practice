@@ -1,4 +1,3 @@
-import 'package:date_picker_timeline/date_picker_widget.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
@@ -31,14 +30,11 @@ class _ChartsPageViewState extends State<ChartsPageView> {
 
   bool datePickerVisibility = false;
 
-  final DatePickerController _controller = DatePickerController();
   DateTime today = DateTime.now();
 
   DateTime _selectedValue = DateTime.now();
 
-  setDatePicker() async {
-    _controller.animateToSelection();
-  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -286,64 +282,7 @@ class _ChartsPageViewState extends State<ChartsPageView> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    child: Container(
-                      width: MediaQuery.of(context).size.width * 0.9,
-                      height: 110,
-                      decoration: BoxDecoration(
-                        boxShadow: const [
-                          BoxShadow(
-                            color: Colors.white10,
-                          ),
-                        ],
-                        color: FlutterFlowTheme.of(context).primaryBackground,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      padding: EdgeInsets.all(0.0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Container(
-                            child: DatePicker(
-                              DateTime.now(),
-                              monthTextStyle:
-                              FlutterFlowTheme.of(context).bodyText1.override(
-                                fontFamily: 'Poppins',
-                                color: FlutterFlowTheme.of(context)
-                                    .secondaryText,
-                                fontSize: 10,
-                              ),
-                              dayTextStyle:
-                              FlutterFlowTheme.of(context).bodyText1.override(
-                                fontFamily: 'Poppins',
-                                color: FlutterFlowTheme.of(context)
-                                    .secondaryText,
-                                fontSize: 10,
-                              ),
-                              dateTextStyle:
-                              FlutterFlowTheme.of(context).bodyText1.override(
-                                fontFamily: 'Poppins',
-                                color: FlutterFlowTheme.of(context)
-                                    .secondaryText,
-                                fontSize: 19,
-                              ),
-                              // daysCount: 101,
-                              width: 60,
-                              height: 80,
-                              controller: _controller,
-                              initialSelectedDate: DateTime.now(),
-                              selectionColor: Color(0xFFFFBC00).withOpacity(0.7),
-                              selectedTextColor: Colors.white,
-                              onDateChange: (date) {
-                                // New date selected
-                                setState(() {
-                                  _selectedValue = date;
-                                });
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+
                   ),
                 ),
               ),
