@@ -44,93 +44,93 @@ class _ChartsPageViewState extends State<ChartsPageView> {
     var eStorageList = ptcdm.getEStorageList;
     var powerTypeMap = ptcdm.getPowerTypeMap;
     return Scaffold(
-      bottomNavigationBar: BottomAppBar(
-        shape: _showNotch ? const CircularNotchedRectangle() : null,
-        color: FlutterFlowTheme.of(context).primaryColor?.withOpacity(0.7),
-        child: IconTheme(
-          data: IconThemeData(color: Theme.of(context).colorScheme.onPrimary),
-          child: Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
-              IconButton(
-                tooltip: 'Dashboard',
-                splashColor: Colors.white,
-                icon: Icon(
-                  Icons.speed_sharp,
-                  color: FlutterFlowTheme.of(context).tertiaryColor,
-                  size: 24,
-                ),
-                onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return const DashboardWidget();
-                  }));
-                },
-              ),
-              // if (centerLocations.contains(fabLocation)) const Spacer(),
-              // IconButton(
-              //   tooltip: 'Weather',
-              //   icon: FaIcon(
-              //     FontAwesomeIcons.cloudSun,
-              //     color: FlutterFlowTheme.of(context).tertiaryColor,
-              //     size: 20,
-              //   ),
-              //   // icon: Icon(
-              //   //   Icons.dashboard,
-              //   //   color: FlutterFlowTheme.of(context).tertiaryColor,
-              //   //   size: 22,
-              //   // ),
-              //   onPressed: () {
-              //     Navigator.push(context, MaterialPageRoute(builder: (context) {
-              //       return const WeatherPage();
-              //     }));
-              //   },
-              // ),
-              // IconButton(
-              //   tooltip: 'Events',
-              //   icon: Icon(
-              //     Icons.event,
-              //     color: FlutterFlowTheme.of(context).tertiaryColor,
-              //     size: 20,
-              //   ),
-              //   // icon: Icon(
-              //   //   Icons.dashboard,
-              //   //   color: FlutterFlowTheme.of(context).tertiaryColor,
-              //   //   size: 22,
-              //   // ),
-              //   onPressed: () {
-              //     Navigator.push(context, MaterialPageRoute(builder: (context) {
-              //       return const EventsPageView();
-              //     }));
-              //   },
-              // ),
-              IconButton(
-                tooltip: 'Power Chart',
-                icon: const FaIcon(
-                  FontAwesomeIcons.chartPie,
-                  color: Colors.white,
-                  size: 18,
-                ),
-                // icon: Icon(
-                //   Icons.dashboard,
-                //   color: FlutterFlowTheme.of(context).tertiaryColor,
-                //   size: 22,
-                // ),
-                onPressed: () {
-                  // Provider.of<PowerTypeChartDataManager>(context, listen: false)
-                  //     .getPowerTypesFromDateRange(
-                  //         context,
-                  //         DateTime.parse('20220606'),
-                  //         DateTime.parse('20220606'));
-                  // Navigator.push(context, MaterialPageRoute(builder: (context) {
-                  //   return const WeatherPage();
-                  // }));
-                },
-              ),
-            ],
-          ),
-        ),
-      ),
+      // bottomNavigationBar: BottomAppBar(
+      //   shape: _showNotch ? const CircularNotchedRectangle() : null,
+      //   color: FlutterFlowTheme.of(context).primaryColor?.withOpacity(0.7),
+      //   child: IconTheme(
+      //     data: IconThemeData(color: Theme.of(context).colorScheme.onPrimary),
+      //     child: Row(
+      //       mainAxisSize: MainAxisSize.max,
+      //       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      //       children: <Widget>[
+      //         IconButton(
+      //           tooltip: 'Dashboard',
+      //           splashColor: Colors.white,
+      //           icon: Icon(
+      //             Icons.speed_sharp,
+      //             color: FlutterFlowTheme.of(context).tertiaryColor,
+      //             size: 24,
+      //           ),
+      //           onPressed: () {
+      //             Navigator.push(context, MaterialPageRoute(builder: (context) {
+      //               return const DashboardWidget();
+      //             }));
+      //           },
+      //         ),
+      //         // if (centerLocations.contains(fabLocation)) const Spacer(),
+      //         // IconButton(
+      //         //   tooltip: 'Weather',
+      //         //   icon: FaIcon(
+      //         //     FontAwesomeIcons.cloudSun,
+      //         //     color: FlutterFlowTheme.of(context).tertiaryColor,
+      //         //     size: 20,
+      //         //   ),
+      //         //   // icon: Icon(
+      //         //   //   Icons.dashboard,
+      //         //   //   color: FlutterFlowTheme.of(context).tertiaryColor,
+      //         //   //   size: 22,
+      //         //   // ),
+      //         //   onPressed: () {
+      //         //     Navigator.push(context, MaterialPageRoute(builder: (context) {
+      //         //       return const WeatherPage();
+      //         //     }));
+      //         //   },
+      //         // ),
+      //         // IconButton(
+      //         //   tooltip: 'Events',
+      //         //   icon: Icon(
+      //         //     Icons.event,
+      //         //     color: FlutterFlowTheme.of(context).tertiaryColor,
+      //         //     size: 20,
+      //         //   ),
+      //         //   // icon: Icon(
+      //         //   //   Icons.dashboard,
+      //         //   //   color: FlutterFlowTheme.of(context).tertiaryColor,
+      //         //   //   size: 22,
+      //         //   // ),
+      //         //   onPressed: () {
+      //         //     Navigator.push(context, MaterialPageRoute(builder: (context) {
+      //         //       return const EventsPageView();
+      //         //     }));
+      //         //   },
+      //         // ),
+      //         IconButton(
+      //           tooltip: 'Power Chart',
+      //           icon: const FaIcon(
+      //             FontAwesomeIcons.chartPie,
+      //             color: Colors.white,
+      //             size: 18,
+      //           ),
+      //           // icon: Icon(
+      //           //   Icons.dashboard,
+      //           //   color: FlutterFlowTheme.of(context).tertiaryColor,
+      //           //   size: 22,
+      //           // ),
+      //           onPressed: () {
+      //             // Provider.of<PowerTypeChartDataManager>(context, listen: false)
+      //             //     .getPowerTypesFromDateRange(
+      //             //         context,
+      //             //         DateTime.parse('20220606'),
+      //             //         DateTime.parse('20220606'));
+      //             // Navigator.push(context, MaterialPageRoute(builder: (context) {
+      //             //   return const WeatherPage();
+      //             // }));
+      //           },
+      //         ),
+      //       ],
+      //     ),
+      //   ),
+      // ),
       appBar: AppBar(
         backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
         iconTheme:
