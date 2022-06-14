@@ -35,7 +35,7 @@ class _NavBarPageState extends State<NavBarPage> {
     return Scaffold(
       body: tabs[_currentPage],
       bottomNavigationBar: SizedBox(
-        height: 50,
+        height: 53,
         child: BottomNavigationBar(
           elevation: 4,
           currentIndex: currentIndex,
