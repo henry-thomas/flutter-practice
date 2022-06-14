@@ -1,5 +1,6 @@
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 import 'package:provider_test/entities/logger.dart';
 import 'package:provider_test/flutterFlow/flutter_flow_theme.dart';
@@ -9,19 +10,19 @@ import 'package:provider_test/providers/websocket/es_manager.dart';
 import 'package:provider_test/providers/websocket/ps_manager.dart';
 import 'package:provider_test/screens/chartScreen/chartComponents/chart_selector_card.dart';
 import 'package:provider_test/screens/dashboardScreen/dashboardComponents/dash_anim_img.dart';
-import 'package:provider_test/screens/dashboardScreen/dashboardComponents/more_info_grid_card.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:provider_test/screens/loginScreen/login_page_view.dart';
 import 'package:provider/provider.dart';
 import 'package:provider_test/providers/websocket/ws_manager.dart';
+import '../../flutterFlow/flutter_flow_widgets.dart';
+import '../profileScreen/profileSettings/electricity_settings.dart';
 import 'dashboardAnimation/dashboard_animation_controller.dart';
 import 'dashboardAnimation/dashboard_animation_provider.dart';
 import 'dashboardComponents/dash_info_data_field.dart';
 import 'dashboardComponents/dashboard_button_actions.dart';
 import 'dashboardComponents/logger_list_component.dart';
 import 'dashboardComponents/more_info_bat_card.dart';
-import 'dashboardComponents/more_info_load_card.dart';
-import 'dashboardComponents/more_info_pv_card.dart';
+import 'dashboardComponents/power_type_card.dart';
 import 'dashboardComponents/muli_daily_energy_card.dart';
 
 class DashboardWidget extends StatefulWidget {
@@ -88,9 +89,9 @@ class _DashboardWidgetState extends State<DashboardWidget> {
   PageController? pageViewController;
 
   List<Widget> infoCard = [];
-  var pvCard = const PVcard();
-  var loadCard = const LoadCard();
-  var gridCard = const GridCard();
+  var pvCard =  const PowerInfoCard(powerType: "PV");
+  var loadCard = const PowerInfoCard(powerType: "Load");
+  var gridCard = const PowerInfoCard(powerType: "Grid");
   var dailyEnergyCard = const DailyEnergyCard();
   var batCard = const BatCard();
 
@@ -195,6 +196,8 @@ class _DashboardWidgetState extends State<DashboardWidget> {
     // button action provider
     initLoggerList(context);
     final buttonAction = Provider.of<ButtonAction>(context);
+    final electricitySettings = Provider.of<ElectricitySettings>(context);
+    String userName = electricitySettings.username;
     // animation providers
     final animProvider = Provider.of<DashboardAnimationProvider>(context);
     final pvToBatDotPosition = animProvider.pvToBatAnimationPositionVal;
@@ -307,37 +310,64 @@ class _DashboardWidgetState extends State<DashboardWidget> {
           mainAxisSize: MainAxisSize.max,
           children: [
             Padding(
-              padding: const EdgeInsetsDirectional.fromSTEB(0, 50, 0, 0),
+              padding:  EdgeInsetsDirectional.fromSTEB(25, 50, 20, 20),
               child: Row(
                 mainAxisSize: MainAxisSize.max,
-                // mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Padding(
-                    padding:
-                        const EdgeInsetsDirectional.fromSTEB(20, 20, 20, 20),
-                    child: InkWell(
-                      child: Container(
-                        width: 30,
-                        height: 30,
-                        clipBehavior: Clip.antiAlias,
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                        ),
-                        child: Image.asset(
-                          'assets/images/userIcon.png',
-                        ),
-                      ),
-                      onTap: () {},
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(26),
+                    child: Icon(
+                      Icons.person_add,
+                      color: FlutterFlowTheme.of(context).secondaryText,
+                      size: 35,
                     ),
                   ),
-                  Text(
-                    "SolarMdData().usernameGlobal",
-                    style: FlutterFlowTheme.of(context).bodyText1,
+                  Expanded(
+                    child: Padding(
+                      padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 0),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            userName,
+                            style: FlutterFlowTheme.of(context).bodyText1,
+                          ),
+                          Row(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Image.asset(
+                                'assets/images/Rectangle_12.png',
+                                width: 30,
+                                height: 20,
+                                fit: BoxFit.fitHeight,
+                              ),
+                              Text(
+                                Provider.of<DeviceManager>(context, listen: false)
+                                    .getSelectedLogger!
+                                    .description,
+                                style: FlutterFlowTheme.of(context).bodyText2.override(
+                                  fontFamily: 'Outfit',
+                                  color: Color(0xFF57636C),
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.normal,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
+
                 ],
               ),
             ),
+
             Column(
               mainAxisSize: MainAxisSize.max,
               children: loggerListItem,
@@ -523,6 +553,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                                     psManager.getLivePowerTypeMap["pv"]?.powerW,
                                 ratedPowerW: psManager
                                     .getLivePowerTypeMap["pv"]?.ratedPowerW,
+                                offset: -39,
                               ),
                             ],
                           ),
@@ -539,7 +570,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                                       Icons.offline_bolt_outlined,
                                       color: FlutterFlowTheme.of(context)
                                           .tertiaryColor,
-                                      size: 20,
+                                      size: 22,
                                     ),
                                     powerW: psManager
                                         .getLivePowerTypeMap["grid"]?.powerW,
@@ -547,6 +578,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                                         .getLivePowerTypeMap["grid"]
                                         ?.ratedPowerW,
                                     fillColor: Colors.red,
+                                    offset: -41,
                                   )),
                               Container(
                                 width: 150,
@@ -686,6 +718,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                                             .getLivePowerTypeMap["load"]
                                             ?.ratedPowerW,
                                         fillColor: Colors.blue,
+                                        offset: -39,
                                       )),
                                 ],
                               ),
@@ -711,11 +744,12 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                                         Icons.battery_charging_full_rounded,
                                         color: FlutterFlowTheme.of(context)
                                             .tertiaryColor,
-                                        size: 18,
+                                        size: 16,
                                       ),
                                       powerW: esManager.sumData.powerW,
                                       ratedPowerW: esManager.sumData.ratedPowerW,
                                       fillColor: Colors.orange,
+                                      offset: -38,
                                     ),
                                   ],
                                 ),
@@ -802,7 +836,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                             padding: const EdgeInsetsDirectional.fromSTEB(
                                 0, 10, 0, 0),
                             child: Container(
-                              width: MediaQuery.of(context).size.width * 0.83,
+                              width: MediaQuery.of(context).size.width * 0.93,
                               height: 3,
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(20),
@@ -859,6 +893,24 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                               ),
                             ],
                           ),
+                          Visibility(
+                            visible: psManager.loader,
+                            child:Transform.translate(
+                            offset: const Offset(0, -332),
+                            child: Container(
+                              width: 150,
+                              height: 151,
+                              child: SpinKitCircle(
+                                color: FlutterFlowTheme.of(context).primaryColor,
+                                size:40.0,
+                              ),
+                              decoration: BoxDecoration(
+                                color: FlutterFlowTheme.of(context).primaryBackground,
+                              ),
+                              alignment: const AlignmentDirectional(0, 0),
+                            ),
+                          ), ),
+
                         ],
                       ),
                     ),

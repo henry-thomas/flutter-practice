@@ -29,8 +29,6 @@ class _LoginPageWidgetState extends State<LoginPageWidget>
   Widget build(BuildContext context) {
     var usernameInput = "Henry_Thomas"; // emailAddressController!.text;
     var passwordInput = "123456"; // passwordController!.text;
-    // var usernameInput = emailAddressController!.text;
-    // var passwordInput = passwordController!.text;
     return Scaffold(
       key: scaffoldKey,
       backgroundColor: FlutterFlowTheme.of(context).primaryBackground,

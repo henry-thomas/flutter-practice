@@ -101,33 +101,7 @@ class _ChartMenuItemState extends State<ChartMenuItem> {
                 ),
                 Column(
                     mainAxisSize: MainAxisSize.max, children: widget.infoWgtList
-                    //  [
-                    //   Row(
-                    //     children: [
-                    //       Text(
-                    //         'Last Updated:',
-                    //         style: FlutterFlowTheme.of(context)
-                    //             .bodyText1
-                    //             .override(
-                    //               fontFamily: 'Poppins',
-                    //               color:
-                    //                   FlutterFlowTheme.of(context).secondaryText,
-                    //               fontSize: 11,
-                    //             ),
-                    //       ),
-                    //       Padding(
-                    //         padding:
-                    //             const EdgeInsetsDirectional.fromSTEB(5, 0, 0, 0),
-                    //         child: Text(
-                    //           DateFormat("MMMM d  hh:mm:ss")
-                    //               .format(now)
-                    //               .toString(),
-                    //           style: FlutterFlowTheme.of(context).bodyText1,
-                    //         ),
-                    //       ),
-                    //     ],
-                    //   ),
-                    // ],
+
                     ),
               ],
             ),

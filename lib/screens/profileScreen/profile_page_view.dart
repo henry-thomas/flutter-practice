@@ -1,7 +1,12 @@
 
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
+import 'package:provider_test/screens/profileScreen/profileComponents/electric_price_input.dart';
+import 'package:provider_test/screens/profileScreen/profileComponents/electricity_price_card.dart';
+import 'package:provider_test/screens/profileScreen/profileSettings/electricity_settings.dart';
 
 import '../../flutterFlow/flutter_flow_theme.dart';
 import '../../flutterFlow/flutter_flow_widgets.dart';
@@ -18,12 +23,17 @@ class ProfilePageView extends StatefulWidget {
 class _ProfilePageViewState extends State<ProfilePageView> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
+
   String? selectedValue;
   List<String> items = [
     'Logout',
   ];
   @override
   Widget build(BuildContext context) {
+    final electricitySettings = Provider.of<ElectricitySettings>(context);
+    electricitySettings.insertElectricCard(context);
+    String userName = electricitySettings.username;
+
     return Scaffold(
       key: scaffoldKey,
       appBar: AppBar(
@@ -118,7 +128,6 @@ class _ProfilePageViewState extends State<ProfilePageView> {
                   children: [
                     ClipRRect(
                       borderRadius: BorderRadius.circular(20),
-
                       child: Icon(
                         Icons.person_add,
                         color: FlutterFlowTheme.of(context).secondaryText,
@@ -128,7 +137,7 @@ class _ProfilePageViewState extends State<ProfilePageView> {
                     Padding(
                       padding: EdgeInsetsDirectional.fromSTEB(0, 8, 0, 0),
                       child: Text(
-                        'UserName',
+                        userName,
                         style: FlutterFlowTheme.of(context).subtitle1.override(
                           fontFamily: 'Outfit',
                           color: Color(0xFF101213),
@@ -139,20 +148,37 @@ class _ProfilePageViewState extends State<ProfilePageView> {
                     ),
                     Padding(
                       padding: EdgeInsetsDirectional.fromSTEB(0, 4, 0, 0),
-                      child: Text(
-                        'LoggerName',
-                        style: FlutterFlowTheme.of(context).bodyText2.override(
-                          fontFamily: 'Outfit',
-                          color: Color(0xFF57636C),
-                          fontSize: 14,
-                          fontWeight: FontWeight.normal,
-                        ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Image.asset(
+                            'assets/images/Rectangle_12.png',
+                            width: 30,
+                            height: 20,
+                            fit: BoxFit.fitHeight,
+                          ),
+                          Text(
+                              Provider.of<DeviceManager>(context, listen: false)
+                                  .getSelectedLogger!
+                                  .description,
+                            style: FlutterFlowTheme.of(context).bodyText2.override(
+                              fontFamily: 'Outfit',
+                              color: Color(0xFF57636C),
+                              fontSize: 14,
+                              fontWeight: FontWeight.normal,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],
                 ),
               ),
             ),
+
+
+
             Padding(
               padding: EdgeInsetsDirectional.fromSTEB(20, 12, 20, 0),
               child: Container(
@@ -172,36 +198,10 @@ class _ProfilePageViewState extends State<ProfilePageView> {
                   padding: EdgeInsetsDirectional.fromSTEB(8, 8, 8, 8),
                   child: Row(
                     mainAxisSize: MainAxisSize.max,
-                    children: [
-                      Icon(
-                        Icons.power,
-                        color: FlutterFlowTheme.of(context).secondaryText,
-                        size: 16,
-                      ),
-                      Padding(
-                        padding: EdgeInsetsDirectional.fromSTEB(12, 0, 0, 0),
-                        child: Text(
-                          'Electricity Price: R8.4 per kWh',
-                          style: FlutterFlowTheme.of(context).bodyText2.override(
-                            fontFamily: 'Outfit',
-                            color:FlutterFlowTheme.of(context).secondaryText,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        child: Align(
-                          alignment: AlignmentDirectional(0.9, 0),
-                          child: Icon(
-                            Icons.arrow_forward_ios,
-                            color: FlutterFlowTheme.of(context).secondaryText,
-                            size: 18,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+                    children: electricitySettings.electricityCard,
+
+
+                  )
                 ),
               ),
             ),
@@ -287,9 +287,9 @@ class _ProfilePageViewState extends State<ProfilePageView> {
                               topRight: Radius.circular(12),
                             ),
                             child: Image.asset(
-                              'assets/images/sunsynkSystem.png',
-                              width: 160,
-                              height: 100,
+                              'assets/images/solarmdWithSunsynk.png',
+                              width: 140,
+                              height: 90,
                               fit: BoxFit.fitHeight,
                             ),
                           ),
@@ -310,7 +310,7 @@ class _ProfilePageViewState extends State<ProfilePageView> {
                             child: Padding(
                               padding: EdgeInsetsDirectional.fromSTEB(3, 3, 4, 4),
                               child: Icon(
-                                Icons.motion_photos_on,
+                                Icons.wifi_tethering,
                                 color: Color(0xFF39BE2F),
                                 size: 26,
                               ),
@@ -334,10 +334,10 @@ class _ProfilePageViewState extends State<ProfilePageView> {
                           Padding(
                             padding: EdgeInsetsDirectional.fromSTEB(12, 0, 0, 0),
                             child: Text(
-                              '4:30pm',
+                              'Not working, still testing',
                               style: FlutterFlowTheme.of(context).bodyText1.override(
                                 fontFamily: 'Outfit',
-                                color: FlutterFlowTheme.of(context).secondaryText,
+                                color: Colors.red,
                                 fontSize: 14,
                                 fontWeight: FontWeight.normal,
                               ),
@@ -350,6 +350,9 @@ class _ProfilePageViewState extends State<ProfilePageView> {
                 ),
               ),
             ),
+
+
+
 
 
           ],

@@ -15,6 +15,7 @@ import '../entities/power_type.dart';
 import 'package:provider_test/screens/dashboardScreen/dashboard_page_view.dart';
 
 import '../naviagation_bar.dart';
+import '../screens/profileScreen/profileSettings/electricity_settings.dart';
 
 class ApiController extends ChangeNotifier {
   static const BASE_URL = "http://cweb1.mypower24.co.za/SolarMDApi/";
@@ -83,6 +84,8 @@ class ApiController extends ChangeNotifier {
   }
 
   void login(String username, String password, BuildContext context) async {
+    final electricitySettings = Provider.of<ElectricitySettings>(context, listen: false);
+    electricitySettings.setUserName(username);
     ApiLoginResponse? loginResponse =
         await service.sendLoginRequest(username, password);
     if (loginResponse != null) {

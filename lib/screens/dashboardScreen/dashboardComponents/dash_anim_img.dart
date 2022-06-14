@@ -11,6 +11,7 @@ class DashboardAnimImage extends StatelessWidget {
   double? ratedPowerW;
   Function? onTap;
   Color? fillColor;
+  double? offset;
 
   DashboardAnimImage(
       {Key? key,
@@ -18,6 +19,7 @@ class DashboardAnimImage extends StatelessWidget {
       this.powerW,
       this.ratedPowerW,
       this.onTap,
+        this.offset,
       this.fillColor})
       : super(key: key);
 
@@ -87,7 +89,7 @@ class DashboardAnimImage extends StatelessWidget {
                         ),
                       ),
                       Transform.translate(
-                        offset: const Offset(-39, 0),
+                        offset:  Offset(this.offset!, 0),
                         child: icon,
                       ),
                     ],
