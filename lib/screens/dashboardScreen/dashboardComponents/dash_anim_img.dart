@@ -38,6 +38,9 @@ class DashboardAnimImage extends StatelessWidget {
       if (perc > 1) {
         perc = 1;
       }
+      if (perc < 0) {
+        perc = -perc;
+      }
 
       return perc;
     }
