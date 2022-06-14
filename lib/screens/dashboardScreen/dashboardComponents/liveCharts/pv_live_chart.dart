@@ -59,19 +59,21 @@ class _LivePvChartState extends State<LivePvChart> {
   @override
   Widget build(BuildContext context) {
     final psManager = Provider.of<PowerServiceManager>(context);
+    var getLivePowerTypeMap = psManager.getLivePowerTypeMap;
+
     final pvRatedPower = psManager.pvRatedPower;
     final loadRatedPower = psManager.loadRatedPower;
     final gridRatedPower = psManager.gridRatedPower;
-    var chartsActions = Provider.of<chartActions>(context);
-    bool isOpen = chartsActions.liveChartMenuIsOpen;
+    var chartsActions = Provider.of<ChartActions>(context);
+    bool isOpen = chartsActions.isLiveChartMenuOpen;
     var chartHeight = MediaQuery.of(context).size.height * 0.7;
     var chartWidth = MediaQuery.of(context).size.width * 1;
     if (isOpen == false) {
       chartHeight = 70;
       chartWidth = 100;
-    }else {
+    } else {
       chartHeight = MediaQuery.of(context).size.height * 0.7;
-      chartWidth =MediaQuery.of(context).size.width * 1;
+      chartWidth = MediaQuery.of(context).size.width * 1;
     }
 
     List highestRatedPower = [pvRatedPower, loadRatedPower, gridRatedPower];

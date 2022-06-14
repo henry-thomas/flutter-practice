@@ -1,33 +1,28 @@
-
-
 import 'package:flutter/cupertino.dart';
 
 import 'package:flutter/material.dart';
 
-class chartActions extends ChangeNotifier {
+class ChartActions extends ChangeNotifier {
+  bool isPowerTypeChartMenuOpen = false;
 
-  bool menuIsOpen = false;
-
-
-  menuOpen() {
-    if (menuIsOpen == false) {
-      menuIsOpen = true;
-    }else {
-      menuIsOpen = false;
-    }
+  onMenuOpen() {
+    isPowerTypeChartMenuOpen = !isPowerTypeChartMenuOpen;
+    // if (isPowerTypeChartMenuOpen == false) {
+    //   isPowerTypeChartMenuOpen = true;
+    // } else {
+    //   isPowerTypeChartMenuOpen = false;
+    // }
+    notifyListeners();
   }
 
-
-  bool liveChartMenuIsOpen = false;
-
+  bool isLiveChartMenuOpen = false;
 
   liveChartMenuOpen() {
-    if (liveChartMenuIsOpen == false) {
-      liveChartMenuIsOpen = true;
-    }else {
-      liveChartMenuIsOpen = false;
+    if (isLiveChartMenuOpen == false) {
+      isLiveChartMenuOpen = true;
+    } else {
+      isLiveChartMenuOpen = false;
     }
-  }
-
     notifyListeners();
+  }
 }

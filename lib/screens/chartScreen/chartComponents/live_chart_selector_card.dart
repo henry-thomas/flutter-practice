@@ -23,14 +23,12 @@ class _LiveChartMenuItemState extends State<LiveChartMenuItem> {
   DateTime now = DateTime.now();
   // var lastUpdated = DateFormat("MMMM d").format(now);
 
-
-
   @override
   Widget build(BuildContext context) {
     var ptcdm = Provider.of<PowerTypeChartDataManager>(context);
     var eStorageList = ptcdm.getEStorageList;
     var powerTypeMap = ptcdm.getPowerTypeMap;
-    var chartsActions = Provider.of<chartActions>(context);
+    var chartsActions = Provider.of<ChartActions>(context);
 
     final psManager = Provider.of<PowerServiceManager>(context);
     String loadPower = (psManager.loadPower / 1000).toStringAsFixed(2);
@@ -39,8 +37,9 @@ class _LiveChartMenuItemState extends State<LiveChartMenuItem> {
 
     return Container(
       width: MediaQuery.of(context).size.width * 0.95,
-      decoration:  BoxDecoration(
-        color: FlutterFlowTheme.of(context).secondaryBackground?.withOpacity(0.4),
+      decoration: BoxDecoration(
+        color:
+            FlutterFlowTheme.of(context).secondaryBackground?.withOpacity(0.4),
         borderRadius: BorderRadius.circular(10),
         shape: BoxShape.rectangle,
       ),
@@ -49,7 +48,6 @@ class _LiveChartMenuItemState extends State<LiveChartMenuItem> {
         children: [
           Container(
             decoration: BoxDecoration(
-
               color: FlutterFlowTheme.of(context).secondaryBackground,
               borderRadius: BorderRadius.only(
                 bottomLeft: Radius.circular(0),
@@ -64,24 +62,20 @@ class _LiveChartMenuItemState extends State<LiveChartMenuItem> {
               children: [
                 Text(
                   'Live Chart',
-                  style: FlutterFlowTheme.of(context)
-                      .bodyText1
-                      .override(
-                    fontFamily: 'Poppins',
-                    color: FlutterFlowTheme.of(context)
-                        .secondaryText,
-                    fontSize: 11,
-                  ),
+                  style: FlutterFlowTheme.of(context).bodyText1.override(
+                        fontFamily: 'Poppins',
+                        color: FlutterFlowTheme.of(context).secondaryText,
+                        fontSize: 11,
+                      ),
                 ),
                 InkWell(
                   child: Icon(
                     Icons.bar_chart_rounded,
-                    color:  FlutterFlowTheme.of(context)
-                        .tertiaryColor,
+                    color: FlutterFlowTheme.of(context).tertiaryColor,
                     size: 26,
                   ),
                   onTap: () {
-                    chartsActions.liveChartMenuOpen();
+                    // chartsActions.liveChartMenuOpen();
                     setState(() {
                       if (liveChartVisibility == false) {
                         liveChartVisibility = true;
@@ -97,7 +91,7 @@ class _LiveChartMenuItemState extends State<LiveChartMenuItem> {
             ),
           ),
           Visibility(
-            visible:liveChartSnapShot ,
+            visible: liveChartSnapShot,
             child: Row(
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -105,9 +99,8 @@ class _LiveChartMenuItemState extends State<LiveChartMenuItem> {
                 Container(
                   height: 70,
                   width: 100,
-                  child:LivePvChart(),
+                  child: LivePvChart(),
                 ),
-
                 Column(
                   mainAxisSize: MainAxisSize.max,
                   children: [
@@ -121,17 +114,17 @@ class _LiveChartMenuItemState extends State<LiveChartMenuItem> {
                           children: [
                             Padding(
                               padding:
-                              EdgeInsetsDirectional.fromSTEB(5, 0, 5, 0),
+                                  EdgeInsetsDirectional.fromSTEB(5, 0, 5, 0),
                               child: Text(
                                 "Grid Power",
                                 style: FlutterFlowTheme.of(context)
                                     .bodyText1
                                     .override(
-                                  fontFamily: 'Poppins',
-                                  color: FlutterFlowTheme.of(context)
-                                      .secondaryText,
-                                  fontSize: 11,
-                                ),
+                                      fontFamily: 'Poppins',
+                                      color: FlutterFlowTheme.of(context)
+                                          .secondaryText,
+                                      fontSize: 11,
+                                    ),
                               ),
                             ),
                           ],
@@ -145,32 +138,30 @@ class _LiveChartMenuItemState extends State<LiveChartMenuItem> {
                               style: FlutterFlowTheme.of(context)
                                   .bodyText1
                                   .override(
-                                fontFamily: 'Poppins',
-                                color: Colors.red.withOpacity(0.5),
-                                fontSize: 14,
-                              ),
-
+                                    fontFamily: 'Poppins',
+                                    color: Colors.red.withOpacity(0.5),
+                                    fontSize: 14,
+                                  ),
                             ),
                             Padding(
                               padding:
-                              EdgeInsetsDirectional.fromSTEB(3, 0, 0, 0),
+                                  EdgeInsetsDirectional.fromSTEB(3, 0, 0, 0),
                               child: Text(
                                 'kWh',
                                 style: FlutterFlowTheme.of(context)
                                     .bodyText1
                                     .override(
-                                  fontFamily: 'Poppins',
-                                  color: FlutterFlowTheme.of(context)
-                                      .secondaryText,
-                                  fontSize: 12,
-                                ),
+                                      fontFamily: 'Poppins',
+                                      color: FlutterFlowTheme.of(context)
+                                          .secondaryText,
+                                      fontSize: 12,
+                                    ),
                               ),
                             ),
                           ],
                         ),
                       ],
                     ),
-
                     Row(
                       mainAxisSize: MainAxisSize.max,
                       mainAxisAlignment: MainAxisAlignment.start,
@@ -181,17 +172,17 @@ class _LiveChartMenuItemState extends State<LiveChartMenuItem> {
                           children: [
                             Padding(
                               padding:
-                              EdgeInsetsDirectional.fromSTEB(5, 0, 5, 0),
+                                  EdgeInsetsDirectional.fromSTEB(5, 0, 5, 0),
                               child: Text(
                                 "Load Power",
                                 style: FlutterFlowTheme.of(context)
                                     .bodyText1
                                     .override(
-                                  fontFamily: 'Poppins',
-                                  color: FlutterFlowTheme.of(context)
-                                      .secondaryText,
-                                  fontSize: 11,
-                                ),
+                                      fontFamily: 'Poppins',
+                                      color: FlutterFlowTheme.of(context)
+                                          .secondaryText,
+                                      fontSize: 11,
+                                    ),
                               ),
                             ),
                           ],
@@ -205,25 +196,24 @@ class _LiveChartMenuItemState extends State<LiveChartMenuItem> {
                               style: FlutterFlowTheme.of(context)
                                   .bodyText1
                                   .override(
-                                fontFamily: 'Poppins',
-                                color: Colors.blue.withOpacity(0.5),
-                                fontSize: 14,
-                              ),
-
+                                    fontFamily: 'Poppins',
+                                    color: Colors.blue.withOpacity(0.5),
+                                    fontSize: 14,
+                                  ),
                             ),
                             Padding(
                               padding:
-                              EdgeInsetsDirectional.fromSTEB(3, 0, 0, 0),
+                                  EdgeInsetsDirectional.fromSTEB(3, 0, 0, 0),
                               child: Text(
                                 'kWh',
                                 style: FlutterFlowTheme.of(context)
                                     .bodyText1
                                     .override(
-                                  fontFamily: 'Poppins',
-                                  color: FlutterFlowTheme.of(context)
-                                      .secondaryText,
-                                  fontSize: 12,
-                                ),
+                                      fontFamily: 'Poppins',
+                                      color: FlutterFlowTheme.of(context)
+                                          .secondaryText,
+                                      fontSize: 12,
+                                    ),
                               ),
                             ),
                           ],
@@ -240,17 +230,17 @@ class _LiveChartMenuItemState extends State<LiveChartMenuItem> {
                           children: [
                             Padding(
                               padding:
-                              EdgeInsetsDirectional.fromSTEB(5, 0, 5, 0),
+                                  EdgeInsetsDirectional.fromSTEB(5, 0, 5, 0),
                               child: Text(
                                 "Pv Power",
                                 style: FlutterFlowTheme.of(context)
                                     .bodyText1
                                     .override(
-                                  fontFamily: 'Poppins',
-                                  color: FlutterFlowTheme.of(context)
-                                      .secondaryText,
-                                  fontSize: 11,
-                                ),
+                                      fontFamily: 'Poppins',
+                                      color: FlutterFlowTheme.of(context)
+                                          .secondaryText,
+                                      fontSize: 11,
+                                    ),
                               ),
                             ),
                           ],
@@ -264,24 +254,24 @@ class _LiveChartMenuItemState extends State<LiveChartMenuItem> {
                               style: FlutterFlowTheme.of(context)
                                   .bodyText1
                                   .override(
-                                fontFamily: 'Poppins',
-                                color: Colors.green.withOpacity(0.5),
-                                fontSize: 14,
-                              ),
+                                    fontFamily: 'Poppins',
+                                    color: Colors.green.withOpacity(0.5),
+                                    fontSize: 14,
+                                  ),
                             ),
                             Padding(
                               padding:
-                              EdgeInsetsDirectional.fromSTEB(3, 0, 0, 0),
+                                  EdgeInsetsDirectional.fromSTEB(3, 0, 0, 0),
                               child: Text(
                                 'kWh',
                                 style: FlutterFlowTheme.of(context)
                                     .bodyText1
                                     .override(
-                                  fontFamily: 'Poppins',
-                                  color: FlutterFlowTheme.of(context)
-                                      .secondaryText,
-                                  fontSize: 12,
-                                ),
+                                      fontFamily: 'Poppins',
+                                      color: FlutterFlowTheme.of(context)
+                                          .secondaryText,
+                                      fontSize: 12,
+                                    ),
                               ),
                             ),
                           ],
@@ -293,10 +283,9 @@ class _LiveChartMenuItemState extends State<LiveChartMenuItem> {
               ],
             ),
           ),
-
           Visibility(
             visible: liveChartVisibility,
-            child:LivePvChart(),
+            child: LivePvChart(),
           )
         ],
       ),
