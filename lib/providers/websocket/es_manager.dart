@@ -2,8 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:provider_test/api/api_controller.dart';
-import 'package:provider_test/entities/dev_power_summary.dart';
 import 'package:provider_test/entities/energy_storage.dart';
 import 'package:provider_test/providers/websocket/ws_manager.dart';
 
@@ -51,6 +49,7 @@ class EnergyStorageServiceManager extends ChangeNotifier {
         sumData.capacityAh += storageList[i].capacityAh;
         sumData.capacityP += storageList[i].capacityP;
         sumData.ratedCapacityAh += storageList[i].ratedCapacityAh;
+        sumData.ratedChargeCurrentC += storageList[i].ratedChargeCurrentC;
         sumData.ratedVoltageV += storageList[i].ratedVoltageV;
         sumData.remainingTimeSign += storageList[i].remainingTimeSign;
       } else {
