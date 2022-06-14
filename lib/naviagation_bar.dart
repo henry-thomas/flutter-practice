@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:provider_test/providers/power_type_chart_manager.dart';
 import 'package:provider_test/screens/chartScreen/chart_page_view.dart';
 import 'package:provider_test/screens/dashboardScreen/dashboard_page_view.dart';
+import 'package:provider_test/screens/profileScreen/profile_page_view.dart';
 
 import 'flutterFlow/flutter_flow_theme.dart';
 
@@ -30,6 +31,7 @@ class _NavBarPageState extends State<NavBarPage> {
     final tabs = {
       'DashboardPage': const DashboardWidget(),
       'ChartPage': const ChartsPageView(),
+      'ProfilePage': const ProfilePageView(),
     };
     final currentIndex = tabs.keys.toList().indexOf(_currentPage);
     return Scaffold(
@@ -52,13 +54,13 @@ class _NavBarPageState extends State<NavBarPage> {
           showSelectedLabels: false,
           showUnselectedLabels: false,
           type: BottomNavigationBarType.fixed,
-          items: const <BottomNavigationBarItem>[
+          items:  <BottomNavigationBarItem>[
             BottomNavigationBarItem(
               icon: Icon(
                 Icons.speed_sharp,
                 size: 20,
               ),
-              label: 'Dashboard',
+              label: 'DashboardPage',
               tooltip: '',
             ),
             BottomNavigationBarItem(
@@ -66,7 +68,14 @@ class _NavBarPageState extends State<NavBarPage> {
                 FontAwesomeIcons.chartPie,
                 size: 15,
               ),
-              label: 'Charts',
+              label: 'ChartPage',
+              tooltip: '',
+            ),BottomNavigationBarItem(
+              icon: Icon(
+                Icons.person_rounded,
+                size: 20,
+              ),
+              label: 'ProfilePage',
               tooltip: '',
             ),
           ],

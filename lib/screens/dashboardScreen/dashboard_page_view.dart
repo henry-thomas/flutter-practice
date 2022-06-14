@@ -383,7 +383,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                         ),
                         child: SizedBox(
                           // width: MediaQuery.of(context).size.width,
-                          // height: 10,
+                          // height:MediaQuery.of(context).size.height * 0.19,
                           child: Stack(
                             children: [
                               PageView(
@@ -400,7 +400,8 @@ class _DashboardWidgetState extends State<DashboardWidget> {
 
                                   Container(
                                     width: 100,
-                                    height: 100,
+                                    height: 90,
+
                                     decoration: BoxDecoration(
                                       color: const Color(0x00EEEEEE),
                                       image: DecorationImage(

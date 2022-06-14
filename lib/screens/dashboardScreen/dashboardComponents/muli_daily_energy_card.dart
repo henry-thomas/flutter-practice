@@ -26,7 +26,7 @@ class _DailyEnergyCardState extends State<DailyEnergyCard> {
     pvIconColor = psManager.pvIconColor;
     return Container(
       width: MediaQuery.of(context).size.width * 1,
-      height:  MediaQuery.of(context).size.height * 0.22,
+      height:  MediaQuery.of(context).size.height * 0.20,
       decoration: BoxDecoration(
         color: const Color(0x00EEEEEE),
         // backgroundBlendMode: BlendMode.src,
