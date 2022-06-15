@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:provider_test/providers/device_manager.dart';
 import 'package:provider_test/providers/power_type_chart_manager.dart';
+import 'package:provider_test/providers/websocket/es_manager.dart';
+import 'package:provider_test/providers/websocket/ps_manager.dart';
+import 'package:provider_test/providers/websocket/ws_manager.dart';
 import 'package:provider_test/screens/chartScreen/chart_page_view.dart';
 import 'package:provider_test/screens/dashboardScreen/dashboard_page_view.dart';
 import 'package:provider_test/screens/profileScreen/profile_page_view.dart';
@@ -9,9 +13,12 @@ import 'package:provider_test/screens/profileScreen/profile_page_view.dart';
 import 'flutterFlow/flutter_flow_theme.dart';
 
 class NavBarPage extends StatefulWidget {
-  NavBarPage({Key? key, this.initialPage}) : super(key: key);
+  const NavBarPage({Key? key, this.initialPage}) : super(key: key);
 
   final String? initialPage;
+  final Widget dashboard = const DashboardWidget();
+  final Widget charts = const ChartsPageView();
+  final Widget profile = const ProfilePageView();
 
   @override
   _NavBarPageState createState() => _NavBarPageState();
@@ -26,13 +33,59 @@ class _NavBarPageState extends State<NavBarPage> {
     _currentPage = widget.initialPage ?? _currentPage;
   }
 
+  bool isWsInit = false;
+  void _initWs(BuildContext context) {
+    if (!isWsInit) {
+      isWsInit = true;
+      Provider.of<WsManager>(context, listen: false).initWs(context);
+    }
+  }
+
+  bool isPsInit = false;
+  bool isEsInit = false;
+
+  bool _initPsManager(BuildContext context) {
+    if (!isPsInit) {
+      isPsInit = true;
+      Provider.of<PowerServiceManager>(context, listen: false).init(context);
+      return true;
+    }
+
+    return false;
+  }
+
+  bool _initEsManager(BuildContext context) {
+    if (!isEsInit) {
+      isEsInit = true;
+      Provider.of<EnergyStorageServiceManager>(context, listen: false)
+          .init(context);
+      return true;
+    }
+
+    return false;
+  }
+
   @override
   Widget build(BuildContext context) {
     final tabs = {
-      'DashboardPage': const DashboardWidget(),
-      'ChartPage': const ChartsPageView(),
-      'ProfilePage': const ProfilePageView(),
+      'DashboardPage': widget.dashboard,
+      'ChartPage': widget.charts,
+      'ProfilePage': widget.profile,
     };
+    // final tabs = {
+    //   'DashboardPage': widget.dashboard,
+    //   'ChartPage': widget.charts,
+    //   'ProfilePage': widget.profile,
+    // };
+
+    Provider.of<PowerTypeChartDataManager>(context, listen: false)
+        .getPowerTypesFromDateRange(
+            context, Provider.of<DeviceManager>(context).getSelectedLogger!);
+
+    _initPsManager(context);
+    _initEsManager(context);
+    _initWs(context);
+
     final currentIndex = tabs.keys.toList().indexOf(_currentPage);
     return Scaffold(
       body: tabs[_currentPage],
@@ -43,8 +96,8 @@ class _NavBarPageState extends State<NavBarPage> {
           currentIndex: currentIndex,
           onTap: (i) {
             setState(() {
-              Provider.of<PowerTypeChartDataManager>(context, listen: false)
-                  .getPowerTypesFromDateRange(context);
+              // Provider.of<PowerTypeChartDataManager>(context, listen: false)
+              //     .getPowerTypesFromDateRange(context);
               _currentPage = tabs.keys.toList()[i];
             });
           },
@@ -54,7 +107,7 @@ class _NavBarPageState extends State<NavBarPage> {
           showSelectedLabels: false,
           showUnselectedLabels: false,
           type: BottomNavigationBarType.fixed,
-          items:  <BottomNavigationBarItem>[
+          items: <BottomNavigationBarItem>[
             BottomNavigationBarItem(
               icon: Icon(
                 Icons.speed_sharp,
@@ -70,7 +123,8 @@ class _NavBarPageState extends State<NavBarPage> {
               ),
               label: 'ChartPage',
               tooltip: '',
-            ),BottomNavigationBarItem(
+            ),
+            BottomNavigationBarItem(
               icon: Icon(
                 Icons.person_rounded,
                 size: 20,

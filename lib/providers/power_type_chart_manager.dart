@@ -6,7 +6,10 @@ import 'package:provider/provider.dart';
 import 'package:provider_test/api/api_controller.dart';
 import 'package:provider_test/entities/dev_power_summary.dart';
 import 'package:provider_test/entities/energy_storage.dart';
+import 'package:provider_test/entities/logger.dart';
 import 'package:provider_test/flutterFlow/flutter_flow_util.dart';
+import 'package:provider_test/providers/websocket/ps_manager.dart';
+import 'package:provider_test/providers/websocket/ws_manager.dart';
 
 import '../entities/energy_storage_db.dart';
 import '../entities/logger_config.dart';
@@ -73,7 +76,11 @@ class PowerTypeChartDataManager extends ChangeNotifier {
 
   void init(BuildContext context) async {}
 
-  Future<void> getPowerTypesFromDateRange(BuildContext context) async {
+  Future<void> getPowerTypesFromDateRange(
+      BuildContext context, Logger selectedLogger) async {
+    Provider.of<WsManager>(context, listen: false).initWs(context);
+    Provider.of<PowerServiceManager>(context, listen: false).init(context);
+
     if (selectedDate == null) {
       return;
     }

@@ -88,7 +88,9 @@ class PowerServiceManager extends ChangeNotifier {
   double energyLinePosition = 0;
   Color energyEfficiencyColor = Colors.red;
 
- bool loader = true;
+  bool loader = true;
+
+  var timer;
 
   Map<String?, List<DevPowerSummary>> get getPowerTypeMap {
     return _powerTypeMap;
@@ -134,8 +136,10 @@ class PowerServiceManager extends ChangeNotifier {
       //   }
       // }
     }
-
-    Timer.periodic(Duration(milliseconds: 3000), (timer) {
+    if (timer != null) {
+      timer.cancel();
+    }
+    timer = Timer.periodic(Duration(milliseconds: 3000), (timer) {
       try {
         requestBcMsg(context);
       } catch (e) {}
@@ -156,7 +160,7 @@ class PowerServiceManager extends ChangeNotifier {
     Provider.of<WsManager>(context, listen: false).sendWsMessage(webSocketMsg);
   }
 
-  void onPsMessageReceived(Map<String, dynamic> msg,context) {
+  void onPsMessageReceived(Map<String, dynamic> msg, context) {
     DevMessage message = DevMessage.fromJson(msg);
     // List<DevPowerSummary>? powerList = message.messageList;
     List<dynamic>? pList = message.messageList;
@@ -217,7 +221,8 @@ class PowerServiceManager extends ChangeNotifier {
   }
 
   void calcPowerTotals(context) {
-    final electricitySettings = Provider.of<ElectricitySettings>(context, listen: false);
+    final electricitySettings =
+        Provider.of<ElectricitySettings>(context, listen: false);
     // PV
     if (_livePowerTypeMap["pv"]?.powerW != null) {
       pvPower = _livePowerTypeMap["pv"]?.powerW as double;
