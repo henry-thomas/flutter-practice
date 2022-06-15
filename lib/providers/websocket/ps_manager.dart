@@ -453,15 +453,19 @@ class PowerServiceManager extends ChangeNotifier {
 
     DevPowerSummary resultPower = createEmptyPower();
 
+    if (p1Value == null || p2Value == null) {
+      return resultPower;
+    }
+
     var mathFunction = getMathFunction(expMap['op']);
-    resultPower.powerW = mathFunction(p1Value.powerW!, p2Value.powerW!);
+    resultPower.powerW = mathFunction(p1Value.powerW, p2Value.powerW);
     resultPower.ratedPowerW =
-        mathFunction(p1Value.ratedPowerW!, p2Value.ratedPowerW!);
+        mathFunction(p1Value.ratedPowerW, p2Value.ratedPowerW);
     resultPower.dailyEnergyWh =
-        mathFunction(p1Value.dailyEnergyWh!, p2Value.dailyEnergyWh!);
-    resultPower.energyWh = mathFunction(p1Value.energyWh!, p2Value.energyWh!);
-    resultPower.voltageV = (p1Value.voltageV! + p2Value.voltageV!) / 2;
-    resultPower.currentA = mathFunction(p1Value.currentA!, p2Value.currentA!);
+        mathFunction(p1Value.dailyEnergyWh, p2Value.dailyEnergyWh);
+    resultPower.energyWh = mathFunction(p1Value.energyWh, p2Value.energyWh);
+    resultPower.voltageV = (p1Value.voltageV + p2Value.voltageV) / 2;
+    resultPower.currentA = mathFunction(p1Value.currentA, p2Value.currentA);
     return resultPower;
   }
 
