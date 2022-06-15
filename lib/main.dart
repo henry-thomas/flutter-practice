@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:provider_test/api/api_controller.dart';
 import 'package:provider_test/entities/device_message.dart';
@@ -7,9 +8,11 @@ import 'package:provider_test/providers/power_type_chart_manager.dart';
 import 'package:provider_test/providers/websocket/es_manager.dart';
 import 'package:provider_test/providers/websocket/ps_manager.dart';
 import 'package:provider_test/providers/websocket/ws_manager.dart';
+import 'package:provider_test/screens/chartScreen/chartComponents/chart_actions.dart';
 import 'package:provider_test/screens/chartScreen/chart_controller.dart';
 import 'package:provider_test/screens/dashboardScreen/dashboardAnimation/dashboard_animation_provider.dart';
 import 'package:provider_test/screens/dashboardScreen/dashboardComponents/dashboard_button_actions.dart';
+import 'package:provider_test/screens/profileScreen/profileSettings/electricity_settings.dart';
 import 'package:provider_test/screens/weatherScreen/weatherControllers/weather_controller.dart';
 import 'flutterFlow/flutter_flow_theme.dart';
 import 'screens/loginScreen/login_page_view.dart';
@@ -59,9 +62,15 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider.value(
           value: PowerTypeChartDataManager(),
         ),
+        ChangeNotifierProvider.value(
+          value: ChartActions(),
+        ),
+        ChangeNotifierProvider.value(
+          value: ElectricitySettings(),
+        ),
       ],
       child: MaterialApp(
-        title: 'Flutter Demo',
+        title: 'myPower24',
         theme: ThemeData(brightness: Brightness.light),
         darkTheme: ThemeData(brightness: Brightness.dark),
         themeMode: _themeMode,

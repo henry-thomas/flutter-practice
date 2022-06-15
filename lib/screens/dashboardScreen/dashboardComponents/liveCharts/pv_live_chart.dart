@@ -7,6 +7,7 @@ import 'dart:math' as math;
 
 import '../../../../flutterFlow/flutter_flow_theme.dart';
 import '../../../../providers/websocket/ps_manager.dart';
+import '../../../chartScreen/chartComponents/chart_actions.dart';
 
 class LivePvChart extends StatefulWidget {
   const LivePvChart({Key? key}) : super(key: key);
@@ -58,9 +59,22 @@ class _LivePvChartState extends State<LivePvChart> {
   @override
   Widget build(BuildContext context) {
     final psManager = Provider.of<PowerServiceManager>(context);
+    var getLivePowerTypeMap = psManager.getLivePowerTypeMap;
+
     final pvRatedPower = psManager.pvRatedPower;
     final loadRatedPower = psManager.loadRatedPower;
     final gridRatedPower = psManager.gridRatedPower;
+    var chartsActions = Provider.of<ChartActions>(context);
+    bool isOpen = chartsActions.isLiveChartMenuOpen;
+    var chartHeight = MediaQuery.of(context).size.height * 0.7;
+    var chartWidth = MediaQuery.of(context).size.width * 1;
+    if (isOpen == false) {
+      chartHeight = 70;
+      chartWidth = 100;
+    } else {
+      chartHeight = MediaQuery.of(context).size.height * 0.7;
+      chartWidth = MediaQuery.of(context).size.width * 1;
+    }
 
     List highestRatedPower = [pvRatedPower, loadRatedPower, gridRatedPower];
     var maxY =
@@ -74,8 +88,8 @@ class _LivePvChartState extends State<LivePvChart> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               SizedBox(
-                width: MediaQuery.of(context).size.width * 0.9,
-                height: 120,
+                height: chartHeight,
+                width: chartWidth,
                 child: LineChart(
                   LineChartData(
                     minY: 0,
@@ -96,6 +110,7 @@ class _LivePvChartState extends State<LivePvChart> {
                                 fontSize: 14,
                               );
                               return LineTooltipItem(
+
                                   // ${touchedSpot.x.toStringAsFixed(0)}
                                   ' ${(touchedSpot.y / 1000).toStringAsFixed(2)} kW',
                                   textStyle);

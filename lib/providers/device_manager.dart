@@ -24,8 +24,8 @@ class DeviceManager extends ChangeNotifier {
 
   void setSelectedLogger(BuildContext context, String serNum) {
     _selectedLogger = _serLoggerMap[serNum];
-    Provider.of<WsManager>(context, listen: false).initWs(context);
-    Provider.of<PowerServiceManager>(context, listen: false).init(context);
+    // Provider.of<WsManager>(context, listen: false).initWs(context);
+    // Provider.of<PowerServiceManager>(context, listen: false).init(context);
     notifyListeners();
   }
 

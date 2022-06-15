@@ -1,18 +1,15 @@
 import 'dart:async';
-import 'dart:collection';
 import 'dart:convert';
-import 'dart:ffi';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:provider_test/api/api_controller.dart';
-import 'package:provider_test/entities/calc_power_expression.dart';
 import 'package:provider_test/entities/dev_power_summary.dart';
 import 'package:provider_test/entities/device_message.dart';
 import 'package:provider_test/entities/logger_config.dart';
 import 'package:provider_test/entities/power_type.dart';
 import 'package:provider_test/providers/websocket/ws_manager.dart';
 
-import '../../screens/dashboardScreen/dashboardAnimation/dashboard_animation_provider.dart';
+import '../../screens/profileScreen/profileSettings/electricity_settings.dart';
 import '../device_manager.dart';
 
 class PowerServiceManager extends ChangeNotifier {
@@ -91,6 +88,10 @@ class PowerServiceManager extends ChangeNotifier {
   double energyLinePosition = 0;
   Color energyEfficiencyColor = Colors.red;
 
+  bool loader = true;
+
+  var timer;
+
   Map<String?, List<DevPowerSummary>> get getPowerTypeMap {
     return _powerTypeMap;
   }
@@ -135,8 +136,10 @@ class PowerServiceManager extends ChangeNotifier {
       //   }
       // }
     }
-
-    Timer.periodic(Duration(milliseconds: 3000), (timer) {
+    if (timer != null) {
+      timer.cancel();
+    }
+    timer = Timer.periodic(Duration(milliseconds: 3000), (timer) {
       try {
         requestBcMsg(context);
       } catch (e) {}
@@ -157,7 +160,7 @@ class PowerServiceManager extends ChangeNotifier {
     Provider.of<WsManager>(context, listen: false).sendWsMessage(webSocketMsg);
   }
 
-  void onPsMessageReceived(Map<String, dynamic> msg) {
+  void onPsMessageReceived(Map<String, dynamic> msg, context) {
     DevMessage message = DevMessage.fromJson(msg);
     // List<DevPowerSummary>? powerList = message.messageList;
     List<dynamic>? pList = message.messageList;
@@ -214,10 +217,12 @@ class PowerServiceManager extends ChangeNotifier {
       }
     }
 
-    calcPowerTotals();
+    calcPowerTotals(context);
   }
 
-  void calcPowerTotals() {
+  void calcPowerTotals(context) {
+    final electricitySettings =
+        Provider.of<ElectricitySettings>(context, listen: false);
     // PV
     if (_livePowerTypeMap["pv"]?.powerW != null) {
       pvPower = _livePowerTypeMap["pv"]?.powerW as double;
@@ -264,6 +269,7 @@ class PowerServiceManager extends ChangeNotifier {
     }
     if (loadPower > 0) {
       loadDotActive = 1;
+      loader = false;
     } else {
       loadDotActive = 0;
     }
@@ -334,9 +340,10 @@ class PowerServiceManager extends ChangeNotifier {
     // }
 
     // Financial Benefits calculations
-    dailyFinancial = pvDailyEnergy * 1.46;
-    monthlyFinancial = pvMonthlyEnergy * 1.46;
-    totalFinancial = pvTotalEnergy * 1.46;
+
+    dailyFinancial = pvDailyEnergy * electricitySettings.electricityPrice;
+    monthlyFinancial = pvMonthlyEnergy * electricitySettings.electricityPrice;
+    totalFinancial = pvTotalEnergy * electricitySettings.electricityPrice;
 
     // Environmental Benefits calculation
     c02Reduced = ((pvTotalEnergy) * 0.9);
@@ -446,15 +453,19 @@ class PowerServiceManager extends ChangeNotifier {
 
     DevPowerSummary resultPower = createEmptyPower();
 
+    if (p1Value == null || p2Value == null) {
+      return resultPower;
+    }
+
     var mathFunction = getMathFunction(expMap['op']);
-    resultPower.powerW = mathFunction(p1Value.powerW!, p2Value.powerW!);
+    resultPower.powerW = mathFunction(p1Value.powerW, p2Value.powerW);
     resultPower.ratedPowerW =
-        mathFunction(p1Value.ratedPowerW!, p2Value.ratedPowerW!);
+        mathFunction(p1Value.ratedPowerW, p2Value.ratedPowerW);
     resultPower.dailyEnergyWh =
-        mathFunction(p1Value.dailyEnergyWh!, p2Value.dailyEnergyWh!);
-    resultPower.energyWh = mathFunction(p1Value.energyWh!, p2Value.energyWh!);
-    resultPower.voltageV = (p1Value.voltageV! + p2Value.voltageV!) / 2;
-    resultPower.currentA = mathFunction(p1Value.currentA!, p2Value.currentA!);
+        mathFunction(p1Value.dailyEnergyWh, p2Value.dailyEnergyWh);
+    resultPower.energyWh = mathFunction(p1Value.energyWh, p2Value.energyWh);
+    resultPower.voltageV = (p1Value.voltageV + p2Value.voltageV) / 2;
+    resultPower.currentA = mathFunction(p1Value.currentA, p2Value.currentA);
     return resultPower;
   }
 

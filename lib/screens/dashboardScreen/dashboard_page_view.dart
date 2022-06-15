@@ -1,5 +1,6 @@
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 import 'package:provider_test/entities/logger.dart';
 import 'package:provider_test/flutterFlow/flutter_flow_theme.dart';
@@ -7,27 +8,21 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider_test/providers/device_manager.dart';
 import 'package:provider_test/providers/websocket/es_manager.dart';
 import 'package:provider_test/providers/websocket/ps_manager.dart';
+import 'package:provider_test/screens/chartScreen/chartComponents/chart_selector_card.dart';
 import 'package:provider_test/screens/dashboardScreen/dashboardComponents/dash_anim_img.dart';
-import 'package:provider_test/screens/dashboardScreen/dashboardComponents/more_info_grid_card.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-
-import '../../providers/power_type_chart_manager.dart';
-import '../EventsScreen/events_page_view.dart';
-import '../chartScreen/chart_page_view.dart';
-import '../weatherScreen/weather_page_view.dart';
 import 'package:provider_test/screens/loginScreen/login_page_view.dart';
 import 'package:provider/provider.dart';
 import 'package:provider_test/providers/websocket/ws_manager.dart';
-
+import '../../flutterFlow/flutter_flow_widgets.dart';
+import '../profileScreen/profileSettings/electricity_settings.dart';
 import 'dashboardAnimation/dashboard_animation_controller.dart';
 import 'dashboardAnimation/dashboard_animation_provider.dart';
 import 'dashboardComponents/dash_info_data_field.dart';
 import 'dashboardComponents/dashboard_button_actions.dart';
-import 'dashboardComponents/eco_score_card.dart';
 import 'dashboardComponents/logger_list_component.dart';
 import 'dashboardComponents/more_info_bat_card.dart';
-import 'dashboardComponents/more_info_load_card.dart';
-import 'dashboardComponents/more_info_pv_card.dart';
+import 'dashboardComponents/power_type_card.dart';
 import 'dashboardComponents/muli_daily_energy_card.dart';
 
 class DashboardWidget extends StatefulWidget {
@@ -42,13 +37,20 @@ class _DashboardWidgetState extends State<DashboardWidget> {
 
   bool greenEfficiencyVisibility = false;
 
-  bool isWsInit = false;
-  void _initWs(BuildContext context) {
-    if (!isWsInit) {
-      isWsInit = true;
-      Provider.of<WsManager>(context, listen: false).initWs(context);
-    }
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    infoCard.add(dailyEnergyCard);
   }
+
+  // bool isWsInit = false;
+  // void _initWs(BuildContext context) {
+  //   if (!isWsInit) {
+  //     isWsInit = true;
+  //     Provider.of<WsManager>(context, listen: false).initWs(context);
+  //   }
+  // }
 
   static final List<FloatingActionButtonLocation> centerLocations =
       <FloatingActionButtonLocation>[
@@ -56,30 +58,29 @@ class _DashboardWidgetState extends State<DashboardWidget> {
     FloatingActionButtonLocation.centerFloat,
   ];
 
-  bool isPsInit = false;
-  bool isEsInit = false;
+  // bool isPsInit = false;
+  // bool isEsInit = false;
 
-  bool _initPsManager(BuildContext context) {
-    if (!isPsInit) {
-      isPsInit = true;
-      infoCard.add(dailyEnergyCard);
-      Provider.of<PowerServiceManager>(context, listen: false).init(context);
-      return true;
-    }
+  // bool _initPsManager(BuildContext context) {
+  //   if (!isPsInit) {
+  //     isPsInit = true;
+  //     Provider.of<PowerServiceManager>(context, listen: false).init(context);
+  //     return true;
+  //   }
 
-    return false;
-  }
+  //   return false;
+  // }
 
-  bool _initEsManager(BuildContext context) {
-    if (!isEsInit) {
-      isEsInit = true;
-      Provider.of<EnergyStorageServiceManager>(context, listen: false)
-          .init(context);
-      return true;
-    }
+  // bool _initEsManager(BuildContext context) {
+  //   if (!isEsInit) {
+  //     isEsInit = true;
+  //     Provider.of<EnergyStorageServiceManager>(context, listen: false)
+  //         .init(context);
+  //     return true;
+  //   }
 
-    return false;
-  }
+  //   return false;
+  // }
 
   final bool _showFab = true;
   final bool _showNotch = true;
@@ -94,9 +95,9 @@ class _DashboardWidgetState extends State<DashboardWidget> {
   PageController? pageViewController;
 
   List<Widget> infoCard = [];
-  var pvCard = const PVcard();
-  var loadCard = const LoadCard();
-  var gridCard = const GridCard();
+  var pvCard = const PowerInfoCard(powerType: "PV");
+  var loadCard = const PowerInfoCard(powerType: "Load");
+  var gridCard = const PowerInfoCard(powerType: "Grid");
   var dailyEnergyCard = const DailyEnergyCard();
   var batCard = const BatCard();
 
@@ -180,6 +181,11 @@ class _DashboardWidgetState extends State<DashboardWidget> {
       // await __initDevManager(context);
 
       // loggerListItem.clear();
+      // final weatherData = Provider.of<WeatherApi>(
+      //   context,
+      //   listen: false,
+      // );
+      // weatherData.queryWeather();
       final devManager = Provider.of<DeviceManager>(context, listen: false);
 
       List<Logger> getLoggerList = devManager.getLoggerList;
@@ -196,6 +202,8 @@ class _DashboardWidgetState extends State<DashboardWidget> {
     // button action provider
     initLoggerList(context);
     final buttonAction = Provider.of<ButtonAction>(context);
+    final electricitySettings = Provider.of<ElectricitySettings>(context);
+    String userName = electricitySettings.username;
     // animation providers
     final animProvider = Provider.of<DashboardAnimationProvider>(context);
     final pvToBatDotPosition = animProvider.pvToBatAnimationPositionVal;
@@ -205,9 +213,9 @@ class _DashboardWidgetState extends State<DashboardWidget> {
     String loadPower = (psManager.loadPower / 1000).toStringAsFixed(2);
     String pvPower = (psManager.pvPower / 1000).toStringAsFixed(2);
     String gridPower = (psManager.gridPower / 1000).toStringAsFixed(2);
-    _initWs(context);
-    _initPsManager(context);
-    _initEsManager(context);
+    // _initWs(context);
+    // _initPsManager(context);
+    // _initEsManager(context);
     String batPower = (esManager.sumData.powerW / 1000).toStringAsFixed(2);
     final batStorageTxt = esManager.sumData.capacityP.toStringAsFixed(1);
     final batStorageLevel = esManager.sumData.capacityP / 100;
@@ -219,87 +227,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
     final energyLinePosition = (psManager.energyEfficiency / 100) *
         MediaQuery.of(context).size.width *
         0.90;
-
     return Scaffold(
-      bottomNavigationBar: BottomAppBar(
-        shape: _showNotch ? const CircularNotchedRectangle() : null,
-        color: FlutterFlowTheme.of(context).primaryColor?.withOpacity(0.7),
-        child: IconTheme(
-          data: IconThemeData(color: Theme.of(context).colorScheme.onPrimary),
-          child: Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
-              IconButton(
-                tooltip: 'Dashboard',
-                icon: const Icon(
-                  Icons.speed_sharp,
-                  color: Colors.white,
-                  size: 24,
-                ),
-                onPressed: () {},
-              ),
-              // if (centerLocations.contains(fabLocation)) const Spacer(),
-              // IconButton(
-              //   tooltip: 'Weather',
-              //   icon: FaIcon(
-              //     FontAwesomeIcons.cloudSun,
-              //     color: FlutterFlowTheme.of(context).tertiaryColor,
-              //     size: 20,
-              //   ),
-              //   // icon: Icon(
-              //   //   Icons.dashboard,
-              //   //   color: FlutterFlowTheme.of(context).tertiaryColor,
-              //   //   size: 22,
-              //   // ),
-              //   onPressed: () {
-              //     Navigator.push(context, MaterialPageRoute(builder: (context) {
-              //       return const WeatherPage();
-              //     }));
-              //   },
-              // ),
-              // IconButton(
-              //   tooltip: 'Events',
-              //   icon: Icon(
-              //     Icons.event,
-              //     color: FlutterFlowTheme.of(context).tertiaryColor,
-              //     size: 20,
-              //   ),
-              //   // icon: Icon(
-              //   //   Icons.dashboard,
-              //   //   color: FlutterFlowTheme.of(context).tertiaryColor,
-              //   //   size: 22,
-              //   // ),
-              //   onPressed: () {
-              //     Navigator.push(context, MaterialPageRoute(builder: (context) {
-              //       return const EventsPageView();
-              //     }));
-              //   },
-              // ),
-              IconButton(
-                tooltip: 'Power Chart',
-                icon: FaIcon(
-                  FontAwesomeIcons.chartPie,
-                  color: FlutterFlowTheme.of(context).tertiaryColor,
-                  size: 18,
-                ),
-                // icon: Icon(
-                //   Icons.dashboard,
-                //   color: FlutterFlowTheme.of(context).tertiaryColor,
-                //   size: 22,
-                // ),
-                onPressed: () {
-                  Provider.of<PowerTypeChartDataManager>(context, listen: false)
-                      .getPowerTypesFromDateRange(context);
-                  Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return const ChartsPageView();
-                  }));
-                },
-              ),
-            ],
-          ),
-        ),
-      ),
       key: scaffoldKey,
       appBar: AppBar(
         backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
@@ -388,33 +316,61 @@ class _DashboardWidgetState extends State<DashboardWidget> {
           mainAxisSize: MainAxisSize.max,
           children: [
             Padding(
-              padding: const EdgeInsetsDirectional.fromSTEB(0, 50, 0, 0),
+              padding: EdgeInsetsDirectional.fromSTEB(25, 50, 20, 20),
               child: Row(
                 mainAxisSize: MainAxisSize.max,
-                // mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Padding(
-                    padding:
-                        const EdgeInsetsDirectional.fromSTEB(20, 20, 20, 20),
-                    child: InkWell(
-                      child: Container(
-                        width: 30,
-                        height: 30,
-                        clipBehavior: Clip.antiAlias,
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                        ),
-                        child: Image.asset(
-                          'assets/images/userIcon.png',
-                        ),
-                      ),
-                      onTap: () {},
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(26),
+                    child: Icon(
+                      Icons.person_add,
+                      color: FlutterFlowTheme.of(context).secondaryText,
+                      size: 35,
                     ),
                   ),
-                  Text(
-                    "SolarMdData().usernameGlobal",
-                    style: FlutterFlowTheme.of(context).bodyText1,
+                  Expanded(
+                    child: Padding(
+                      padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 0),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            userName,
+                            style: FlutterFlowTheme.of(context).bodyText1,
+                          ),
+                          Row(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Image.asset(
+                                'assets/images/Rectangle_12.png',
+                                width: 30,
+                                height: 20,
+                                fit: BoxFit.fitHeight,
+                              ),
+                              Text(
+                                Provider.of<DeviceManager>(context,
+                                        listen: false)
+                                    .getSelectedLogger!
+                                    .description,
+                                style: FlutterFlowTheme.of(context)
+                                    .bodyText2
+                                    .override(
+                                      fontFamily: 'Outfit',
+                                      color: Color(0xFF57636C),
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.normal,
+                                    ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -439,7 +395,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
             backgroundColor: FlutterFlowTheme.of(context).primaryColor,
             child: SingleChildScrollView(
               child: Container(
-                constraints: const BoxConstraints(maxHeight: 700),
+                constraints: const BoxConstraints(maxHeight: 690),
                 child: Column(
                   mainAxisSize: MainAxisSize.max,
                   children: [
@@ -464,7 +420,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                         ),
                         child: SizedBox(
                           // width: MediaQuery.of(context).size.width,
-                          // height: 10,
+                          // height:MediaQuery.of(context).size.height * 0.19,
                           child: Stack(
                             children: [
                               PageView(
@@ -477,73 +433,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                                   ),
                                   Container(
                                     width: 100,
-                                    height: 100,
-                                    decoration: BoxDecoration(
-                                      color: const Color(0x00EEEEEE),
-                                      // backgroundBlendMode: BlendMode.src,
-                                      image: DecorationImage(
-                                        fit: BoxFit.fitHeight,
-
-                                        image: Image.asset(
-                                          'assets/images/rect1405.png',
-                                        ).image,
-                                        // opacity: 0.5
-                                      ),
-                                      borderRadius: const BorderRadius.only(
-                                        bottomLeft: Radius.circular(0),
-                                        bottomRight: Radius.circular(0),
-                                        topLeft: Radius.circular(5),
-                                        topRight: Radius.circular(5),
-                                      ),
-                                    ),
-                                    child: Padding(
-                                      padding:
-                                          const EdgeInsetsDirectional.fromSTEB(
-                                              0, 10, 0, 0),
-                                      child: Column(
-                                        mainAxisSize: MainAxisSize.max,
-                                        children: [
-                                          DashInfoDFWidget(
-                                              label: "CO2 reduced",
-                                              icon: FaIcon(
-                                                FontAwesomeIcons.cloudMeatball,
-                                                color:
-                                                    FlutterFlowTheme.of(context)
-                                                        .tertiaryColor,
-                                                size: 14,
-                                              ),
-                                              unit: "kg",
-                                              value: psManager.c02Reduced),
-                                          DashInfoDFWidget(
-                                              label: 'Electric Car Trip',
-                                              icon: Icon(
-                                                Icons.electric_car,
-                                                color:
-                                                    FlutterFlowTheme.of(context)
-                                                        .tertiaryColor,
-                                                size: 14,
-                                              ),
-                                              unit: "km",
-                                              value: psManager.electricCar),
-                                          DashInfoDFWidget(
-                                              label: "Water Saved",
-                                              icon: FaIcon(
-                                                FontAwesomeIcons
-                                                    .handHoldingDroplet,
-                                                color:
-                                                    FlutterFlowTheme.of(context)
-                                                        .tertiaryColor,
-                                                size: 14,
-                                              ),
-                                              unit: "L",
-                                              value: psManager.waterSaved),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                  Container(
-                                    width: 100,
-                                    height: 100,
+                                    height: 90,
                                     decoration: BoxDecoration(
                                       color: const Color(0x00EEEEEE),
                                       image: DecorationImage(
@@ -616,7 +506,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                                   child: SmoothPageIndicator(
                                     controller: pageViewController ??=
                                         PageController(initialPage: 0),
-                                    count: 3,
+                                    count: 2,
                                     axisDirection: Axis.horizontal,
                                     onDotClicked: (i) {
                                       pageViewController?.animateToPage(
@@ -644,7 +534,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                       ),
                     ),
                     Expanded(
-                      flex: 5,
+                      flex: 3,
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -665,6 +555,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                                     psManager.getLivePowerTypeMap["pv"]?.powerW,
                                 ratedPowerW: psManager
                                     .getLivePowerTypeMap["pv"]?.ratedPowerW,
+                                offset: -39,
                               ),
                             ],
                           ),
@@ -681,7 +572,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                                       Icons.offline_bolt_outlined,
                                       color: FlutterFlowTheme.of(context)
                                           .tertiaryColor,
-                                      size: 20,
+                                      size: 22,
                                     ),
                                     powerW: psManager
                                         .getLivePowerTypeMap["grid"]?.powerW,
@@ -689,6 +580,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                                         .getLivePowerTypeMap["grid"]
                                         ?.ratedPowerW,
                                     fillColor: Colors.red,
+                                    offset: -41,
                                   )),
                               Container(
                                 width: 150,
@@ -828,6 +720,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                                             .getLivePowerTypeMap["load"]
                                             ?.ratedPowerW,
                                         fillColor: Colors.blue,
+                                        offset: -39,
                                       )),
                                 ],
                               ),
@@ -853,11 +746,13 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                                         Icons.battery_charging_full_rounded,
                                         color: FlutterFlowTheme.of(context)
                                             .tertiaryColor,
-                                        size: 18,
+                                        size: 16,
                                       ),
-                                      powerW: esManager.sumData.capacityP,
-                                      ratedPowerW: 100,
+                                      powerW: esManager.sumData.powerW,
+                                      ratedPowerW:
+                                          esManager.sumData.ratedPowerW,
                                       fillColor: Colors.orange,
+                                      offset: -38,
                                     ),
                                   ],
                                 ),
@@ -880,7 +775,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Padding(
-                            padding: const EdgeInsets.all(8.0),
+                            padding: const EdgeInsets.all(4.0),
                             child: Row(
                               mainAxisSize: MainAxisSize.max,
                               mainAxisAlignment: MainAxisAlignment.start,
@@ -937,27 +832,6 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                                     ),
                                   ],
                                 ),
-                                InkWell(
-                                  child: Padding(
-                                    padding:
-                                        const EdgeInsetsDirectional.fromSTEB(
-                                            20, 0, 0, 0),
-                                    child: Icon(
-                                      Icons.info_outlined,
-                                      color: FlutterFlowTheme.of(context)
-                                          .tertiaryColor
-                                          ?.withOpacity(0.7),
-                                      size: 20,
-                                    ),
-                                  ),
-                                  onTap: () {
-                                    if (greenEfficiencyVisibility == false) {
-                                      greenEfficiencyVisibility = true;
-                                    } else {
-                                      greenEfficiencyVisibility = false;
-                                    }
-                                  },
-                                ),
                               ],
                             ),
                           ),
@@ -965,7 +839,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                             padding: const EdgeInsetsDirectional.fromSTEB(
                                 0, 10, 0, 0),
                             child: Container(
-                              width: MediaQuery.of(context).size.width * 0.83,
+                              width: MediaQuery.of(context).size.width * 0.93,
                               height: 3,
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(20),
@@ -1022,27 +896,26 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                               ),
                             ],
                           ),
-                          // Visibility(
-                          //   child: Padding(
-                          //     padding: const EdgeInsets.all(8.0),
-                          //     child: Text(
-                          //       "Eco Score refers to how much of the electricity you use, comes from renewable sources like solar panels. ",
-                          //       style: FlutterFlowTheme.of(context)
-                          //           .bodyText1
-                          //           .override(
-                          //             fontFamily: 'Poppins',
-                          //             color: FlutterFlowTheme.of(context)
-                          //                 .secondaryText,
-                          //             fontSize: 11,
-                          //           ),
-                          //     ),
-                          //   ),
-                          //   visible: greenEfficiencyVisibility,
-                          // ),
-                          // Visibility(
-                          //   child: EcoCard(),
-                          //   visible: greenEfficiencyVisibility,
-                          // ),
+                          Visibility(
+                            visible: psManager.loader,
+                            child: Transform.translate(
+                              offset: const Offset(0, -332),
+                              child: Container(
+                                width: 150,
+                                height: 151,
+                                child: SpinKitCircle(
+                                  color:
+                                      FlutterFlowTheme.of(context).primaryColor,
+                                  size: 40.0,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: FlutterFlowTheme.of(context)
+                                      .primaryBackground,
+                                ),
+                                alignment: const AlignmentDirectional(0, 0),
+                              ),
+                            ),
+                          ),
                         ],
                       ),
                     ),

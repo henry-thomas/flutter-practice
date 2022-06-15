@@ -2,12 +2,15 @@
 // ignore_for_file: unnecessary_new, duplicate_ignore, prefer_const_constructors
 
 import 'package:charts_flutter/flutter.dart' as charts;
+import 'package:charts_flutter/flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:provider_test/entities/dev_power_summary.dart';
-import 'package:provider_test/flutterFlow/flutter_flow_theme.dart';
 
+import '../../entities/energy_storage.dart';
 import '../../entities/energy_storage_db.dart';
 import '../../flutterFlow/flutter_flow_util.dart';
+import 'chartComponents/chart_actions.dart';
 
 class PowerTypeChart extends StatefulWidget {
   final List<charts.Series<dynamic, DateTime>> seriesList;
@@ -178,8 +181,48 @@ class _PowerTypeChartState extends State<PowerTypeChart> {
 
   @override
   Widget build(BuildContext context) {
-    // ignore: unnecessary_new
+    var chartsActions = Provider.of<ChartActions>(context);
+    bool isOpen = chartsActions.isPowerTypeChartMenuOpen;
+    var chartHeight = MediaQuery.of(context).size.height * 0.7;
+    var chartWidth = MediaQuery.of(context).size.width * 1;
+    var fontSize = 11;
+    var margin = 0;
+    List<ChartBehavior<DateTime>> behaviors = [];
 
+    setState(() {
+      if (isOpen == false) {
+        margin = 0;
+        fontSize = 0;
+        chartHeight = 70;
+        chartWidth = 100;
+        behaviors.remove(0);
+      } else {
+        fontSize = 11;
+        margin = 15;
+        chartHeight = MediaQuery.of(context).size.height * 0.7;
+        chartWidth = MediaQuery.of(context).size.width * 1;
+        behaviors.add(
+          new charts.SeriesLegend(
+            horizontalFirst: false,
+            measureFormatter: (measure) {
+              if (measure != null) {
+                return ((measure).toStringAsFixed(2) + " kW");
+              }
+              return "";
+            },
+            position: charts.BehaviorPosition.bottom,
+            showMeasures: true,
+            secondaryMeasureFormatter: (measure) {
+              if (measure != null) {
+                return ((measure * 100).toStringAsFixed(2) + " %");
+              }
+              return "";
+            },
+          ),
+        );
+      }
+    });
+    // ignore: unnecessary_new
     final charts.NumericTickFormatterSpec simpleFormatter =
         new charts.BasicNumericTickFormatterSpec.fromNumberFormat(
             new NumberFormat.compact());
@@ -187,28 +230,18 @@ class _PowerTypeChartState extends State<PowerTypeChart> {
         new charts.BasicNumericTickFormatterSpec.fromNumberFormat(
             new NumberFormat.percentPattern());
 
-    var domainAxis = new charts.DateTimeAxisSpec(
-        renderSpec: charts.GridlineRendererSpec(
-            minimumPaddingBetweenLabelsPx: 10,
-            labelStyle: charts.TextStyleSpec(fontSize: 12, lineHeight: 1)),
-        tickFormatterSpec: new charts.AutoDateTimeTickFormatterSpec(
-            hour: new charts.TimeFormatterSpec(
-                format: 'HH:mm', transitionFormat: 'HH:mm'),
-            day: new charts.TimeFormatterSpec(
-                format: 'hh:mm', transitionFormat: 'HH:mm')));
-
     final children = <Widget>[
       SizedBox(
-        height: MediaQuery.of(context).size.height * 0.7,
-        width: MediaQuery.of(context).size.width * 1,
+        height: chartHeight,
+        width: chartWidth,
         child: charts.TimeSeriesChart(
           widget.seriesList,
 
           layoutConfig: charts.LayoutConfig(
             leftMarginSpec: charts.MarginSpec.fixedPixel(0),
             rightMarginSpec: charts.MarginSpec.fixedPixel(0),
-            bottomMarginSpec: charts.MarginSpec.fixedPixel(15),
-            topMarginSpec: charts.MarginSpec.fixedPixel(10),
+            bottomMarginSpec: charts.MarginSpec.fixedPixel(margin),
+            topMarginSpec: charts.MarginSpec.fixedPixel(margin),
           ),
 
           primaryMeasureAxis: new charts.NumericAxisSpec(
@@ -218,15 +251,8 @@ class _PowerTypeChartState extends State<PowerTypeChart> {
             renderSpec: charts.GridlineRendererSpec(
                 labelJustification: charts.TickLabelJustification.outside,
                 labelAnchor: charts.TickLabelAnchor.after,
-                // labelStyle: charts.TextStyleSpec(
-                //     fontSize: 15,
-                //     lineHeight: 0.2,
-                //     fontFamily: "Poppins",
-                //     color: charts.Color.fromHex(
-                //         code: FlutterFlowTheme.of(context)
-                //             .secondaryText!
-                //             .value
-                //             .toRadixString(16))),
+                labelStyle:
+                    charts.TextStyleSpec(fontSize: fontSize, lineHeight: 0.2),
                 labelOffsetFromAxisPx: -35),
             showAxisLine: false,
           ),
@@ -238,7 +264,8 @@ class _PowerTypeChartState extends State<PowerTypeChart> {
             renderSpec: charts.GridlineRendererSpec(
               labelJustification: charts.TickLabelJustification.outside,
               labelAnchor: charts.TickLabelAnchor.after,
-              labelStyle: charts.TextStyleSpec(fontSize: 15, lineHeight: 0.2),
+              labelStyle:
+                  charts.TextStyleSpec(fontSize: fontSize, lineHeight: 0.2),
             ),
             showAxisLine: false,
           ),
@@ -257,9 +284,9 @@ class _PowerTypeChartState extends State<PowerTypeChart> {
           // ],
           domainAxis: new charts.DateTimeAxisSpec(
               renderSpec: charts.GridlineRendererSpec(
-                  minimumPaddingBetweenLabelsPx: 10,
+                  minimumPaddingBetweenLabelsPx: 1,
                   labelStyle:
-                      charts.TextStyleSpec(fontSize: 12, lineHeight: 1)),
+                      charts.TextStyleSpec(fontSize: fontSize, lineHeight: 1)),
               tickFormatterSpec: new charts.AutoDateTimeTickFormatterSpec(
                   hour: new charts.TimeFormatterSpec(
                       format: 'HH:mm', transitionFormat: 'HH:mm'),
@@ -270,28 +297,7 @@ class _PowerTypeChartState extends State<PowerTypeChart> {
           // should create the same type of [DateTime] as the data provided. If none
           // specified, the default creates local date time.
           dateTimeFactory: const charts.LocalDateTimeFactory(),
-          behaviors: [
-            new charts.SeriesLegend(
-              horizontalFirst: false,
-              entryTextStyle: charts.TextStyleSpec(),
-              measureFormatter: (measure) {
-                if (measure != null) {
-                  return ((measure).toStringAsFixed(2) + " kW");
-                }
-                return "";
-              },
-              position: charts.BehaviorPosition.bottom,
-              showMeasures: true,
-              secondaryMeasureFormatter: (measure) {
-                if (measure != null) {
-                  return ((measure * 100).toStringAsFixed(2) + " %");
-                }
-                return "";
-              },
-            ),
-
-            // insideJustification: charts.InsideJustification.),
-          ],
+          behaviors: behaviors,
         ),
       )
     ];

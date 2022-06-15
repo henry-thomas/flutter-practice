@@ -1,4 +1,3 @@
-// import 'package:date_picker_timeline/date_picker_widget.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
@@ -6,12 +5,18 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:provider_test/flutterFlow/flutter_flow_theme.dart';
 import 'package:provider_test/providers/power_type_chart_manager.dart';
+import 'package:provider_test/providers/websocket/ps_manager.dart';
 import 'package:provider_test/screens/chartScreen/power_type_chart.dart';
 
+import '../../flutterFlow/flutter_flow_util.dart';
 import '../EventsScreen/events_page_view.dart';
+import '../dashboardScreen/dashboardComponents/liveCharts/pv_live_chart.dart';
 import '../dashboardScreen/dashboard_page_view.dart';
 import '../loginScreen/login_page_view.dart';
 import '../weatherScreen/weather_page_view.dart';
+import 'chartComponents/chart_actions.dart';
+import 'chartComponents/chart_selector_card.dart';
+import 'chartComponents/live_chart_selector_card.dart';
 
 class ChartsPageView extends StatefulWidget {
   const ChartsPageView({Key? key}) : super(key: key);
@@ -29,14 +34,9 @@ class _ChartsPageViewState extends State<ChartsPageView> {
 
   bool datePickerVisibility = false;
 
-  // final DatePickerController _controller = DatePickerController();
   DateTime today = DateTime.now();
 
   DateTime _selectedValue = DateTime.now();
-
-  // setDatePicker() async {
-  //   _controller.animateToSelection();
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -44,97 +44,10 @@ class _ChartsPageViewState extends State<ChartsPageView> {
     var eStorageList = ptcdm.getEStorageList;
     var powerTypeMap = ptcdm.getPowerTypeMap;
     return Scaffold(
-      bottomNavigationBar: BottomAppBar(
-        shape: _showNotch ? const CircularNotchedRectangle() : null,
-        color: FlutterFlowTheme.of(context).primaryColor?.withOpacity(0.7),
-        child: IconTheme(
-          data: IconThemeData(color: Theme.of(context).colorScheme.onPrimary),
-          child: Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
-              IconButton(
-                tooltip: 'Dashboard',
-                splashColor: Colors.white,
-                icon: Icon(
-                  Icons.speed_sharp,
-                  color: FlutterFlowTheme.of(context).tertiaryColor,
-                  size: 24,
-                ),
-                onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return const DashboardWidget();
-                  }));
-                },
-              ),
-              // if (centerLocations.contains(fabLocation)) const Spacer(),
-              // IconButton(
-              //   tooltip: 'Weather',
-              //   icon: FaIcon(
-              //     FontAwesomeIcons.cloudSun,
-              //     color: FlutterFlowTheme.of(context).tertiaryColor,
-              //     size: 20,
-              //   ),
-              //   // icon: Icon(
-              //   //   Icons.dashboard,
-              //   //   color: FlutterFlowTheme.of(context).tertiaryColor,
-              //   //   size: 22,
-              //   // ),
-              //   onPressed: () {
-              //     Navigator.push(context, MaterialPageRoute(builder: (context) {
-              //       return const WeatherPage();
-              //     }));
-              //   },
-              // ),
-              // IconButton(
-              //   tooltip: 'Events',
-              //   icon: Icon(
-              //     Icons.event,
-              //     color: FlutterFlowTheme.of(context).tertiaryColor,
-              //     size: 20,
-              //   ),
-              //   // icon: Icon(
-              //   //   Icons.dashboard,
-              //   //   color: FlutterFlowTheme.of(context).tertiaryColor,
-              //   //   size: 22,
-              //   // ),
-              //   onPressed: () {
-              //     Navigator.push(context, MaterialPageRoute(builder: (context) {
-              //       return const EventsPageView();
-              //     }));
-              //   },
-              // ),
-              IconButton(
-                tooltip: 'Power Chart',
-                icon: const FaIcon(
-                  FontAwesomeIcons.chartPie,
-                  color: Colors.white,
-                  size: 18,
-                ),
-                // icon: Icon(
-                //   Icons.dashboard,
-                //   color: FlutterFlowTheme.of(context).tertiaryColor,
-                //   size: 22,
-                // ),
-                onPressed: () {
-                  // Provider.of<PowerTypeChartDataManager>(context, listen: false)
-                  //     .getPowerTypesFromDateRange(
-                  //         context,
-                  //         DateTime.parse('20220606'),
-                  //         DateTime.parse('20220606'));
-                  // Navigator.push(context, MaterialPageRoute(builder: (context) {
-                  //   return const WeatherPage();
-                  // }));
-                },
-              ),
-            ],
-          ),
-        ),
-      ),
       appBar: AppBar(
         backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
-        iconTheme:
-            IconThemeData(color: FlutterFlowTheme.of(context).tertiaryColor),
+        iconTheme: IconThemeData(
+            color: FlutterFlowTheme.of(context).primaryBackground),
         automaticallyImplyLeading: true,
         title: Text(
           "Charts",
@@ -210,6 +123,7 @@ class _ChartsPageViewState extends State<ChartsPageView> {
       ),
       backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
       body: SafeArea(
+          child: SingleChildScrollView(
         child: Column(
           children: [
             Padding(
@@ -254,16 +168,16 @@ class _ChartsPageViewState extends State<ChartsPageView> {
                     highlightColor:
                         FlutterFlowTheme.of(context).primaryBackground,
                     splashColor: FlutterFlowTheme.of(context).primaryBackground,
-                    onTap: () async {
-                      DateTime? selectedDate =
-                          await Provider.of<PowerTypeChartDataManager>(context,
-                                  listen: false)
-                              .onDatePickerOpen(context);
+                    // onTap: () async {
+                    //   DateTime? selectedDate =
+                    //       await Provider.of<PowerTypeChartDataManager>(context,
+                    //               listen: false)
+                    //           .onDatePickerOpen(context);
 
-                      Provider.of<PowerTypeChartDataManager>(context,
-                              listen: false)
-                          .getPowerTypesFromDateRange(context);
-                    },
+                    //   Provider.of<PowerTypeChartDataManager>(context,
+                    //           listen: false)
+                    //       .getPowerTypesFromDateRange(context);
+                    // },
                   ),
                   Container(
                     width: 120,
@@ -283,71 +197,240 @@ class _ChartsPageViewState extends State<ChartsPageView> {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  child: Container(
-                    width: MediaQuery.of(context).size.width * 0.9,
-                    height: 110,
-                    decoration: BoxDecoration(
-                      boxShadow: const [
-                        BoxShadow(
-                          color: Colors.white10,
-                        ),
-                      ],
-                      color: FlutterFlowTheme.of(context).primaryBackground,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    padding: EdgeInsets.all(0.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        // Container(
-                        //   child: DatePicker(
-                        //     DateTime.now(),
-                        //     monthTextStyle:
-                        //         FlutterFlowTheme.of(context).bodyText1.override(
-                        //               fontFamily: 'Poppins',
-                        //               color: FlutterFlowTheme.of(context)
-                        //                   .secondaryText,
-                        //               fontSize: 10,
-                        //             ),
-                        //     dayTextStyle:
-                        //         FlutterFlowTheme.of(context).bodyText1.override(
-                        //               fontFamily: 'Poppins',
-                        //               color: FlutterFlowTheme.of(context)
-                        //                   .secondaryText,
-                        //               fontSize: 10,
-                        //             ),
-                        //     dateTextStyle:
-                        //         FlutterFlowTheme.of(context).bodyText1.override(
-                        //               fontFamily: 'Poppins',
-                        //               color: FlutterFlowTheme.of(context)
-                        //                   .secondaryText,
-                        //               fontSize: 19,
-                        //             ),
-                        //     // daysCount: 101,
-                        //     width: 60,
-                        //     height: 80,
-                        //     controller: _controller,
-                        //     initialSelectedDate: DateTime.now(),
-                        //     selectionColor: Color(0xFFFFBC00).withOpacity(0.7),
-                        //     selectedTextColor: Colors.white,
-                        //     onDateChange: (date) {
-                        //       // New date selected
-                        //       setState(() {
-                        //         _selectedValue = date;
-                        //       });
-                        //     },
-                        //   ),
-                        // ),
-                      ],
-                    ),
-                  ),
                 ),
               ),
             ),
-            PowerTypeChart.buildChart(powerTypeMap, eStorageList),
+            // PowerTypeChart.buildChart(powerTypeMap, eStorageList),
+            Padding(
+              padding: const EdgeInsetsDirectional.fromSTEB(0, 8, 0, 8),
+              child: ChartMenuItem(
+                chart: PowerTypeChart.buildChart(powerTypeMap, eStorageList),
+                heading: "Power Chart",
+                onTabCb: Provider.of<ChartActions>(context).onMenuOpen,
+                infoWgtList: [
+                  Row(
+                    children: [
+                      Text(
+                        'Last Updated:',
+                        style: FlutterFlowTheme.of(context).bodyText1.override(
+                              fontFamily: 'Poppins',
+                              color: FlutterFlowTheme.of(context).secondaryText,
+                              fontSize: 11,
+                            ),
+                      ),
+                      Padding(
+                        padding:
+                            const EdgeInsetsDirectional.fromSTEB(5, 0, 0, 0),
+                        child: Text(
+                          DateFormat("MMMM d  hh:mm:ss")
+                              .format(DateTime.now())
+                              .toString(),
+                          style: FlutterFlowTheme.of(context).bodyText1,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: EdgeInsetsDirectional.fromSTEB(0, 8, 0, 8),
+              child: ChartMenuItem(
+                chart: LivePvChart(),
+                heading: "Live Chart",
+                onTabCb: Provider.of<ChartActions>(context).liveChartMenuOpen,
+                infoWgtList: [
+                  Column(
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      Row(
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Row(
+                            // mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding:
+                                    EdgeInsetsDirectional.fromSTEB(5, 0, 5, 0),
+                                child: Text(
+                                  "Grid Power",
+                                  style: FlutterFlowTheme.of(context)
+                                      .bodyText1
+                                      .override(
+                                        fontFamily: 'Poppins',
+                                        color: FlutterFlowTheme.of(context)
+                                            .secondaryText,
+                                        fontSize: 11,
+                                      ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            // mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Text(
+                                Provider.of<PowerServiceManager>(context)
+                                    .gridPower
+                                    .toStringAsFixed(2),
+                                style: FlutterFlowTheme.of(context)
+                                    .bodyText1
+                                    .override(
+                                      fontFamily: 'Poppins',
+                                      color: Colors.red.withOpacity(0.5),
+                                      fontSize: 14,
+                                    ),
+                              ),
+                              Padding(
+                                padding:
+                                    EdgeInsetsDirectional.fromSTEB(3, 0, 0, 0),
+                                child: Text(
+                                  'kW',
+                                  style: FlutterFlowTheme.of(context)
+                                      .bodyText1
+                                      .override(
+                                        fontFamily: 'Poppins',
+                                        color: FlutterFlowTheme.of(context)
+                                            .secondaryText,
+                                        fontSize: 12,
+                                      ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      Row(
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Row(
+                            // mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding:
+                                    EdgeInsetsDirectional.fromSTEB(5, 0, 5, 0),
+                                child: Text(
+                                  "Load Power",
+                                  style: FlutterFlowTheme.of(context)
+                                      .bodyText1
+                                      .override(
+                                        fontFamily: 'Poppins',
+                                        color: FlutterFlowTheme.of(context)
+                                            .secondaryText,
+                                        fontSize: 11,
+                                      ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            // mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Text(
+                                Provider.of<PowerServiceManager>(context)
+                                    .loadPower
+                                    .toStringAsFixed(2),
+                                style: FlutterFlowTheme.of(context)
+                                    .bodyText1
+                                    .override(
+                                      fontFamily: 'Poppins',
+                                      color: Colors.blue.withOpacity(0.5),
+                                      fontSize: 14,
+                                    ),
+                              ),
+                              Padding(
+                                padding:
+                                    EdgeInsetsDirectional.fromSTEB(3, 0, 0, 0),
+                                child: Text(
+                                  'kW',
+                                  style: FlutterFlowTheme.of(context)
+                                      .bodyText1
+                                      .override(
+                                        fontFamily: 'Poppins',
+                                        color: FlutterFlowTheme.of(context)
+                                            .secondaryText,
+                                        fontSize: 12,
+                                      ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      Row(
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Row(
+                            // mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding:
+                                    EdgeInsetsDirectional.fromSTEB(5, 0, 5, 0),
+                                child: Text(
+                                  "Pv Power",
+                                  style: FlutterFlowTheme.of(context)
+                                      .bodyText1
+                                      .override(
+                                        fontFamily: 'Poppins',
+                                        color: FlutterFlowTheme.of(context)
+                                            .secondaryText,
+                                        fontSize: 11,
+                                      ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            // mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Text(
+                                Provider.of<PowerServiceManager>(context)
+                                    .pvPower
+                                    .toStringAsFixed(2),
+                                style: FlutterFlowTheme.of(context)
+                                    .bodyText1
+                                    .override(
+                                      fontFamily: 'Poppins',
+                                      color: Colors.green.withOpacity(0.5),
+                                      fontSize: 14,
+                                    ),
+                              ),
+                              Padding(
+                                padding:
+                                    EdgeInsetsDirectional.fromSTEB(3, 0, 0, 0),
+                                child: Text(
+                                  'kW',
+                                  style: FlutterFlowTheme.of(context)
+                                      .bodyText1
+                                      .override(
+                                        fontFamily: 'Poppins',
+                                        color: FlutterFlowTheme.of(context)
+                                            .secondaryText,
+                                        fontSize: 12,
+                                      ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
-      ),
+      )),
     );
   }
 }

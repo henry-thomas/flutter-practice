@@ -98,11 +98,11 @@ class LightModeTheme extends FlutterFlowTheme {
   Color? secondaryColor = const Color(0xFFB2A7A7);
   Color? tertiaryColor = const Color(0xFF2F3743);
   Color? weatherTimeColor = const Color(0x4963a0ff);
-  Color? alternate = const Color(0xFFFF5963);
+  Color? alternate = Colors.white;
   Color? loadingBoxColor = const Color(0xFFB2A7A7).withOpacity(0.2);
   Color? primaryBackground = const Color(0xFFFFFFFF);
   Color? secondaryBackground = const Color(0xFFF1F4F8);
-  Color? primaryText = const Color(0xFF0E0D0D);
+  Color? primaryText = const Color(0xFF232121);
   Color? secondaryText = const Color(0xFF57636C);
 }
 
@@ -115,13 +115,13 @@ class DarkModeTheme extends FlutterFlowTheme {
   Color? primaryColor = const Color(0xFFFFBC00);
   Color? secondaryColor = const Color(0xFFF2EDED);
   Color? tertiaryColor = const Color(0xFFF2EDED);
-  Color? alternate = const Color(0xFFFF5963);
+  Color? alternate =  const Color(0xFF22282D);
   Color? loadingBoxColor = const Color(0xFF536F78).withOpacity(0.2);
   Color? weatherTimeColor = const Color(0x4963a0ff);
   // Color primaryBackground = const Color(0xFF2F3743);
   Color? primaryBackground = const Color(0xFF2F3743);
   Color? secondaryBackground = const Color(0xFF1D2429);
-  Color? primaryText = const Color(0xFFF2EDED);
+  Color? primaryText = const Color(0xFFDBDBDB);
   Color? secondaryText = const Color(0xFF95A1AC);
 }
 
