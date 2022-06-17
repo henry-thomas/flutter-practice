@@ -37,13 +37,20 @@ class _DashboardWidgetState extends State<DashboardWidget> {
 
   bool greenEfficiencyVisibility = false;
 
-  bool isWsInit = false;
-  void _initWs(BuildContext context) {
-    if (!isWsInit) {
-      isWsInit = true;
-      Provider.of<WsManager>(context, listen: false).initWs(context);
-    }
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    infoCard.add(dailyEnergyCard);
   }
+
+  // bool isWsInit = false;
+  // void _initWs(BuildContext context) {
+  //   if (!isWsInit) {
+  //     isWsInit = true;
+  //     Provider.of<WsManager>(context, listen: false).initWs(context);
+  //   }
+  // }
 
   static final List<FloatingActionButtonLocation> centerLocations =
       <FloatingActionButtonLocation>[
@@ -51,30 +58,29 @@ class _DashboardWidgetState extends State<DashboardWidget> {
     FloatingActionButtonLocation.centerFloat,
   ];
 
-  bool isPsInit = false;
-  bool isEsInit = false;
+  // bool isPsInit = false;
+  // bool isEsInit = false;
 
-  bool _initPsManager(BuildContext context) {
-    if (!isPsInit) {
-      isPsInit = true;
-      infoCard.add(dailyEnergyCard);
-      Provider.of<PowerServiceManager>(context, listen: false).init(context);
-      return true;
-    }
+  // bool _initPsManager(BuildContext context) {
+  //   if (!isPsInit) {
+  //     isPsInit = true;
+  //     Provider.of<PowerServiceManager>(context, listen: false).init(context);
+  //     return true;
+  //   }
 
-    return false;
-  }
+  //   return false;
+  // }
 
-  bool _initEsManager(BuildContext context) {
-    if (!isEsInit) {
-      isEsInit = true;
-      Provider.of<EnergyStorageServiceManager>(context, listen: false)
-          .init(context);
-      return true;
-    }
+  // bool _initEsManager(BuildContext context) {
+  //   if (!isEsInit) {
+  //     isEsInit = true;
+  //     Provider.of<EnergyStorageServiceManager>(context, listen: false)
+  //         .init(context);
+  //     return true;
+  //   }
 
-    return false;
-  }
+  //   return false;
+  // }
 
   final bool _showFab = true;
   final bool _showNotch = true;
@@ -89,7 +95,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
   PageController? pageViewController;
 
   List<Widget> infoCard = [];
-  var pvCard =  const PowerInfoCard(powerType: "PV");
+  var pvCard = const PowerInfoCard(powerType: "PV");
   var loadCard = const PowerInfoCard(powerType: "Load");
   var gridCard = const PowerInfoCard(powerType: "Grid");
   var dailyEnergyCard = const DailyEnergyCard();
@@ -207,9 +213,9 @@ class _DashboardWidgetState extends State<DashboardWidget> {
     String loadPower = (psManager.loadPower / 1000).toStringAsFixed(2);
     String pvPower = (psManager.pvPower / 1000).toStringAsFixed(2);
     String gridPower = (psManager.gridPower / 1000).toStringAsFixed(2);
-    _initWs(context);
-    _initPsManager(context);
-    _initEsManager(context);
+    // _initWs(context);
+    // _initPsManager(context);
+    // _initEsManager(context);
     String batPower = (esManager.sumData.powerW / 1000).toStringAsFixed(2);
     final batStorageTxt = esManager.sumData.capacityP.toStringAsFixed(1);
     final batStorageLevel = esManager.sumData.capacityP / 100;
@@ -310,7 +316,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
           mainAxisSize: MainAxisSize.max,
           children: [
             Padding(
-              padding:  EdgeInsetsDirectional.fromSTEB(25, 50, 20, 20),
+              padding: EdgeInsetsDirectional.fromSTEB(25, 50, 20, 20),
               child: Row(
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -347,15 +353,18 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                                 fit: BoxFit.fitHeight,
                               ),
                               Text(
-                                Provider.of<DeviceManager>(context, listen: false)
+                                Provider.of<DeviceManager>(context,
+                                        listen: false)
                                     .getSelectedLogger!
                                     .description,
-                                style: FlutterFlowTheme.of(context).bodyText2.override(
-                                  fontFamily: 'Outfit',
-                                  color: Color(0xFF57636C),
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.normal,
-                                ),
+                                style: FlutterFlowTheme.of(context)
+                                    .bodyText2
+                                    .override(
+                                      fontFamily: 'Outfit',
+                                      color: Color(0xFF57636C),
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.normal,
+                                    ),
                               ),
                             ],
                           ),
@@ -363,11 +372,9 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                       ),
                     ),
                   ),
-
                 ],
               ),
             ),
-
             Column(
               mainAxisSize: MainAxisSize.max,
               children: loggerListItem,
@@ -422,16 +429,11 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                                 scrollDirection: Axis.horizontal,
                                 children: [
                                   Column(
-                                    children:
-
-                                    infoCard,
-
+                                    children: infoCard,
                                   ),
-
                                   Container(
                                     width: 100,
                                     height: 90,
-
                                     decoration: BoxDecoration(
                                       color: const Color(0x00EEEEEE),
                                       image: DecorationImage(
@@ -747,7 +749,8 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                                         size: 16,
                                       ),
                                       powerW: esManager.sumData.powerW,
-                                      ratedPowerW: esManager.sumData.ratedPowerW,
+                                      ratedPowerW:
+                                          esManager.sumData.ratedPowerW,
                                       fillColor: Colors.orange,
                                       offset: -38,
                                     ),
@@ -895,26 +898,27 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                           ),
                           Visibility(
                             visible: psManager.loader,
-                            child:Transform.translate(
-                            offset: const Offset(0, -332),
-                            child: Container(
-                              width: 150,
-                              height: 151,
-                              child: SpinKitCircle(
-                                color: FlutterFlowTheme.of(context).primaryColor,
-                                size:40.0,
+                            child: Transform.translate(
+                              offset: const Offset(0, -332),
+                              child: Container(
+                                width: 150,
+                                height: 151,
+                                child: SpinKitCircle(
+                                  color:
+                                      FlutterFlowTheme.of(context).primaryColor,
+                                  size: 40.0,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: FlutterFlowTheme.of(context)
+                                      .primaryBackground,
+                                ),
+                                alignment: const AlignmentDirectional(0, 0),
                               ),
-                              decoration: BoxDecoration(
-                                color: FlutterFlowTheme.of(context).primaryBackground,
-                              ),
-                              alignment: const AlignmentDirectional(0, 0),
                             ),
-                          ), ),
-
+                          ),
                         ],
                       ),
                     ),
-
                   ],
                 ),
               ),

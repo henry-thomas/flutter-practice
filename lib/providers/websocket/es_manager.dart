@@ -16,8 +16,13 @@ class EnergyStorageServiceManager extends ChangeNotifier {
   double batChargeDotActive = 0;
   double batDischargeDotActive = 0;
 
+  var timer;
+
   void init(BuildContext context) async {
-    Timer.periodic(Duration(milliseconds: 3000), (timer) {
+    if (timer != null) {
+      timer.cancel();
+    }
+    timer = Timer.periodic(Duration(milliseconds: 3000), (timer) {
       try {
         requestBcMsg(context);
       } catch (e) {}

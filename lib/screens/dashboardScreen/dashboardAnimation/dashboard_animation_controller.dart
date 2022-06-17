@@ -7,21 +7,18 @@ class DashbaordAnimationController extends StatefulWidget {
   const DashbaordAnimationController({Key? key}) : super(key: key);
 
   @override
-  State<DashbaordAnimationController> createState() => _DashbaordAnimationControllerState();
+  State<DashbaordAnimationController> createState() =>
+      _DashbaordAnimationControllerState();
 }
 
-class _DashbaordAnimationControllerState extends State<DashbaordAnimationController>  with TickerProviderStateMixin
-{
-
-
-
-  Animation ?animation;
-  AnimationController ?pvToBatController;
-  AnimationController ?gridController;
-  AnimationController ?loadController;
-  AnimationController ?batChargeController;
-  AnimationController ?batDischargeController;
-
+class _DashbaordAnimationControllerState
+    extends State<DashbaordAnimationController> with TickerProviderStateMixin {
+  Animation? animation;
+  AnimationController? pvToBatController;
+  AnimationController? gridController;
+  AnimationController? loadController;
+  AnimationController? batChargeController;
+  AnimationController? batDischargeController;
 
   @override
   void initState() {
@@ -34,10 +31,12 @@ class _DashbaordAnimationControllerState extends State<DashbaordAnimationControl
   }
 
   pvToBatAnim() async {
-    final pvtoBatProvider = Provider.of<DashboardAnimationProvider>(context,listen:false);
+    final pvtoBatProvider =
+        Provider.of<DashboardAnimationProvider>(context, listen: false);
     pvToBatController = AnimationController(
         duration: Duration(milliseconds: 1500), vsync: this, upperBound: 80);
-    animation = CurvedAnimation(parent: pvToBatController!, curve: Curves.decelerate);
+    animation =
+        CurvedAnimation(parent: pvToBatController!, curve: Curves.decelerate);
     pvToBatController?.forward();
     animation?.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
@@ -45,18 +44,18 @@ class _DashbaordAnimationControllerState extends State<DashbaordAnimationControl
       }
     });
     pvToBatController?.addListener(() {
-pvtoBatProvider.setPvToBatAnim(pvToBatController?.value);
-        // pvToBatPositionVal = pvToBatController!.value!;
-
+      pvtoBatProvider.setPvToBatAnim(pvToBatController?.value);
+      // pvToBatPositionVal = pvToBatController!.value!;
     });
   }
 
-
   gridAnim() async {
-    final pvtoBatProvider = Provider.of<DashboardAnimationProvider>(context,listen:false);
+    final pvtoBatProvider =
+        Provider.of<DashboardAnimationProvider>(context, listen: false);
     gridController = AnimationController(
         duration: Duration(milliseconds: 1500), vsync: this, upperBound: 80);
-    animation = CurvedAnimation(parent: gridController!, curve: Curves.decelerate);
+    animation =
+        CurvedAnimation(parent: gridController!, curve: Curves.decelerate);
     gridController?.forward();
     animation?.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
@@ -66,15 +65,16 @@ pvtoBatProvider.setPvToBatAnim(pvToBatController?.value);
     gridController?.addListener(() {
       pvtoBatProvider.setGridAnim(gridController?.value);
       // pvToBatPositionVal = pvToBatController!.value!;
-
     });
   }
 
   loadAnim() async {
-    final pvtoBatProvider = Provider.of<DashboardAnimationProvider>(context,listen:false);
+    final pvtoBatProvider =
+        Provider.of<DashboardAnimationProvider>(context, listen: false);
     loadController = AnimationController(
         duration: Duration(milliseconds: 1500), vsync: this, upperBound: 80);
-    animation = CurvedAnimation(parent: loadController!, curve: Curves.decelerate);
+    animation =
+        CurvedAnimation(parent: loadController!, curve: Curves.decelerate);
     loadController?.forward();
     animation?.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
@@ -84,15 +84,16 @@ pvtoBatProvider.setPvToBatAnim(pvToBatController?.value);
     loadController?.addListener(() {
       pvtoBatProvider.setLoadAnim(loadController?.value);
       // pvToBatPositionVal = pvToBatController!.value!;
-
     });
   }
 
   batChargeAnim() async {
-    final pvtoBatProvider = Provider.of<DashboardAnimationProvider>(context,listen:false);
+    final pvtoBatProvider =
+        Provider.of<DashboardAnimationProvider>(context, listen: false);
     batChargeController = AnimationController(
         duration: Duration(milliseconds: 1500), vsync: this, upperBound: 80);
-    animation = CurvedAnimation(parent: batChargeController!, curve: Curves.decelerate);
+    animation =
+        CurvedAnimation(parent: batChargeController!, curve: Curves.decelerate);
     batChargeController?.forward();
     animation?.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
@@ -102,15 +103,16 @@ pvtoBatProvider.setPvToBatAnim(pvToBatController?.value);
     batChargeController?.addListener(() {
       pvtoBatProvider.setBatChargeAnim(batChargeController?.value);
       // pvToBatPositionVal = pvToBatController!.value!;
-
     });
   }
 
   batDischargeAnim() async {
-    final pvtoBatProvider = Provider.of<DashboardAnimationProvider>(context,listen:false);
+    final pvtoBatProvider =
+        Provider.of<DashboardAnimationProvider>(context, listen: false);
     batDischargeController = AnimationController(
         duration: Duration(milliseconds: 1500), vsync: this, upperBound: 72);
-    animation = CurvedAnimation(parent: batDischargeController!, curve: Curves.decelerate);
+    animation = CurvedAnimation(
+        parent: batDischargeController!, curve: Curves.decelerate);
     batDischargeController?.reverse(from: 72);
     animation?.addStatusListener((status) {
       if (status == AnimationStatus.dismissed) {
@@ -120,7 +122,6 @@ pvtoBatProvider.setPvToBatAnim(pvToBatController?.value);
     batDischargeController?.addListener(() {
       pvtoBatProvider.setBatDischargeAnim(batDischargeController?.value);
       // pvToBatPositionVal = pvToBatController!.value!;
-
     });
   }
 
@@ -128,14 +129,14 @@ pvtoBatProvider.setPvToBatAnim(pvToBatController?.value);
   Widget build(BuildContext context) {
     return Text("");
   }
-@override
-dispose() {
-  pvToBatController?.dispose();
-  gridController?.dispose();
-  loadController?.dispose();
-  batChargeController?.dispose();
-  batDischargeController?.dispose();
-  super.dispose();
-}
-}
 
+  @override
+  dispose() {
+    pvToBatController?.dispose();
+    gridController?.dispose();
+    loadController?.dispose();
+    batChargeController?.dispose();
+    batDischargeController?.dispose();
+    super.dispose();
+  }
+}

@@ -114,7 +114,7 @@ class WsManager extends ChangeNotifier {
 
   void _processPsMessage(BuildContext context, Map<String, dynamic> msg) {
     Provider.of<PowerServiceManager>(context, listen: false)
-        .onPsMessageReceived(msg,context);
+        .onPsMessageReceived(msg, context);
   }
 
   void _processEnergyStorageMessage(

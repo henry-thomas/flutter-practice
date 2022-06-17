@@ -44,11 +44,10 @@ class _ChartsPageViewState extends State<ChartsPageView> {
     var eStorageList = ptcdm.getEStorageList;
     var powerTypeMap = ptcdm.getPowerTypeMap;
     return Scaffold(
-
       appBar: AppBar(
         backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
-        iconTheme:
-            IconThemeData(color: FlutterFlowTheme.of(context).primaryBackground),
+        iconTheme: IconThemeData(
+            color: FlutterFlowTheme.of(context).primaryBackground),
         automaticallyImplyLeading: true,
         title: Text(
           "Charts",
@@ -169,16 +168,16 @@ class _ChartsPageViewState extends State<ChartsPageView> {
                     highlightColor:
                         FlutterFlowTheme.of(context).primaryBackground,
                     splashColor: FlutterFlowTheme.of(context).primaryBackground,
-                    onTap: () async {
-                      DateTime? selectedDate =
-                          await Provider.of<PowerTypeChartDataManager>(context,
-                                  listen: false)
-                              .onDatePickerOpen(context);
+                    // onTap: () async {
+                    //   DateTime? selectedDate =
+                    //       await Provider.of<PowerTypeChartDataManager>(context,
+                    //               listen: false)
+                    //           .onDatePickerOpen(context);
 
-                      Provider.of<PowerTypeChartDataManager>(context,
-                              listen: false)
-                          .getPowerTypesFromDateRange(context);
-                    },
+                    //   Provider.of<PowerTypeChartDataManager>(context,
+                    //           listen: false)
+                    //       .getPowerTypesFromDateRange(context);
+                    // },
                   ),
                   Container(
                     width: 120,

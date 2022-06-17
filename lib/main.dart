@@ -64,7 +64,8 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider.value(
           value: ChartActions(),
-        ),ChangeNotifierProvider.value(
+        ),
+        ChangeNotifierProvider.value(
           value: ElectricitySettings(),
         ),
       ],
@@ -75,9 +76,7 @@ class MyApp extends StatelessWidget {
         themeMode: _themeMode,
         color: Colors.red,
         home: const LoginPageWidget(),
-
       ),
     );
   }
 }
-
