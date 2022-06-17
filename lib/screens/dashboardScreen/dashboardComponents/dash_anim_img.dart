@@ -30,7 +30,6 @@ class DashboardAnimImage extends StatelessWidget {
 
       powerW ??= 0;
       ratedPowerW ??= 0;
-
       if (ratedPowerW! > 0) {
         perc = (powerW! / ratedPowerW!);
       }
@@ -46,7 +45,6 @@ class DashboardAnimImage extends StatelessWidget {
     }
 
     fillColor ??= Colors.green.withOpacity(0.5);
-
     return SizedBox(
       width: 80,
       height: 85,
@@ -62,8 +60,6 @@ class DashboardAnimImage extends StatelessWidget {
                 surfaceIntensity: 5,
                 boxShape:
                     NeumorphicBoxShape.roundRect(BorderRadius.circular(60)),
-                // depth: 2,
-                // lightSource: LightSource.top,
                 color: FlutterFlowTheme.of(context).primaryBackground,
                 border: NeumorphicBorder(
                     width: 2, color: fillColor!.withOpacity(0.5)),
@@ -80,8 +76,6 @@ class DashboardAnimImage extends StatelessWidget {
                           quarterTurns: -1,
                           child: LinearPercentIndicator(
                               percent: getPowerPercentage(),
-                              // percent:1,
-                              //gridRatedPowerPercentageLevel / 100,
                               width: 80,
                               lineHeight: 60,
                               animation: false,

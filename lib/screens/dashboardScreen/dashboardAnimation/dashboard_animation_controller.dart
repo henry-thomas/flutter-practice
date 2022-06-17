@@ -128,5 +128,14 @@ pvtoBatProvider.setPvToBatAnim(pvToBatController?.value);
   Widget build(BuildContext context) {
     return Text("");
   }
+@override
+dispose() {
+  pvToBatController?.dispose();
+  gridController?.dispose();
+  loadController?.dispose();
+  batChargeController?.dispose();
+  batDischargeController?.dispose();
+  super.dispose();
+}
 }
 
