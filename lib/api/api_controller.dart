@@ -5,15 +5,12 @@ import 'package:provider_test/entities/api_login_response.dart';
 import 'package:provider_test/entities/api_response.dart';
 import 'package:provider_test/entities/api_response_paginated.dart';
 import 'package:provider_test/entities/dev_power_summary.dart';
-import 'package:provider_test/entities/energy_storage.dart';
 import 'package:provider_test/entities/energy_storage_db.dart';
 import 'package:provider_test/entities/logger.dart';
 import 'package:provider_test/entities/logger_config.dart';
 import 'package:provider_test/providers/device_manager.dart';
 import 'package:provider_test/screens/loginScreen/login_components.dart';
 import '../entities/power_type.dart';
-import 'package:provider_test/screens/dashboardScreen/dashboard_page_view.dart';
-
 import '../naviagation_bar.dart';
 import '../screens/profileScreen/profileSettings/electricity_settings.dart';
 
