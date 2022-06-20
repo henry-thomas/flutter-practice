@@ -6,6 +6,7 @@ import 'package:provider_test/providers/power_type_chart_manager.dart';
 import 'package:provider_test/providers/websocket/es_manager.dart';
 import 'package:provider_test/providers/websocket/ps_manager.dart';
 import 'package:provider_test/providers/websocket/ws_manager.dart';
+import 'package:provider_test/screens/chartScreen/chartComponents/chart_actions.dart';
 import 'package:provider_test/screens/chartScreen/chart_page_view.dart';
 import 'package:provider_test/screens/dashboardScreen/dashboard_page_view.dart';
 import 'package:provider_test/screens/profileScreen/profile_page_view.dart';
@@ -99,6 +100,7 @@ class _NavBarPageState extends State<NavBarPage> {
               // Provider.of<PowerTypeChartDataManager>(context, listen: false)
               //     .getPowerTypesFromDateRange(context);
               _currentPage = tabs.keys.toList()[i];
+              Provider.of<ChartActions>(context, listen: false).onPageLeave();
             });
           },
           backgroundColor: FlutterFlowTheme.of(context).primaryBackground,

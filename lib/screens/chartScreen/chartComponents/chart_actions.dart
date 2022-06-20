@@ -5,6 +5,12 @@ import 'package:flutter/material.dart';
 class ChartActions extends ChangeNotifier {
   bool isPowerTypeChartMenuOpen = false;
 
+  onPageLeave() {
+    isPowerTypeChartMenuOpen = false;
+    isLiveChartMenuOpen = false;
+    notifyListeners();
+  }
+
   onMenuOpen() {
     isPowerTypeChartMenuOpen = !isPowerTypeChartMenuOpen;
     // if (isPowerTypeChartMenuOpen == false) {
