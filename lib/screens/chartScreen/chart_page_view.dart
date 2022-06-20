@@ -1,22 +1,18 @@
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:provider_test/flutterFlow/flutter_flow_theme.dart';
+import 'package:provider_test/providers/device_manager.dart';
 import 'package:provider_test/providers/power_type_chart_manager.dart';
 import 'package:provider_test/providers/websocket/ps_manager.dart';
 import 'package:provider_test/screens/chartScreen/power_type_chart.dart';
 
 import '../../flutterFlow/flutter_flow_util.dart';
-import '../EventsScreen/events_page_view.dart';
 import '../dashboardScreen/dashboardComponents/liveCharts/pv_live_chart.dart';
-import '../dashboardScreen/dashboard_page_view.dart';
 import '../loginScreen/login_page_view.dart';
-import '../weatherScreen/weather_page_view.dart';
 import 'chartComponents/chart_actions.dart';
 import 'chartComponents/chart_selector_card.dart';
-import 'chartComponents/live_chart_selector_card.dart';
 
 class ChartsPageView extends StatefulWidget {
   const ChartsPageView({Key? key}) : super(key: key);
@@ -26,17 +22,12 @@ class ChartsPageView extends StatefulWidget {
 }
 
 class _ChartsPageViewState extends State<ChartsPageView> {
-  final bool _showNotch = true;
   String? selectedValue;
   List<String> items = [
     'Logout',
   ];
 
   bool datePickerVisibility = false;
-
-  DateTime today = DateTime.now();
-
-  DateTime _selectedValue = DateTime.now();
 
   @override
   Widget build(BuildContext context) {
@@ -168,16 +159,19 @@ class _ChartsPageViewState extends State<ChartsPageView> {
                     highlightColor:
                         FlutterFlowTheme.of(context).primaryBackground,
                     splashColor: FlutterFlowTheme.of(context).primaryBackground,
-                    // onTap: () async {
-                    //   DateTime? selectedDate =
-                    //       await Provider.of<PowerTypeChartDataManager>(context,
-                    //               listen: false)
-                    //           .onDatePickerOpen(context);
+                    onTap: () async {
+                      DateTime? selectedDate =
+                          await Provider.of<PowerTypeChartDataManager>(context,
+                                  listen: false)
+                              .onDatePickerOpen(context);
 
-                    //   Provider.of<PowerTypeChartDataManager>(context,
-                    //           listen: false)
-                    //       .getPowerTypesFromDateRange(context);
-                    // },
+                      Provider.of<PowerTypeChartDataManager>(context,
+                              listen: false)
+                          .getPowerTypesFromDateRange(
+                              context,
+                              Provider.of<DeviceManager>(context, listen: false)
+                                  .getSelectedLogger!);
+                    },
                   ),
                   Container(
                     width: 120,
@@ -211,7 +205,7 @@ class _ChartsPageViewState extends State<ChartsPageView> {
                   Row(
                     children: [
                       Text(
-                        'Last Updated:',
+                        'Showing Data For:',
                         style: FlutterFlowTheme.of(context).bodyText1.override(
                               fontFamily: 'Poppins',
                               color: FlutterFlowTheme.of(context).secondaryText,
@@ -222,8 +216,8 @@ class _ChartsPageViewState extends State<ChartsPageView> {
                         padding:
                             const EdgeInsetsDirectional.fromSTEB(5, 0, 0, 0),
                         child: Text(
-                          DateFormat("MMMM d  hh:mm:ss")
-                              .format(DateTime.now())
+                          DateFormat("MMMM d")
+                              .format(ptcdm.selectedDate!)
                               .toString(),
                           style: FlutterFlowTheme.of(context).bodyText1,
                         ),

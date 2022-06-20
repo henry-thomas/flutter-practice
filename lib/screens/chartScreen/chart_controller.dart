@@ -1,6 +1,3 @@
-
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ChartController extends ChangeNotifier {
@@ -15,20 +12,21 @@ class ChartController extends ChangeNotifier {
   double batIconDepth = 2;
 
   batSelected() {
-    if (batPowerTypeIconSelectorColor == Colors.orange){
+    if (batPowerTypeIconSelectorColor == Colors.orange) {
       batPowerTypeIconSelectorColor = Colors.white;
       batIconDepth = -10;
-    }else {
+    } else {
       batPowerTypeIconSelectorColor = Colors.orange;
       batIconDepth = 2;
     }
     notifyListeners();
   }
+
   gridSelected() {
-    if (gridPowerTypeIconSelectorColor == Colors.red){
+    if (gridPowerTypeIconSelectorColor == Colors.red) {
       gridPowerTypeIconSelectorColor = Colors.white;
       gridIconDepth = -10;
-    }else {
+    } else {
       gridPowerTypeIconSelectorColor = Colors.red;
       gridIconDepth = 2;
     }
@@ -36,32 +34,24 @@ class ChartController extends ChangeNotifier {
   }
 
   loadSelected() {
-    if (loadPowerTypeIconSelectorColor == Colors.blue){
+    if (loadPowerTypeIconSelectorColor == Colors.blue) {
       loadPowerTypeIconSelectorColor = Colors.white;
       loadIconDepth = -10;
-    }else {
+    } else {
       loadPowerTypeIconSelectorColor = Colors.blue;
       loadIconDepth = 2;
     }
     notifyListeners();
   }
+
   pvSelected() {
-    if (pvPowerTypeIconSelectorColor == Colors.green){
+    if (pvPowerTypeIconSelectorColor == Colors.green) {
       pvPowerTypeIconSelectorColor = Colors.white;
-      pvIconDepth =  -10;
-    }else {
+      pvIconDepth = -10;
+    } else {
       pvPowerTypeIconSelectorColor = Colors.green;
       pvIconDepth = 2;
     }
     notifyListeners();
   }
-
 }
-
-
-
-
-
-
-
-

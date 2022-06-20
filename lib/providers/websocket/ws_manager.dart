@@ -1,18 +1,13 @@
-import 'dart:async';
 import 'dart:convert';
-import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:provider_test/api/api_controller.dart';
-import 'package:provider_test/api/api_service.dart';
 import 'package:provider_test/entities/device_message.dart';
-import 'package:provider_test/main.dart';
 import 'package:provider_test/providers/device_manager.dart';
 import 'package:provider_test/providers/websocket/es_manager.dart';
 import 'package:provider_test/providers/websocket/ps_manager.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
-import 'package:provider_test/screens/dashboardScreen/dashboard_page_view.dart';
 
 class WsManager extends ChangeNotifier {
   int requestId = 0;

@@ -29,9 +29,6 @@ class _ChartMenuItemState extends State<ChartMenuItem> {
   bool isOpen = false;
   bool chartSnapShot = true;
 
-  DateTime now = DateTime.now();
-  // var lastUpdated = DateFormat("MMMM d").format(now);
-
   @override
   Widget build(BuildContext context) {
     // var ptcdm = Provider.of<PowerTypeChartDataManager>(context);
@@ -100,9 +97,8 @@ class _ChartMenuItemState extends State<ChartMenuItem> {
                   child: widget.chart,
                 ),
                 Column(
-                    mainAxisSize: MainAxisSize.max, children: widget.infoWgtList
-
-                    ),
+                    mainAxisSize: MainAxisSize.max,
+                    children: widget.infoWgtList),
               ],
             ),
           ),

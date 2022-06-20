@@ -6,8 +6,8 @@ import 'package:charts_flutter/flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:provider_test/entities/dev_power_summary.dart';
+import 'package:provider_test/flutterFlow/flutter_flow_theme.dart';
 
-import '../../entities/energy_storage.dart';
 import '../../entities/energy_storage_db.dart';
 import '../../flutterFlow/flutter_flow_util.dart';
 import 'chartComponents/chart_actions.dart';
@@ -179,6 +179,8 @@ class _PowerTypeChartState extends State<PowerTypeChart> {
     });
   }
 
+  List<ChartBehavior<DateTime>> behaviors = [];
+
   @override
   Widget build(BuildContext context) {
     var chartsActions = Provider.of<ChartActions>(context);
@@ -187,26 +189,26 @@ class _PowerTypeChartState extends State<PowerTypeChart> {
     var chartWidth = MediaQuery.of(context).size.width * 1;
     var fontSize = 11;
     var margin = 0;
-    List<ChartBehavior<DateTime>> behaviors = [];
 
-    setState(() {
-      if (isOpen == false) {
-        margin = 0;
-        fontSize = 0;
-        chartHeight = 70;
-        chartWidth = 100;
-        behaviors.remove(0);
-      } else {
-        fontSize = 11;
-        margin = 15;
-        chartHeight = MediaQuery.of(context).size.height * 0.7;
-        chartWidth = MediaQuery.of(context).size.width * 1;
+    // setState(() {
+    if (isOpen == false) {
+      margin = 0;
+      fontSize = 0;
+      chartHeight = 70;
+      chartWidth = 100;
+      behaviors.remove(0);
+    } else {
+      fontSize = 11;
+      margin = 15;
+      chartHeight = MediaQuery.of(context).size.height * 0.7;
+      chartWidth = MediaQuery.of(context).size.width * 1;
+      if (behaviors.isEmpty) {
         behaviors.add(
           new charts.SeriesLegend(
             horizontalFirst: false,
             measureFormatter: (measure) {
               if (measure != null) {
-                return ((measure).toStringAsFixed(2) + " kW");
+                return ((measure / 1000).toStringAsFixed(2) + " kW");
               }
               return "";
             },
@@ -221,7 +223,8 @@ class _PowerTypeChartState extends State<PowerTypeChart> {
           ),
         );
       }
-    });
+    }
+    // });
     // ignore: unnecessary_new
     final charts.NumericTickFormatterSpec simpleFormatter =
         new charts.BasicNumericTickFormatterSpec.fromNumberFormat(
@@ -251,8 +254,10 @@ class _PowerTypeChartState extends State<PowerTypeChart> {
             renderSpec: charts.GridlineRendererSpec(
                 labelJustification: charts.TickLabelJustification.outside,
                 labelAnchor: charts.TickLabelAnchor.after,
-                labelStyle:
-                    charts.TextStyleSpec(fontSize: fontSize, lineHeight: 0.2),
+                labelStyle: charts.TextStyleSpec(
+                    fontSize: fontSize,
+                    lineHeight: 0.2,
+                    color: FlutterFlowTheme.of(context).chartLabelColor),
                 labelOffsetFromAxisPx: -35),
             showAxisLine: false,
           ),
@@ -264,8 +269,10 @@ class _PowerTypeChartState extends State<PowerTypeChart> {
             renderSpec: charts.GridlineRendererSpec(
               labelJustification: charts.TickLabelJustification.outside,
               labelAnchor: charts.TickLabelAnchor.after,
-              labelStyle:
-                  charts.TextStyleSpec(fontSize: fontSize, lineHeight: 0.2),
+              labelStyle: charts.TextStyleSpec(
+                  fontSize: fontSize,
+                  lineHeight: 0.2,
+                  color: FlutterFlowTheme.of(context).chartLabelColor),
             ),
             showAxisLine: false,
           ),
@@ -276,17 +283,13 @@ class _PowerTypeChartState extends State<PowerTypeChart> {
           animate: widget.animate,
           defaultInteractions: true,
 
-          // customSeriesRenderers: [
-          //   new charts.LineRendererConfig(
-          //       includeArea: true, areaOpacity: 0.1, customRendererId: 'pv'),
-          //   new charts.LineRendererConfig(
-          //       includeArea: true, areaOpacity: 0.1, customRendererId: 'load'),
-          // ],
           domainAxis: new charts.DateTimeAxisSpec(
               renderSpec: charts.GridlineRendererSpec(
                   minimumPaddingBetweenLabelsPx: 1,
-                  labelStyle:
-                      charts.TextStyleSpec(fontSize: fontSize, lineHeight: 1)),
+                  labelStyle: charts.TextStyleSpec(
+                      fontSize: fontSize,
+                      lineHeight: 1,
+                      color: FlutterFlowTheme.of(context).chartLabelColor)),
               tickFormatterSpec: new charts.AutoDateTimeTickFormatterSpec(
                   hour: new charts.TimeFormatterSpec(
                       format: 'HH:mm', transitionFormat: 'HH:mm'),
