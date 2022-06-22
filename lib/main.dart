@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:provider_test/api/api_controller.dart';
 import 'package:provider_test/providers/device_manager.dart';
@@ -16,7 +17,12 @@ import 'flutterFlow/flutter_flow_theme.dart';
 import 'screens/loginScreen/login_page_view.dart';
 
 void main() {
-  runApp(MyApp());
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
+      .then((_) {
+    runApp(MyApp());
+  });
+  // runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {

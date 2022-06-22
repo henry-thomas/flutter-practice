@@ -16,23 +16,11 @@ class LiveChart extends StatefulWidget {
 }
 
 class _LiveChartState extends State<LiveChart> {
-  final Color pvColor = Colors.green;
-  final Color gridColor = Colors.red;
-  final Color loadColor = Colors.blue;
-
-  final limitCount = 100;
-  final sinPoints = <FlSpot>[];
-  final cosPoints = <FlSpot>[];
-
   final Map<String, List<FlSpot>> seriesNameSpotMap = {};
 
   final List<LineChartBarData> seriesList = [];
 
   List powerList = [];
-
-  // final pvPowerPoints = <FlSpot>[];
-  // final gridPowerPoints = <FlSpot>[];
-  // final loadPowerPoints = <FlSpot>[];
 
   double xValue = 1;
   double step = 0.05;
