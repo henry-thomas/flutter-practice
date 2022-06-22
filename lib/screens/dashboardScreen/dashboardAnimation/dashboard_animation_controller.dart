@@ -34,7 +34,9 @@ class _DashbaordAnimationControllerState
     final pvtoBatProvider =
         Provider.of<DashboardAnimationProvider>(context, listen: false);
     pvToBatController = AnimationController(
-        duration: Duration(milliseconds: 1500), vsync: this, upperBound: 80);
+        duration: const Duration(milliseconds: 1500),
+        vsync: this,
+        upperBound: 80);
     animation =
         CurvedAnimation(parent: pvToBatController!, curve: Curves.decelerate);
     pvToBatController?.forward();
@@ -53,7 +55,9 @@ class _DashbaordAnimationControllerState
     final pvtoBatProvider =
         Provider.of<DashboardAnimationProvider>(context, listen: false);
     gridController = AnimationController(
-        duration: Duration(milliseconds: 1500), vsync: this, upperBound: 80);
+        duration: const Duration(milliseconds: 1500),
+        vsync: this,
+        upperBound: 80);
     animation =
         CurvedAnimation(parent: gridController!, curve: Curves.decelerate);
     gridController?.forward();
@@ -72,7 +76,9 @@ class _DashbaordAnimationControllerState
     final pvtoBatProvider =
         Provider.of<DashboardAnimationProvider>(context, listen: false);
     loadController = AnimationController(
-        duration: Duration(milliseconds: 1500), vsync: this, upperBound: 80);
+        duration: const Duration(milliseconds: 1500),
+        vsync: this,
+        upperBound: 80);
     animation =
         CurvedAnimation(parent: loadController!, curve: Curves.decelerate);
     loadController?.forward();
@@ -91,7 +97,9 @@ class _DashbaordAnimationControllerState
     final pvtoBatProvider =
         Provider.of<DashboardAnimationProvider>(context, listen: false);
     batChargeController = AnimationController(
-        duration: Duration(milliseconds: 1500), vsync: this, upperBound: 80);
+        duration: const Duration(milliseconds: 1500),
+        vsync: this,
+        upperBound: 80);
     animation =
         CurvedAnimation(parent: batChargeController!, curve: Curves.decelerate);
     batChargeController?.forward();
@@ -110,7 +118,9 @@ class _DashbaordAnimationControllerState
     final pvtoBatProvider =
         Provider.of<DashboardAnimationProvider>(context, listen: false);
     batDischargeController = AnimationController(
-        duration: Duration(milliseconds: 1500), vsync: this, upperBound: 72);
+        duration: const Duration(milliseconds: 1500),
+        vsync: this,
+        upperBound: 72);
     animation = CurvedAnimation(
         parent: batDischargeController!, curve: Curves.decelerate);
     batDischargeController?.reverse(from: 72);
@@ -127,7 +137,7 @@ class _DashbaordAnimationControllerState
 
   @override
   Widget build(BuildContext context) {
-    return Text("");
+    return const Text("");
   }
 
   @override

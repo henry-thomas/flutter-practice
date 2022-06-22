@@ -157,27 +157,27 @@ class PowerTypeChart extends StatefulWidget {
 }
 
 class _PowerTypeChartState extends State<PowerTypeChart> {
-  DateTime? _time;
-  Map<String, double> _measures = {};
+  // DateTime? _time;
+  // Map<String, double> _measures = {};
 
-  _onSelectionChanged(charts.SelectionModel model) {
-    final selectedDatum = model.selectedDatum;
+  // _onSelectionChanged(charts.SelectionModel model) {
+  //   final selectedDatum = model.selectedDatum;
 
-    DateTime? time;
-    Map<String, double> measures = {};
+  //   DateTime? time;
+  //   Map<String, double> measures = {};
 
-    if (selectedDatum.isNotEmpty) {
-      time = selectedDatum.first.datum.time;
-      selectedDatum.forEach((charts.SeriesDatum datumPair) {
-        measures[datumPair.series.displayName!] = datumPair.datum.sales;
-      });
-    }
+  //   if (selectedDatum.isNotEmpty) {
+  //     time = selectedDatum.first.datum.time;
+  //     selectedDatum.forEach((charts.SeriesDatum datumPair) {
+  //       measures[datumPair.series.displayName!] = datumPair.datum.sales;
+  //     });
+  //   }
 
-    setState(() {
-      _time = time;
-      _measures = measures;
-    });
-  }
+  //   setState(() {
+  //     _time = time;
+  //     _measures = measures;
+  //   });
+  // }
 
   List<ChartBehavior<DateTime>> behaviors = [];
 

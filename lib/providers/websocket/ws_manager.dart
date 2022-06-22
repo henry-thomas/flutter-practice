@@ -71,7 +71,6 @@ class WsManager extends ChangeNotifier {
 
   void processMessage(Map<String, dynamic> data, BuildContext context) {
     var msgType = data['msgType'];
-    DevMessage devMessage = DevMessage.fromJson(data);
     switch (msgType) {
       case "connectionInit": //BroadcastData
         // startRandom();

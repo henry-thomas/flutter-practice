@@ -70,7 +70,7 @@ class PowerServiceManager extends ChangeNotifier {
   double loadRatedPowerPercentageLevel = 0;
   double loadVoltage = 0;
   double loadCurrent = 0;
-  double loadChartIconPosition = 0;
+  // double loadChartIconPosition = 0;
 
   // Financial Benefits
   double dailyFinancial = 0;
@@ -139,10 +139,12 @@ class PowerServiceManager extends ChangeNotifier {
     if (timer != null) {
       timer.cancel();
     }
-    timer = Timer.periodic(Duration(milliseconds: 3000), (timer) {
+    timer = Timer.periodic(const Duration(milliseconds: 3000), (timer) {
       try {
         requestBcMsg(context);
-      } catch (e) {}
+      } catch (e) {
+        debugPrint("COULD NOT REQ BC IN PS_MANAGER");
+      }
     });
   }
 
@@ -267,11 +269,17 @@ class PowerServiceManager extends ChangeNotifier {
         loadRatedPowerPercentageLevel = 100;
       }
     }
+
     if (loadPower > 0) {
       loadDotActive = 1;
-      loader = false;
     } else {
       loadDotActive = 0;
+    }
+
+    if (_livePowerTypeMap.isEmpty) {
+      loader = true;
+    } else {
+      loader = false;
     }
 
     //GRID
@@ -323,14 +331,8 @@ class PowerServiceManager extends ChangeNotifier {
       gridDotActive = 0;
     }
 
-    double stCharge = 0;
-    if (_livePowerTypeMap["stCharge"]?.powerW != null) {
-      stCharge = (_livePowerTypeMap["stCharge"]?.powerW as double);
-    }
-    double stDischarge = 0;
-    if (_livePowerTypeMap["stDischarge"]?.powerW != null) {
-      stDischarge = (_livePowerTypeMap["stDischarge"]?.powerW as double);
-    }
+    if (_livePowerTypeMap["stCharge"]?.powerW != null) {}
+    if (_livePowerTypeMap["stDischarge"]?.powerW != null) {}
 
     // var totBat = stCharge - stDischarge;
     // if (totBat > 0) {
@@ -391,13 +393,13 @@ class PowerServiceManager extends ChangeNotifier {
       }
     }
 
-    if (liveLoadChartPosition > 0.5) {
-      loadChartIconPosition = maxRange * liveLoadChartPosition;
-    }
-    if (liveLoadChartPosition < 0.5) {
-      var newPercentageSet = maxRange * liveLoadChartPosition;
-      loadChartIconPosition = newPercentageSet - minRange;
-    }
+    // if (liveLoadChartPosition > 0.5) {
+    //   loadChartIconPosition = maxRange * liveLoadChartPosition;
+    // }
+    // if (liveLoadChartPosition < 0.5) {
+    //   var newPercentageSet = maxRange * liveLoadChartPosition;
+    //   loadChartIconPosition = newPercentageSet - minRange;
+    // }
     notifyListeners();
   }
 
@@ -431,7 +433,7 @@ class PowerServiceManager extends ChangeNotifier {
   }
 
   DevPowerSummary? getExpRecursive(Map<String, dynamic> expMap) {
-    var p1Value = null;
+    DevPowerSummary? p1Value;
     if (expMap['p1'] is String) {
       p1Value = _livePowerMap[expMap['p1']];
     } else if (expMap['p1'] is Map<String, dynamic>) {
@@ -441,7 +443,7 @@ class PowerServiceManager extends ChangeNotifier {
       p1Value.powerW = expMap['p1'] * 1.0;
     }
 
-    var p2Value = null;
+    DevPowerSummary? p2Value;
     if (expMap['p2'] is String) {
       p2Value = _livePowerMap[expMap['p2']];
     } else if (expMap['p2'] is Map<String, dynamic>) {

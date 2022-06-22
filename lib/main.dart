@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:provider_test/api/api_controller.dart';
-import 'package:provider_test/entities/device_message.dart';
 import 'package:provider_test/providers/device_manager.dart';
 import 'package:provider_test/providers/power_type_chart_manager.dart';
 import 'package:provider_test/providers/websocket/es_manager.dart';
@@ -16,7 +14,6 @@ import 'package:provider_test/screens/profileScreen/profileSettings/electricity_
 import 'package:provider_test/screens/weatherScreen/weatherControllers/weather_controller.dart';
 import 'flutterFlow/flutter_flow_theme.dart';
 import 'screens/loginScreen/login_page_view.dart';
-import 'screens/weatherScreen/weatherControllers/weather_api.dart';
 
 void main() {
   runApp(MyApp());

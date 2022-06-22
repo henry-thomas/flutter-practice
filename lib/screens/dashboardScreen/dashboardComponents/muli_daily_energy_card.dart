@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import '../../../flutterFlow/flutter_flow_theme.dart';
 import '../../../providers/websocket/ps_manager.dart';
 import 'dash_info_data_field.dart';
-import 'liveCharts/pv_live_chart.dart';
+import 'liveCharts/live_chart.dart';
 
 class DailyEnergyCard extends StatefulWidget {
   const DailyEnergyCard({Key? key}) : super(key: key);
@@ -26,7 +26,7 @@ class _DailyEnergyCardState extends State<DailyEnergyCard> {
     pvIconColor = psManager.pvIconColor;
     return Container(
       width: MediaQuery.of(context).size.width * 1,
-      height:  MediaQuery.of(context).size.height * 0.20,
+      height: MediaQuery.of(context).size.height * 0.20,
       decoration: BoxDecoration(
         color: const Color(0x00EEEEEE),
         // backgroundBlendMode: BlendMode.src,
@@ -46,9 +46,7 @@ class _DailyEnergyCardState extends State<DailyEnergyCard> {
         ),
       ),
       child: Padding(
-        padding:
-        const EdgeInsetsDirectional.fromSTEB(
-            0, 10, 0, 0),
+        padding: const EdgeInsetsDirectional.fromSTEB(0, 10, 0, 0),
         child: Column(
           mainAxisSize: MainAxisSize.max,
           children: [
@@ -56,9 +54,7 @@ class _DailyEnergyCardState extends State<DailyEnergyCard> {
                 label: "CO2 reduced",
                 icon: FaIcon(
                   FontAwesomeIcons.cloudMeatball,
-                  color:
-                  FlutterFlowTheme.of(context)
-                      .tertiaryColor,
+                  color: FlutterFlowTheme.of(context).tertiaryColor,
                   size: 14,
                 ),
                 unit: "kg",
@@ -67,9 +63,7 @@ class _DailyEnergyCardState extends State<DailyEnergyCard> {
                 label: 'Electric Car Trip',
                 icon: Icon(
                   Icons.electric_car,
-                  color:
-                  FlutterFlowTheme.of(context)
-                      .tertiaryColor,
+                  color: FlutterFlowTheme.of(context).tertiaryColor,
                   size: 14,
                 ),
                 unit: "km",
@@ -77,11 +71,8 @@ class _DailyEnergyCardState extends State<DailyEnergyCard> {
             DashInfoDFWidget(
                 label: "Water Saved",
                 icon: FaIcon(
-                  FontAwesomeIcons
-                      .handHoldingDroplet,
-                  color:
-                  FlutterFlowTheme.of(context)
-                      .tertiaryColor,
+                  FontAwesomeIcons.handHoldingDroplet,
+                  color: FlutterFlowTheme.of(context).tertiaryColor,
                   size: 14,
                 ),
                 unit: "L",

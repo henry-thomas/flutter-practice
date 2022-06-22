@@ -5,11 +5,9 @@ import 'package:provider/provider.dart';
 import 'package:provider_test/flutterFlow/flutter_flow_theme.dart';
 import 'package:provider_test/providers/device_manager.dart';
 import 'package:provider_test/providers/power_type_chart_manager.dart';
-import 'package:provider_test/providers/websocket/ps_manager.dart';
 import 'package:provider_test/screens/chartScreen/power_type_chart.dart';
 
 import '../../flutterFlow/flutter_flow_util.dart';
-import '../dashboardScreen/dashboardComponents/liveCharts/pv_live_chart.dart';
 import '../loginScreen/login_page_view.dart';
 import 'chartComponents/chart_actions.dart';
 import 'chartComponents/chart_selector_card.dart';
@@ -132,46 +130,35 @@ class _ChartsPageViewState extends State<ChartsPageView> {
                   InkWell(
                     child: Padding(
                       padding: const EdgeInsetsDirectional.fromSTEB(0, 0, 0, 0),
-                      child: Container(
-                        child: Row(
-                          children: [
-                            Text(
-                              Provider.of<PowerTypeChartDataManager>(context,
-                                      listen: false)
-                                  .selectedDateStr,
-                              style: FlutterFlowTheme.of(context)
-                                  .bodyText1
-                                  .override(
-                                    fontFamily: 'Poppins',
-                                    color: FlutterFlowTheme.of(context)
-                                        .secondaryText,
-                                    fontSize: 11,
-                                  ),
-                            ),
-                            Icon(
-                              Icons.arrow_drop_down_rounded,
-                              color: FlutterFlowTheme.of(context).secondaryText,
-                              size: 24,
-                            )
-                          ],
-                        ),
+                      child: Row(
+                        children: [
+                          Text(
+                            Provider.of<PowerTypeChartDataManager>(context,
+                                    listen: false)
+                                .selectedDateStr,
+                            style:
+                                FlutterFlowTheme.of(context).bodyText1.override(
+                                      fontFamily: 'Poppins',
+                                      color: FlutterFlowTheme.of(context)
+                                          .secondaryText,
+                                      fontSize: 11,
+                                    ),
+                          ),
+                          Icon(
+                            Icons.arrow_drop_down_rounded,
+                            color: FlutterFlowTheme.of(context).secondaryText,
+                            size: 24,
+                          )
+                        ],
                       ),
                     ),
                     highlightColor:
                         FlutterFlowTheme.of(context).primaryBackground,
                     splashColor: FlutterFlowTheme.of(context).primaryBackground,
                     onTap: () async {
-                      DateTime? selectedDate =
-                          await Provider.of<PowerTypeChartDataManager>(context,
-                                  listen: false)
-                              .onDatePickerOpen(context);
-
                       Provider.of<PowerTypeChartDataManager>(context,
                               listen: false)
-                          .getPowerTypesFromDateRange(
-                              context,
-                              Provider.of<DeviceManager>(context, listen: false)
-                                  .getSelectedLogger!);
+                          .onDatePickerOpen(context);
                     },
                   ),
                   Container(
@@ -228,7 +215,7 @@ class _ChartsPageViewState extends State<ChartsPageView> {
                 ],
               ),
             ),
-            Padding(
+            const Padding(
               padding: EdgeInsetsDirectional.fromSTEB(0, 8, 0, 8),
               child: LiveChartCard(),
             ),

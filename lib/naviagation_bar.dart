@@ -109,7 +109,7 @@ class _NavBarPageState extends State<NavBarPage> {
           showSelectedLabels: false,
           showUnselectedLabels: false,
           type: BottomNavigationBarType.fixed,
-          items: <BottomNavigationBarItem>[
+          items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(
               icon: Icon(
                 Icons.speed_sharp,

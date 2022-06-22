@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:provider_test/api/api_controller.dart';
 import 'package:provider_test/entities/dev_power_summary.dart';
-import 'package:provider_test/entities/energy_storage.dart';
 import 'package:provider_test/entities/logger.dart';
 import 'package:provider_test/flutterFlow/flutter_flow_util.dart';
 import 'package:provider_test/providers/websocket/ps_manager.dart';
@@ -170,7 +169,7 @@ class PowerTypeChartDataManager extends ChangeNotifier {
   }
 
   DevPowerSummary? getExpRecursive(Map<String, dynamic> expMap, DateTime date) {
-    var p1Value = null;
+    DevPowerSummary? p1Value;
     if (expMap['p1'] is String) {
       p1Value = getPowerFromList(_datePowerListMap[date]!, expMap['p1']);
     } else if (expMap['p1'] is Map<String, dynamic>) {
@@ -180,7 +179,7 @@ class PowerTypeChartDataManager extends ChangeNotifier {
       p1Value.powerW = expMap['p1'] * 1.0;
     }
 
-    var p2Value = null;
+    DevPowerSummary? p2Value;
     if (expMap['p2'] is String) {
       p2Value = getPowerFromList(_datePowerListMap[date]!, expMap['p2']);
     } else if (expMap['p2'] is Map<String, dynamic>) {
@@ -198,14 +197,14 @@ class PowerTypeChartDataManager extends ChangeNotifier {
     if (p1Value == null || p2Value == null) {
       return resultPower;
     }
-    resultPower.powerW = mathFunction(p1Value.powerW!, p2Value.powerW!);
+    resultPower.powerW = mathFunction(p1Value.powerW, p2Value.powerW);
     resultPower.ratedPowerW =
-        mathFunction(p1Value.ratedPowerW!, p2Value.ratedPowerW!);
+        mathFunction(p1Value.ratedPowerW, p2Value.ratedPowerW);
     resultPower.dailyEnergyWh =
-        mathFunction(p1Value.dailyEnergyWh!, p2Value.dailyEnergyWh!);
-    resultPower.energyWh = mathFunction(p1Value.energyWh!, p2Value.energyWh!);
-    resultPower.voltageV = (p1Value.voltageV! + p2Value.voltageV!) / 2;
-    resultPower.currentA = mathFunction(p1Value.currentA!, p2Value.currentA!);
+        mathFunction(p1Value.dailyEnergyWh, p2Value.dailyEnergyWh);
+    resultPower.energyWh = mathFunction(p1Value.energyWh, p2Value.energyWh);
+    resultPower.voltageV = (p1Value.voltageV + p2Value.voltageV) / 2;
+    resultPower.currentA = mathFunction(p1Value.currentA, p2Value.currentA);
     return resultPower;
   }
 
@@ -257,6 +256,8 @@ class PowerTypeChartDataManager extends ChangeNotifier {
         initialDatePickerMode: DatePickerMode.day);
 
     selectedDate = dateTime;
+    getPowerTypesFromDateRange(context,
+        Provider.of<DeviceManager>(context, listen: false).getSelectedLogger!);
     return dateTime;
   }
 }

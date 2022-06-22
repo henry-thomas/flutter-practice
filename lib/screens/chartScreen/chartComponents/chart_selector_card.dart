@@ -2,9 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../flutterFlow/flutter_flow_theme.dart';
-import '../../../flutterFlow/flutter_flow_util.dart';
-import '../../../providers/power_type_chart_manager.dart';
-import '../power_type_chart.dart';
 import 'chart_actions.dart';
 
 class ChartMenuItem extends StatefulWidget {
@@ -91,7 +88,7 @@ class _ChartMenuItemState extends State<ChartMenuItem> {
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Container(
+                SizedBox(
                   height: 70,
                   width: 100,
                   child: widget.chart,

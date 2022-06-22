@@ -8,13 +8,10 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider_test/providers/device_manager.dart';
 import 'package:provider_test/providers/websocket/es_manager.dart';
 import 'package:provider_test/providers/websocket/ps_manager.dart';
-import 'package:provider_test/screens/chartScreen/chartComponents/chart_selector_card.dart';
 import 'package:provider_test/screens/dashboardScreen/dashboardComponents/dash_anim_img.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:provider_test/screens/loginScreen/login_page_view.dart';
 import 'package:provider/provider.dart';
-import 'package:provider_test/providers/websocket/ws_manager.dart';
-import '../../flutterFlow/flutter_flow_widgets.dart';
 import '../profileScreen/profileSettings/electricity_settings.dart';
 import 'dashboardAnimation/dashboard_animation_controller.dart';
 import 'dashboardAnimation/dashboard_animation_provider.dart';
@@ -201,7 +198,6 @@ class _DashboardWidgetState extends State<DashboardWidget> {
   Widget build(BuildContext context) {
     // button action provider
     initLoggerList(context);
-    final buttonAction = Provider.of<ButtonAction>(context);
     final electricitySettings = Provider.of<ElectricitySettings>(context);
     String userName = electricitySettings.username;
     // animation providers
@@ -210,19 +206,12 @@ class _DashboardWidgetState extends State<DashboardWidget> {
 
     final psManager = Provider.of<PowerServiceManager>(context);
     final esManager = Provider.of<EnergyStorageServiceManager>(context);
-    String loadPower = (psManager.loadPower / 1000).toStringAsFixed(2);
-    String pvPower = (psManager.pvPower / 1000).toStringAsFixed(2);
-    String gridPower = (psManager.gridPower / 1000).toStringAsFixed(2);
     // _initWs(context);
     // _initPsManager(context);
     // _initEsManager(context);
-    String batPower = (esManager.sumData.powerW / 1000).toStringAsFixed(2);
-    final batStorageTxt = esManager.sumData.capacityP.toStringAsFixed(1);
-    final batStorageLevel = esManager.sumData.capacityP / 100;
 
     final energyEfficiencyPercentageTxt =
         psManager.energyEfficiencyPercentageTxt;
-    final energyEfficiencyPercentage = psManager.energyEfficiency / 100;
     //Calc value of energy eff with screen width value
     final energyLinePosition = (psManager.energyEfficiency / 100) *
         MediaQuery.of(context).size.width *
@@ -316,7 +305,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
           mainAxisSize: MainAxisSize.max,
           children: [
             Padding(
-              padding: EdgeInsetsDirectional.fromSTEB(25, 50, 20, 20),
+              padding: const EdgeInsetsDirectional.fromSTEB(25, 50, 20, 20),
               child: Row(
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -331,7 +320,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                   ),
                   Expanded(
                     child: Padding(
-                      padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 0),
+                      padding: const EdgeInsetsDirectional.fromSTEB(0, 0, 0, 0),
                       child: Column(
                         mainAxisSize: MainAxisSize.max,
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -361,7 +350,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                                     .bodyText2
                                     .override(
                                       fontFamily: 'Outfit',
-                                      color: Color(0xFF57636C),
+                                      color: const Color(0xFF57636C),
                                       fontSize: 14,
                                       fontWeight: FontWeight.normal,
                                     ),

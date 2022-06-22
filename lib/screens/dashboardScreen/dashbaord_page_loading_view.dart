@@ -19,7 +19,8 @@ class _DashboardLoadingWidgetState extends State<DashboardLoadingWidget> {
       key: scaffoldKey,
       appBar: AppBar(
         backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
-        iconTheme:  IconThemeData(color: FlutterFlowTheme.of(context).primaryText),
+        iconTheme:
+            IconThemeData(color: FlutterFlowTheme.of(context).primaryText),
         automaticallyImplyLeading: true,
         title: Text(
           'Dashboard',
@@ -40,9 +41,6 @@ class _DashboardLoadingWidgetState extends State<DashboardLoadingWidget> {
         elevation: 4,
       ),
       backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
-
-
-
       drawer: Drawer(
         elevation: 16,
         child: Column(
@@ -54,7 +52,8 @@ class _DashboardLoadingWidgetState extends State<DashboardLoadingWidget> {
                 mainAxisSize: MainAxisSize.max,
                 children: [
                   Padding(
-                    padding: const EdgeInsetsDirectional.fromSTEB(20, 20, 20, 20),
+                    padding:
+                        const EdgeInsetsDirectional.fromSTEB(20, 20, 20, 20),
                     child: Container(
                       width: 50,
                       height: 50,
@@ -74,12 +73,9 @@ class _DashboardLoadingWidgetState extends State<DashboardLoadingWidget> {
                 ],
               ),
             ),
-
           ],
         ),
       ),
-
-
       body: SafeArea(
         child: GestureDetector(
           onTap: () => FocusScope.of(context).unfocus(),
@@ -102,30 +98,33 @@ class _DashboardLoadingWidgetState extends State<DashboardLoadingWidget> {
                       mainAxisSize: MainAxisSize.max,
                       children: [
                         Padding(
-                          padding: const EdgeInsetsDirectional.fromSTEB(0, 10, 0, 0),
+                          padding:
+                              const EdgeInsetsDirectional.fromSTEB(0, 10, 0, 0),
                           child: Row(
                             mainAxisSize: MainAxisSize.max,
                             children: [
                               Padding(
-                                padding:
-                                const EdgeInsetsDirectional.fromSTEB(45, 0, 0, 0),
+                                padding: const EdgeInsetsDirectional.fromSTEB(
+                                    45, 0, 0, 0),
                                 child: Container(
                                   width: 40,
                                   height: 40,
                                   decoration: BoxDecoration(
-                                    color:  FlutterFlowTheme.of(context).loadingBoxColor,
+                                    color: FlutterFlowTheme.of(context)
+                                        .loadingBoxColor,
                                     borderRadius: BorderRadius.circular(5),
                                   ),
                                 ),
                               ),
                               Padding(
-                                padding:
-                                const EdgeInsetsDirectional.fromSTEB(10, 0, 0, 0),
+                                padding: const EdgeInsetsDirectional.fromSTEB(
+                                    10, 0, 0, 0),
                                 child: Container(
                                   width: 70,
                                   height: 20,
                                   decoration: BoxDecoration(
-                                    color:  FlutterFlowTheme.of(context).loadingBoxColor,
+                                    color: FlutterFlowTheme.of(context)
+                                        .loadingBoxColor,
                                     borderRadius: BorderRadius.circular(5),
                                   ),
                                 ),
@@ -136,31 +135,33 @@ class _DashboardLoadingWidgetState extends State<DashboardLoadingWidget> {
                       ],
                     ),
                     Padding(
-                      padding: const EdgeInsetsDirectional.fromSTEB(0, 10, 0, 0),
+                      padding:
+                          const EdgeInsetsDirectional.fromSTEB(0, 10, 0, 0),
                       child: Row(
                         mainAxisSize: MainAxisSize.max,
                         children: [
                           Padding(
-                            padding:
-                            const EdgeInsetsDirectional.fromSTEB(45, 0, 0, 0),
+                            padding: const EdgeInsetsDirectional.fromSTEB(
+                                45, 0, 0, 0),
                             child: Container(
                               width: 40,
                               height: 40,
                               decoration: BoxDecoration(
-                                color:  FlutterFlowTheme.of(context).loadingBoxColor,
+                                color: FlutterFlowTheme.of(context)
+                                    .loadingBoxColor,
                                 borderRadius: BorderRadius.circular(5),
                               ),
                             ),
                           ),
-
                           Padding(
-                            padding:
-                            const EdgeInsetsDirectional.fromSTEB(10, 0, 0, 0),
+                            padding: const EdgeInsetsDirectional.fromSTEB(
+                                10, 0, 0, 0),
                             child: Container(
                               width: 70,
                               height: 20,
                               decoration: BoxDecoration(
-                                color:  FlutterFlowTheme.of(context).loadingBoxColor,
+                                color: FlutterFlowTheme.of(context)
+                                    .loadingBoxColor,
                                 borderRadius: BorderRadius.circular(5),
                               ),
                             ),
@@ -188,7 +189,8 @@ class _DashboardLoadingWidgetState extends State<DashboardLoadingWidget> {
                     mainAxisSize: MainAxisSize.max,
                     children: [
                       Padding(
-                        padding: const EdgeInsetsDirectional.fromSTEB(0, 10, 0, 0),
+                        padding:
+                            const EdgeInsetsDirectional.fromSTEB(0, 10, 0, 0),
                         child: Row(
                           mainAxisSize: MainAxisSize.max,
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -209,7 +211,8 @@ class _DashboardLoadingWidgetState extends State<DashboardLoadingWidget> {
                                     width: 70,
                                     height: 20,
                                     decoration: BoxDecoration(
-                                      color:  FlutterFlowTheme.of(context).loadingBoxColor,
+                                      color: FlutterFlowTheme.of(context)
+                                          .loadingBoxColor,
                                       borderRadius: BorderRadius.circular(5),
                                     ),
                                   ),
@@ -235,9 +238,10 @@ class _DashboardLoadingWidgetState extends State<DashboardLoadingWidget> {
                                         width: 70,
                                         height: 20,
                                         decoration: BoxDecoration(
-                                          color:  FlutterFlowTheme.of(context).loadingBoxColor,
+                                          color: FlutterFlowTheme.of(context)
+                                              .loadingBoxColor,
                                           borderRadius:
-                                          BorderRadius.circular(5),
+                                              BorderRadius.circular(5),
                                         ),
                                       ),
                                     ],
@@ -249,7 +253,8 @@ class _DashboardLoadingWidgetState extends State<DashboardLoadingWidget> {
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsetsDirectional.fromSTEB(0, 10, 0, 0),
+                        padding:
+                            const EdgeInsetsDirectional.fromSTEB(0, 10, 0, 0),
                         child: Row(
                           mainAxisSize: MainAxisSize.max,
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -270,7 +275,8 @@ class _DashboardLoadingWidgetState extends State<DashboardLoadingWidget> {
                                     width: 70,
                                     height: 20,
                                     decoration: BoxDecoration(
-                                      color: FlutterFlowTheme.of(context).loadingBoxColor,
+                                      color: FlutterFlowTheme.of(context)
+                                          .loadingBoxColor,
                                       borderRadius: BorderRadius.circular(5),
                                     ),
                                   ),
@@ -296,9 +302,10 @@ class _DashboardLoadingWidgetState extends State<DashboardLoadingWidget> {
                                         width: 70,
                                         height: 20,
                                         decoration: BoxDecoration(
-                                          color: FlutterFlowTheme.of(context).loadingBoxColor,
+                                          color: FlutterFlowTheme.of(context)
+                                              .loadingBoxColor,
                                           borderRadius:
-                                          BorderRadius.circular(5),
+                                              BorderRadius.circular(5),
                                         ),
                                       ),
                                     ],
@@ -310,7 +317,8 @@ class _DashboardLoadingWidgetState extends State<DashboardLoadingWidget> {
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsetsDirectional.fromSTEB(0, 10, 0, 0),
+                        padding:
+                            const EdgeInsetsDirectional.fromSTEB(0, 10, 0, 0),
                         child: Row(
                           mainAxisSize: MainAxisSize.max,
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -331,7 +339,8 @@ class _DashboardLoadingWidgetState extends State<DashboardLoadingWidget> {
                                     width: 70,
                                     height: 20,
                                     decoration: BoxDecoration(
-                                      color:  FlutterFlowTheme.of(context).loadingBoxColor,
+                                      color: FlutterFlowTheme.of(context)
+                                          .loadingBoxColor,
                                       borderRadius: BorderRadius.circular(5),
                                     ),
                                   ),
@@ -353,7 +362,8 @@ class _DashboardLoadingWidgetState extends State<DashboardLoadingWidget> {
                                     width: 70,
                                     height: 20,
                                     decoration: BoxDecoration(
-                                      color:  FlutterFlowTheme.of(context).loadingBoxColor,
+                                      color: FlutterFlowTheme.of(context)
+                                          .loadingBoxColor,
                                       borderRadius: BorderRadius.circular(5),
                                     ),
                                   ),
@@ -364,7 +374,8 @@ class _DashboardLoadingWidgetState extends State<DashboardLoadingWidget> {
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsetsDirectional.fromSTEB(0, 10, 0, 0),
+                        padding:
+                            const EdgeInsetsDirectional.fromSTEB(0, 10, 0, 0),
                         child: Row(
                           mainAxisSize: MainAxisSize.max,
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -385,7 +396,8 @@ class _DashboardLoadingWidgetState extends State<DashboardLoadingWidget> {
                                     width: 70,
                                     height: 20,
                                     decoration: BoxDecoration(
-                                      color:  FlutterFlowTheme.of(context).loadingBoxColor,
+                                      color: FlutterFlowTheme.of(context)
+                                          .loadingBoxColor,
                                       borderRadius: BorderRadius.circular(5),
                                     ),
                                   ),
@@ -407,7 +419,8 @@ class _DashboardLoadingWidgetState extends State<DashboardLoadingWidget> {
                                     width: 70,
                                     height: 20,
                                     decoration: BoxDecoration(
-                                      color:  FlutterFlowTheme.of(context).loadingBoxColor,
+                                      color: FlutterFlowTheme.of(context)
+                                          .loadingBoxColor,
                                       borderRadius: BorderRadius.circular(5),
                                     ),
                                   ),
@@ -448,12 +461,14 @@ class _DashboardLoadingWidgetState extends State<DashboardLoadingWidget> {
                             width: 40,
                             height: 40,
                             decoration: BoxDecoration(
-                              color:  FlutterFlowTheme.of(context).loadingBoxColor,
+                              color:
+                                  FlutterFlowTheme.of(context).loadingBoxColor,
                               borderRadius: BorderRadius.circular(5),
                             ),
                           ),
                           Padding(
-                            padding: const EdgeInsetsDirectional.fromSTEB(0, 5, 0, 0),
+                            padding: const EdgeInsetsDirectional.fromSTEB(
+                                0, 5, 0, 0),
                             child: Row(
                               mainAxisSize: MainAxisSize.max,
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -462,7 +477,8 @@ class _DashboardLoadingWidgetState extends State<DashboardLoadingWidget> {
                                   width: 70,
                                   height: 20,
                                   decoration: BoxDecoration(
-                                    color:  FlutterFlowTheme.of(context).loadingBoxColor,
+                                    color: FlutterFlowTheme.of(context)
+                                        .loadingBoxColor,
                                     borderRadius: BorderRadius.circular(5),
                                   ),
                                 ),
@@ -500,12 +516,13 @@ class _DashboardLoadingWidgetState extends State<DashboardLoadingWidget> {
                           width: 40,
                           height: 40,
                           decoration: BoxDecoration(
-                            color:  FlutterFlowTheme.of(context).loadingBoxColor,
+                            color: FlutterFlowTheme.of(context).loadingBoxColor,
                             borderRadius: BorderRadius.circular(5),
                           ),
                         ),
                         Padding(
-                          padding: const EdgeInsetsDirectional.fromSTEB(0, 5, 0, 0),
+                          padding:
+                              const EdgeInsetsDirectional.fromSTEB(0, 5, 0, 0),
                           child: Row(
                             mainAxisSize: MainAxisSize.max,
                             mainAxisAlignment: MainAxisAlignment.end,
@@ -514,7 +531,8 @@ class _DashboardLoadingWidgetState extends State<DashboardLoadingWidget> {
                                 width: 70,
                                 height: 20,
                                 decoration: BoxDecoration(
-                                  color:  FlutterFlowTheme.of(context).loadingBoxColor,
+                                  color: FlutterFlowTheme.of(context)
+                                      .loadingBoxColor,
                                   borderRadius: BorderRadius.circular(5),
                                 ),
                               ),
@@ -527,7 +545,7 @@ class _DashboardLoadingWidgetState extends State<DashboardLoadingWidget> {
                   Container(
                     width: 150,
                     height: 150,
-                    child:  SpinKitCircle(
+                    child: const SpinKitCircle(
                       color: Color(0xFFF2CC0D),
                       size: 100.0,
                     ),
@@ -555,12 +573,13 @@ class _DashboardLoadingWidgetState extends State<DashboardLoadingWidget> {
                           width: 40,
                           height: 40,
                           decoration: BoxDecoration(
-                            color:  FlutterFlowTheme.of(context).loadingBoxColor,
+                            color: FlutterFlowTheme.of(context).loadingBoxColor,
                             borderRadius: BorderRadius.circular(5),
                           ),
                         ),
                         Padding(
-                          padding: const EdgeInsetsDirectional.fromSTEB(0, 5, 0, 0),
+                          padding:
+                              const EdgeInsetsDirectional.fromSTEB(0, 5, 0, 0),
                           child: Row(
                             mainAxisSize: MainAxisSize.max,
                             mainAxisAlignment: MainAxisAlignment.start,
@@ -569,7 +588,8 @@ class _DashboardLoadingWidgetState extends State<DashboardLoadingWidget> {
                                 width: 70,
                                 height: 20,
                                 decoration: BoxDecoration(
-                                  color: FlutterFlowTheme.of(context).loadingBoxColor,
+                                  color: FlutterFlowTheme.of(context)
+                                      .loadingBoxColor,
                                   borderRadius: BorderRadius.circular(5),
                                 ),
                               ),
@@ -603,7 +623,8 @@ class _DashboardLoadingWidgetState extends State<DashboardLoadingWidget> {
                           ),
                         ),
                         Padding(
-                          padding: const EdgeInsetsDirectional.fromSTEB(0, 5, 0, 0),
+                          padding:
+                              const EdgeInsetsDirectional.fromSTEB(0, 5, 0, 0),
                           child: Row(
                             mainAxisSize: MainAxisSize.max,
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -612,7 +633,8 @@ class _DashboardLoadingWidgetState extends State<DashboardLoadingWidget> {
                                 width: 70,
                                 height: 20,
                                 decoration: BoxDecoration(
-                                  color: FlutterFlowTheme.of(context).loadingBoxColor,
+                                  color: FlutterFlowTheme.of(context)
+                                      .loadingBoxColor,
                                   borderRadius: BorderRadius.circular(5),
                                 ),
                               ),

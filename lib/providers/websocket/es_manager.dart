@@ -16,16 +16,19 @@ class EnergyStorageServiceManager extends ChangeNotifier {
   double batChargeDotActive = 0;
   double batDischargeDotActive = 0;
 
+  // ignore: prefer_typing_uninitialized_variables
   var timer;
 
   void init(BuildContext context) async {
     if (timer != null) {
       timer.cancel();
     }
-    timer = Timer.periodic(Duration(milliseconds: 3000), (timer) {
+    timer = Timer.periodic(const Duration(milliseconds: 3000), (timer) {
       try {
         requestBcMsg(context);
-      } catch (e) {}
+      } catch (e) {
+        debugPrint("COULD NOT REQ BC IN ES_MANAGER");
+      }
     });
   }
 
