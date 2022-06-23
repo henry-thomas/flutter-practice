@@ -97,12 +97,12 @@ class ApiController extends ChangeNotifier {
         await service.sendLoginRequest(username, password);
     if (loginResponse != null) {
       if (loginResponse.success == true) {
-        jwt = loginResponse.data?["jwt"];
+        jwt = loginResponse.data["jwt"];
 
         await Provider.of<DeviceManager>(context, listen: false).init(context);
 
         Navigator.push(context, MaterialPageRoute(builder: (context) {
-          return NavBarPage();
+          return const NavBarPage();
         }));
       }
     } else {
