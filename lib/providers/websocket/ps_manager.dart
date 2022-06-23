@@ -141,7 +141,13 @@ class PowerServiceManager extends ChangeNotifier {
     }
     timer = Timer.periodic(const Duration(milliseconds: 3000), (timer) {
       try {
-        requestBcMsg(context);
+        if (Provider.of<DeviceManager>(context, listen: false)
+            .getSelectedLogger!
+            .connected) {
+          requestBcMsg(context);
+        } else {
+          _livePowerTypeMap.clear();
+        }
       } catch (e) {
         debugPrint("COULD NOT REQ BC IN PS_MANAGER");
       }

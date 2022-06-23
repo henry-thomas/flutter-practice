@@ -49,6 +49,15 @@ class ApiController extends ChangeNotifier {
     }
   }
 
+  Future<Map<String, dynamic>> _getLoggerStatusList() async {
+    ApiLoginResponse? response = await service.getLoggerStatusList();
+    if (response != null) {
+      return response.data;
+    } else {
+      return {};
+    }
+  }
+
   Future<List<dynamic>?> _getPowerList(String serial, String startDate,
       String endDate, int page, int perPage) async {
     ApiResponsePaginated? response =
@@ -81,7 +90,8 @@ class ApiController extends ChangeNotifier {
   }
 
   void login(String username, String password, BuildContext context) async {
-    final electricitySettings = Provider.of<ElectricitySettings>(context, listen: false);
+    final electricitySettings =
+        Provider.of<ElectricitySettings>(context, listen: false);
     electricitySettings.setUserName(username);
     ApiLoginResponse? loginResponse =
         await service.sendLoginRequest(username, password);
@@ -92,7 +102,7 @@ class ApiController extends ChangeNotifier {
         await Provider.of<DeviceManager>(context, listen: false).init(context);
 
         Navigator.push(context, MaterialPageRoute(builder: (context) {
-          return  NavBarPage();
+          return NavBarPage();
         }));
       }
     } else {
@@ -110,6 +120,16 @@ class ApiController extends ChangeNotifier {
       }
     }
     return powerTypeList;
+  }
+
+  Future<Map<String, int>> getLoggerStatusList() async {
+    Map<String, dynamic> getLoggerStatusList = await _getLoggerStatusList();
+    Map<String, int> loggerStatMap = {};
+    getLoggerStatusList.forEach((sn, stat) {
+      loggerStatMap[sn] = stat;
+    });
+
+    return loggerStatMap;
   }
 
   Future<List<Logger>> getLoggerList() async {

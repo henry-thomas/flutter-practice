@@ -33,12 +33,31 @@ class DeviceManager extends ChangeNotifier {
     return loggerList;
   }
 
+  Future<Map<String, int>> _getLoggerStatMap(BuildContext context) async {
+    var loggerList = await Provider.of<ApiController>(context, listen: false)
+        .getLoggerStatusList();
+    return loggerList;
+  }
+
+  Future<void> updateLoggerStat(BuildContext context) async {
+    var map = await _getLoggerStatMap(context);
+    map.forEach((sn, stat) {
+      if (stat == 0) {
+        _serLoggerMap[sn]!.connected = true;
+      } else {
+        _serLoggerMap[sn]!.connected = false;
+      }
+    });
+  }
+
   Future init(BuildContext context) async {
     _loggerList = await _getLoggerList(context);
 
     for (var i = 0; i < _loggerList.length; i++) {
       _serLoggerMap[_loggerList[i].serNum] = _loggerList[i];
     }
+
+    await updateLoggerStat(context);
 
     _selectedLogger ??= _loggerList[0];
     notifyListeners();

@@ -10,7 +10,7 @@ ApiLoginResponse _$ApiLoginResponseFromJson(Map<String, dynamic> json) =>
     ApiLoginResponse()
       ..success = json['success'] as bool?
       ..message = json['message'] as String?
-      ..data = json['data'] as Map<String, dynamic>?;
+      ..data = json['data'] as Map<String, dynamic>;
 
 Map<String, dynamic> _$ApiLoginResponseToJson(ApiLoginResponse instance) {
   final val = <String, dynamic>{};
@@ -23,6 +23,6 @@ Map<String, dynamic> _$ApiLoginResponseToJson(ApiLoginResponse instance) {
 
   writeNotNull('success', instance.success);
   writeNotNull('message', instance.message);
-  writeNotNull('data', instance.data);
+  val['data'] = instance.data;
   return val;
 }

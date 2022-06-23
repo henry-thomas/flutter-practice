@@ -6,7 +6,7 @@ part 'api_login_response.g.dart';
 class ApiLoginResponse {
   bool? success;
   String? message;
-  Map<String, dynamic>? data;
+  Map<String, dynamic> data = {};
 
   ApiLoginResponse();
 

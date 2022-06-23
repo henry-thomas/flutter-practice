@@ -23,9 +23,17 @@ class EnergyStorageServiceManager extends ChangeNotifier {
     if (timer != null) {
       timer.cancel();
     }
+    _storageList?.clear();
     timer = Timer.periodic(const Duration(milliseconds: 3000), (timer) {
       try {
-        requestBcMsg(context);
+        if (Provider.of<DeviceManager>(context, listen: false)
+            .getSelectedLogger!
+            .connected) {
+          requestBcMsg(context);
+        } else {
+          _storageList!.clear();
+          sumData = EnergyStorage();
+        }
       } catch (e) {
         debugPrint("COULD NOT REQ BC IN ES_MANAGER");
       }
@@ -41,7 +49,10 @@ class EnergyStorageServiceManager extends ChangeNotifier {
     }
 
     _storageList!.addAll(storageList);
+    calcEStorageTotals(storageList);
+  }
 
+  void calcEStorageTotals(List<EnergyStorage> storageList) {
     sumData = EnergyStorage();
     sumData.onlineSt = 0;
     sumData.offlineSt = 0;

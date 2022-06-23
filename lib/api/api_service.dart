@@ -48,6 +48,21 @@ class ApiService {
     return sendRequest(request);
   }
 
+  Future<ApiLoginResponse?> getLoggerStatusList() async {
+    var headers = {'Authorization': 'Bearer ' + ApiController.jwt};
+    var request = http.Request(
+        'GET', Uri.parse(ApiController.BASE_URL + 'rest/loggers/status'));
+    request.headers.addAll(headers);
+    http.StreamedResponse response = await request.send();
+    if (response.statusCode == 200) {
+      var bytesToString = await response.stream.bytesToString();
+      var apiResponse = ApiLoginResponse.fromJson(jsonDecode(bytesToString));
+      return apiResponse;
+    } else {
+      return null;
+    }
+  }
+
   Future<ApiResponsePaginated?> getPowerList(String serial, String startDate,
       String endDate, int currentPage, int perPage) async {
     var headers = {'Authorization': 'Bearer ' + ApiController.jwt};
