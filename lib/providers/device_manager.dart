@@ -12,6 +12,10 @@ class DeviceManager extends ChangeNotifier {
     return _loggerList;
   }
 
+  Map<String?, Logger> get getSerLoggerMap {
+    return _serLoggerMap;
+  }
+
   Logger? get getSelectedLogger {
     if (_loggerList.isEmpty) {
       return null;

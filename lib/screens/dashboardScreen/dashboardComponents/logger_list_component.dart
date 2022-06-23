@@ -11,6 +11,14 @@ class LoggerListComponent {
         .setSelectedLogger(context, serNum);
   }
 
+  Color getSnColor(BuildContext context, String sn) {
+    var getSerLoggerMap = Provider.of<DeviceManager>(context).getSerLoggerMap;
+    if (getSerLoggerMap[sn]!.connected) {
+      return Colors.green;
+    }
+    return Colors.grey;
+  }
+
   InkWell renderLoggerListItems(context, sn, description) {
     return InkWell(
       child: Container(
@@ -58,9 +66,9 @@ class LoggerListComponent {
                   child: Text(
                     sn,
                     style: FlutterFlowTheme.of(context).bodyText1.override(
-                          fontFamily: 'Poppins',
-                          fontSize: 10,
-                        ),
+                        fontFamily: 'Poppins',
+                        fontSize: 10,
+                        color: getSnColor(context, sn)),
                   ),
                 ),
                 // Padding(

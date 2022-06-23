@@ -125,6 +125,7 @@ class PowerServiceManager extends ChangeNotifier {
 
     _powerTypeList = powerTypeList;
     _powerTypeMap.clear();
+
     for (var i = 0; i < powerTypeList!.length; i++) {
       PowerType pType = powerTypeList[i];
       if (_powerTypeMap[pType.powerType] == null) {
@@ -147,6 +148,11 @@ class PowerServiceManager extends ChangeNotifier {
           requestBcMsg(context);
         } else {
           _livePowerTypeMap.clear();
+          // calcPowerTotals(context);
+          pvToBatDotActive = 0;
+          loadDotActive = 0;
+          gridDotActive = 0;
+          loader = false;
         }
       } catch (e) {
         debugPrint("COULD NOT REQ BC IN PS_MANAGER");

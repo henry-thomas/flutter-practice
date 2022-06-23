@@ -33,6 +33,8 @@ class EnergyStorageServiceManager extends ChangeNotifier {
         } else {
           _storageList!.clear();
           sumData = EnergyStorage();
+          batChargeDotActive = 0;
+          batDischargeDotActive = 0;
         }
       } catch (e) {
         debugPrint("COULD NOT REQ BC IN ES_MANAGER");
