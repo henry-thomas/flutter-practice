@@ -213,9 +213,21 @@ class _DashboardWidgetState extends State<DashboardWidget> {
     final energyEfficiencyPercentageTxt =
         psManager.energyEfficiencyPercentageTxt;
     //Calc value of energy eff with screen width value
-    final energyLinePosition = (psManager.energyEfficiency / 100) *
-        MediaQuery.of(context).size.width *
-        0.90;
+    var energyLinePosition = (psManager.energyEfficiency / 100);
+    // MediaQuery.of(context).size.width * 0.01;
+    if (energyLinePosition == 0) {
+      energyLinePosition = MediaQuery.of(context).size.width * 0.1 - 11;
+    } else if (energyLinePosition < 1) {
+      energyLinePosition = (psManager.energyEfficiency / 100) *
+              MediaQuery.of(context).size.width *
+              0.9 +
+          11;
+    } else {
+      energyLinePosition = (psManager.energyEfficiency / 100) *
+              MediaQuery.of(context).size.width *
+              0.9 -
+          11;
+    }
     return Scaffold(
       key: scaffoldKey,
       appBar: AppBar(
@@ -764,7 +776,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Padding(
-                            padding: const EdgeInsets.all(4.0),
+                            padding: const EdgeInsets.fromLTRB(0, 10, 0, 15),
                             child: Row(
                               mainAxisSize: MainAxisSize.max,
                               mainAxisAlignment: MainAxisAlignment.start,
@@ -828,7 +840,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                             padding: const EdgeInsetsDirectional.fromSTEB(
                                 0, 10, 0, 0),
                             child: Container(
-                              width: MediaQuery.of(context).size.width * 0.93,
+                              width: MediaQuery.of(context).size.width * 0.8,
                               height: 3,
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(20),
