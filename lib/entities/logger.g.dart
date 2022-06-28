@@ -10,7 +10,7 @@ Logger _$LoggerFromJson(Map<String, dynamic> json) => Logger()
   ..serNum = json['serNum'] as String
   ..model = json['model'] as String?
   ..installDate = json['installDate'] as String?
-  ..description = json['description'] as String
+  ..description = json['description'] as String?
   ..installationAddress = json['installationAddress'] as String?
   ..shortName = json['shortName'] as String?
   ..lat = (json['lat'] as num?)?.toDouble()
@@ -35,7 +35,7 @@ Map<String, dynamic> _$LoggerToJson(Logger instance) {
 
   writeNotNull('model', instance.model);
   writeNotNull('installDate', instance.installDate);
-  val['description'] = instance.description;
+  writeNotNull('description', instance.description);
   writeNotNull('installationAddress', instance.installationAddress);
   writeNotNull('shortName', instance.shortName);
   writeNotNull('lat', instance.lat);

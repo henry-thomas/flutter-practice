@@ -4,7 +4,6 @@ import 'package:provider_test/api/api_controller.dart';
 import 'package:provider_test/entities/api_login_response.dart';
 import 'package:provider_test/entities/api_response.dart';
 import 'package:provider_test/entities/api_response_paginated.dart';
-import 'package:provider_test/entities/energy_storage.dart';
 
 class ApiService {
   Future<ApiLoginResponse?> sendLoginRequest(
@@ -116,6 +115,23 @@ class ApiService {
 
     request.headers.addAll(headers);
     return sendRequest(request);
+  }
+
+  Future<ApiResponsePaginated?> getEnergyDataAsJson(
+      String serial, String dateArr, String period) {
+    var headers = {'Authorization': 'Bearer ' + ApiController.jwt};
+    var request = http.Request(
+        'GET',
+        Uri.parse(ApiController.BASE_URL +
+            'rest/loggers/' +
+            serial +
+            '/energy?dateArr=' +
+            dateArr +
+            "&period=" +
+            period));
+
+    request.headers.addAll(headers);
+    return sendRequestPaginated(request);
   }
 
   Future<ApiResponse?> sendRequest(http.Request request) async {

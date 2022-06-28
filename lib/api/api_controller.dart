@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:provider_test/api/api_service.dart';
@@ -15,8 +17,8 @@ import '../naviagation_bar.dart';
 import '../screens/profileScreen/profileSettings/electricity_settings.dart';
 
 class ApiController extends ChangeNotifier {
-  static const BASE_URL = "http://cweb1.mypower24.co.za/SolarMDApi/";
-  // static const BASE_URL = "http://192.168.100.18:8084/SolarMDApi/";
+  // static const BASE_URL = "http://cweb1.mypower24.co.za/SolarMDApi/";
+  static const BASE_URL = "http://192.168.100.18:8084/SolarMDApi/";
   // static const USERNAME = "kostadin";
   // static const PASSWORD = "1234";
   static const START_DATE = "20220606";
@@ -89,6 +91,17 @@ class ApiController extends ChangeNotifier {
     }
   }
 
+  Future<List<dynamic>> _getEnergyAsJson(
+      String serial, String dateArr, String period) async {
+    ApiResponsePaginated? response =
+        await service.getEnergyDataAsJson(serial, dateArr, period);
+    if (response != null) {
+      return response.data!["requests"];
+    } else {
+      return [""];
+    }
+  }
+
   void login(String username, String password, BuildContext context) async {
     final electricitySettings =
         Provider.of<ElectricitySettings>(context, listen: false);
@@ -158,6 +171,7 @@ class ApiController extends ChangeNotifier {
       String serial, String startDate, String endDate) async {
     List<dynamic>? getEStorageList =
         await _getEStorageList(serial, startDate, endDate, PAGE, PER_PAGE);
+    await _getEnergyAsJson(serial, '["2022-06"]', "monthly");
     List<EnergyStorageDb> eStorageList = [];
     if (getEStorageList != null) {
       for (var i = 0; i < getEStorageList.length; i++) {
@@ -165,6 +179,14 @@ class ApiController extends ChangeNotifier {
       }
     }
     return eStorageList;
+  }
+
+  Future<Map<String, dynamic>> getEnergyData(
+      String serial, String dateArr, String period) async {
+    List<dynamic>? getEnergyData =
+        await _getEnergyAsJson(serial, dateArr, period);
+    Map<String, dynamic> energyMap = jsonDecode(getEnergyData[0]);
+    return energyMap;
   }
 
   Future<List<LoggerConfig>?> getPowerCalcs(String serial) async {

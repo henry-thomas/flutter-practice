@@ -116,58 +116,8 @@ class _ChartsPageViewState extends State<ChartsPageView> {
           child: SingleChildScrollView(
         child: Column(
           children: [
-            Padding(
-              padding: const EdgeInsetsDirectional.fromSTEB(0, 10, 0, 5),
-              child: Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    width: 120,
-                    height: 1,
-                    color: FlutterFlowTheme.of(context).secondaryColor,
-                  ),
-                  InkWell(
-                    child: Padding(
-                      padding: const EdgeInsetsDirectional.fromSTEB(0, 0, 0, 0),
-                      child: Row(
-                        children: [
-                          Text(
-                            Provider.of<PowerTypeChartDataManager>(context,
-                                    listen: false)
-                                .selectedDateStr,
-                            style:
-                                FlutterFlowTheme.of(context).bodyText1.override(
-                                      fontFamily: 'Poppins',
-                                      color: FlutterFlowTheme.of(context)
-                                          .secondaryText,
-                                      fontSize: 11,
-                                    ),
-                          ),
-                          Icon(
-                            Icons.arrow_drop_down_rounded,
-                            color: FlutterFlowTheme.of(context).secondaryText,
-                            size: 24,
-                          )
-                        ],
-                      ),
-                    ),
-                    highlightColor:
-                        FlutterFlowTheme.of(context).primaryBackground,
-                    splashColor: FlutterFlowTheme.of(context).primaryBackground,
-                    onTap: () async {
-                      Provider.of<PowerTypeChartDataManager>(context,
-                              listen: false)
-                          .onDatePickerOpen(context);
-                    },
-                  ),
-                  Container(
-                    width: 120,
-                    height: 1,
-                    color: FlutterFlowTheme.of(context).secondaryColor,
-                  ),
-                ],
-              ),
+            Row(
+              mainAxisSize: MainAxisSize.max,
             ),
             Visibility(
               visible: datePickerVisibility,
@@ -182,7 +132,6 @@ class _ChartsPageViewState extends State<ChartsPageView> {
                 ),
               ),
             ),
-            // PowerTypeChart.buildChart(powerTypeMap, eStorageList),
             Padding(
               padding: const EdgeInsetsDirectional.fromSTEB(0, 8, 0, 8),
               child: ChartMenuItem(

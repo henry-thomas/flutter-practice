@@ -188,8 +188,8 @@ class _DashboardWidgetState extends State<DashboardWidget> {
       List<Logger> getLoggerList = devManager.getLoggerList;
 
       for (var i = 0; i < getLoggerList.length; i++) {
-        loggerListItem.add(LoggerListComponent().renderLoggerListItems(
-            context, getLoggerList[i].serNum, getLoggerList[i].description));
+        loggerListItem.add(LoggerListComponent().renderLoggerListItems(context,
+            getLoggerList[i].serNum, getLoggerList[i].description ??= ""));
       }
     }
   }
@@ -238,7 +238,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
         title: Text(
           Provider.of<DeviceManager>(context, listen: false)
               .getSelectedLogger!
-              .description,
+              .description ??= "",
           style: FlutterFlowTheme.of(context).bodyText1,
         ),
         actions: [
@@ -357,7 +357,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                                 Provider.of<DeviceManager>(context,
                                         listen: false)
                                     .getSelectedLogger!
-                                    .description,
+                                    .description ??= "",
                                 style: FlutterFlowTheme.of(context)
                                     .bodyText2
                                     .override(

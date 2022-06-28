@@ -21,8 +21,8 @@ class WsManager extends ChangeNotifier {
     String loggerSerial = Provider.of<DeviceManager>(context, listen: false)
         .getSelectedLogger!
         .serNum;
-    // String url = 'ws://192.168.100.18:8084/SolarMDApi/mobile?token=' +
-    String url = 'ws://cweb1.mypower24.co.za/SolarMDApi/mobile?token=' +
+    String url = 'ws://192.168.100.18:8084/SolarMDApi/mobile?token=' +
+        // String url = 'ws://cweb1.mypower24.co.za/SolarMDApi/mobile?token=' +
         ApiController.jwt +
         '&loggerSerial=' +
         loggerSerial +

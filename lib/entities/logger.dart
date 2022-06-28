@@ -8,7 +8,7 @@ class Logger {
   String serNum = "";
   String? model;
   String? installDate;
-  String description = "";
+  String? description;
   String? installationAddress;
   String? shortName;
   double? lat;

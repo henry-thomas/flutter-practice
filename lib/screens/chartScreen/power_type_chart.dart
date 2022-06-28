@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:provider_test/entities/dev_power_summary.dart';
 import 'package:provider_test/flutterFlow/flutter_flow_theme.dart';
+import 'package:provider_test/screens/chartScreen/chartComponents/power_chart_date_picker.dart';
 
 import '../../entities/energy_storage_db.dart';
 import '../../flutterFlow/flutter_flow_util.dart';
@@ -234,6 +235,10 @@ class _PowerTypeChartState extends State<PowerTypeChart> {
             new NumberFormat.percentPattern());
 
     final children = <Widget>[
+      Visibility(
+        child: PowerChartDatePicker(),
+        visible: isOpen,
+      ),
       SizedBox(
         height: chartHeight,
         width: chartWidth,
