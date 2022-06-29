@@ -21,7 +21,7 @@ class EnergyChartManager extends ChangeNotifier {
     "yearly": "yyyy"
   };
 
-  String selectedPeriod = "monthly";
+  String selectedPeriod = "daily";
 
   Map<String, dynamic> _energyMap = {};
   final Map<String?, String?> _expressionPowerMap = {};

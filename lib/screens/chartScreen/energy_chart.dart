@@ -85,10 +85,6 @@ class EnergyChart extends StatefulWidget {
 }
 
 class EnergyChartState extends State<EnergyChart> {
-  final Color leftBarColor = const Color(0xff53fdd7);
-  final Color rightBarColor = const Color(0xffff5182);
-  final double width = 7;
-
   late List<BarChartGroupData> rawBarGroups;
   late List<BarChartGroupData> showingBarGroups;
 
@@ -242,14 +238,14 @@ class EnergyChartState extends State<EnergyChart> {
       fontWeight: FontWeight.bold,
       fontSize: 11,
     );
-    String text;
-    if (value > 1000000) {
-      text = (value / 1000000).toStringAsFixed(2);
-    } else if (value > 1000) {
-      text = (value / 1000).toStringAsFixed(2);
-    } else {
-      text = (value).toStringAsFixed(0);
-    }
+    String text = value.toStringAsFixed(0);
+    // if (value > 1000000) {
+    //   text = (value / 1000000).toStringAsFixed(2);
+    // } else if (value > 1000) {
+    //   text = (value / 1000).toStringAsFixed(2);
+    // } else {
+    //   text = (value).toStringAsFixed(0);
+    // }
     return SideTitleWidget(
       axisSide: meta.axisSide,
       space: 0,
