@@ -7,30 +7,31 @@ import 'package:provider_test/api/api_controller.dart';
 import 'package:provider_test/entities/dev_power_summary.dart';
 import 'package:provider_test/entities/logger.dart';
 import 'package:provider_test/flutterFlow/flutter_flow_util.dart';
-import 'package:provider_test/providers/websocket/ps_manager.dart';
-import 'package:provider_test/providers/websocket/ws_manager.dart';
 
 import '../entities/energy_storage_db.dart';
 import '../entities/logger_config.dart';
 import '../entities/power_type.dart';
 import 'device_manager.dart';
 
-class PowerTypeChartDataManager extends ChangeNotifier {
-  List<DevPowerSummary>? _energyMap = [];
-  final List<EnergyStorageDb> _eStorageList = [];
+class EnergyChartManager extends ChangeNotifier {
+  Map<String, String> periodFormatMap = {
+    "daily": "yyyy-MM-dd",
+    "weekly": "yyyy-ww",
+    "monthly": "yyyy-MM",
+    "yearly": "yyyy"
+  };
+
+  String selectedPeriod = "monthly";
+
+  Map<String, dynamic> _energyMap = {};
   final Map<String?, String?> _expressionPowerMap = {};
-  final Map<String?, List<DevPowerSummary>> _powerTypeMap = {};
-  final Map<String?, List<DevPowerSummary>> _powerMap = {};
+  final Map<String?, List<dynamic>> _powerTypeEnergyMap = {};
   final Map<DateTime, List<DevPowerSummary>> _datePowerListMap = {};
   DateTime? selectedDate = DateTime.now();
   String selectedDateStr = "";
 
-  Map<String?, List<DevPowerSummary>> get getPowerTypeMap {
-    return _powerTypeMap;
-  }
-
-  List<EnergyStorageDb> get getEStorageList {
-    return _eStorageList;
+  Map<String?, List<dynamic>> get getEnergyTypeMap {
+    return _powerTypeEnergyMap;
   }
 
   Future<Map<String, dynamic>> _getEnergyFromDb(
@@ -40,21 +41,12 @@ class PowerTypeChartDataManager extends ChangeNotifier {
             Provider.of<DeviceManager>(context, listen: false)
                 .getSelectedLogger!
                 .serNum,
-            '["2022-06"]',
-            "monthly");
-    return energyData[date];
-  }
-
-  Future<List<EnergyStorageDb>?> _getEStorageList(
-      BuildContext context, String startDatem, String endDate) async {
-    var eStorageList = await Provider.of<ApiController>(context, listen: false)
-        .getEStorageList(
-            Provider.of<DeviceManager>(context, listen: false)
-                .getSelectedLogger!
-                .serNum,
-            startDatem,
-            endDate);
-    return eStorageList;
+            date,
+            period);
+    if (energyData[selectedDateStr] != null) {
+      return energyData[selectedDateStr];
+    }
+    return {};
   }
 
   Future<List<PowerType>?> _getPowerTypes(BuildContext context) async {
@@ -81,81 +73,68 @@ class PowerTypeChartDataManager extends ChangeNotifier {
       return;
     }
 
-    _eStorageList.clear();
     List<PowerType>? powerTypeList = await _getPowerTypes(context);
     List<LoggerConfig>? calcPowerList = await _getPowerCalcs(context);
     _datePowerListMap.clear();
     initCalcPowers(calcPowerList!);
 
-    DateFormat df = DateFormat("yyyy-MMMM-dd");
-    selectedDateStr = df.format(selectedDate!);
-
-    DateFormat formatter = DateFormat('yyyyMMdd');
-    String sDate = formatter.format(selectedDate!);
-    String eDate = formatter.format(selectedDate!);
-
-    Map<String, dynamic> powerList =
-        await _getEnergyFromDb(context, sDate, eDate);
-    _energyMap = powerList;
+    DateFormat formatter = DateFormat(periodFormatMap[selectedPeriod]);
+    var formattedDate = formatter.format(selectedDate!);
+    selectedDateStr = formattedDate;
+    formattedDate = '["' + formattedDate + '"]';
+    Map<String, dynamic> energyMap =
+        await _getEnergyFromDb(context, formattedDate, selectedPeriod);
+    _energyMap = energyMap;
 
     createChartData();
 
-    // var calcExpPowers = calcExpressionPowers(powerList);
+    _powerTypeEnergyMap.clear();
 
-    _powerTypeMap.clear();
     for (var i = 0; i < powerTypeList!.length; i++) {
       PowerType pType = powerTypeList[i];
-      if (_powerTypeMap[pType.powerType] == null) {
-        _powerTypeMap[pType.powerType] = [];
+      if (_powerTypeEnergyMap[pType.powerType] == null) {
+        _powerTypeEnergyMap[pType.powerType] = createEmptyEnergyList();
       }
-      for (var j = 0; j < _energyMap!.length; j++) {
-        if (_powerMap[_energyMap![j].powerName] == null) {
-          _powerMap[_energyMap![j].powerName] = [];
+      _energyMap.forEach((pName, energyValueList) {
+        if (pType.powerName == pName) {
+          for (var i = 0; i < energyValueList.length; i++) {
+            _powerTypeEnergyMap[pType.powerType]![i] += energyValueList[i];
+          }
         }
-
-        if (_energyMap![j].powerName == powerTypeList[i].powerName) {
-          _powerTypeMap[pType.powerType]!.add(_energyMap![j]);
-        }
-      }
+      });
     }
-    List<EnergyStorageDb>? eStorageList =
-        await _getEStorageList(context, sDate, eDate);
-    _eStorageList.addAll(eStorageList!);
-    alignDates();
+    // alignDates();
     notifyListeners();
   }
 
-  void createChartData() {
-    // List<PowerTypeSeriesPoint> ptspList = [];
-    for (var i = 0; i < _energyMap!.length; i++) {
-      if (!_datePowerListMap.containsKey(
-          DateTime.fromMillisecondsSinceEpoch(_energyMap![i].lastUpdate))) {
-        _datePowerListMap[DateTime.fromMillisecondsSinceEpoch(
-            _energyMap![i].lastUpdate)] = [];
-      }
-      _datePowerListMap[
-              DateTime.fromMillisecondsSinceEpoch(_energyMap![i].lastUpdate)]!
-          .add(_energyMap![i]);
+  int getPeriodIndex() {
+    if (selectedPeriod == "daily") {
+      return 0;
     }
-
-    _expressionPowerMap.forEach((pName, exp) {
-      _datePowerListMap.forEach((date, pList) {
-        var expRecursive = getExpRecursive(jsonDecode(exp!), date);
-        if (expRecursive != null) {
-          expRecursive.powerName = pName;
-          _energyMap!.add(expRecursive);
-        }
-      });
-    });
+    if (selectedPeriod == "weekly") {
+      return 1;
+    }
+    if (selectedPeriod == "monthly") {
+      return 2;
+    }
+    if (selectedPeriod == "yearly") {
+      return 3;
+    }
+    if (selectedPeriod == "total") {
+      return 4;
+    }
+    return 5;
   }
 
-  void alignDates() {
-    _datePowerListMap.forEach((date, power) {});
-    for (var i = 0; i < _eStorageList.length; i++) {
-      if (i < _datePowerListMap.keys.length) {
-        _eStorageList[i].lastUpdate = _datePowerListMap.keys.elementAt(i);
-      }
-    }
+  void createChartData() {
+    List<PowerTypeSeriesPoint> ptspList = [];
+
+    _expressionPowerMap.forEach((pName, exp) {
+      // _energyMap.forEach((eName, eList) {
+      var expRecursive = getExpRecursive(jsonDecode(exp!));
+      _energyMap[pName!] = expRecursive;
+      // });
+    });
   }
 
   void initCalcPowers(List<LoggerConfig?> calcPowerList) {
@@ -165,43 +144,36 @@ class PowerTypeChartDataManager extends ChangeNotifier {
     }
   }
 
-  DevPowerSummary? getExpRecursive(Map<String, dynamic> expMap, DateTime date) {
-    DevPowerSummary? p1Value;
+  List<dynamic> getExpRecursive(Map<String, dynamic> expMap) {
+    List<dynamic>? p1Value;
     if (expMap['p1'] is String) {
-      p1Value = getPowerFromList(_datePowerListMap[date]!, expMap['p1']);
+      p1Value = _energyMap[expMap['p1']];
     } else if (expMap['p1'] is Map<String, dynamic>) {
-      p1Value = getExpRecursive(expMap['p1'], date);
+      p1Value = getExpRecursive(expMap['p1']);
     } else if (expMap['p1'] is num) {
-      p1Value = createEmptyPower();
-      p1Value.powerW = expMap['p1'] * 1.0;
+      p1Value = createEmptyEnergyList();
+      p1Value[getPeriodIndex()] = expMap['p1'] * 1.0;
     }
 
-    DevPowerSummary? p2Value;
+    List<dynamic>? p2Value;
     if (expMap['p2'] is String) {
-      p2Value = getPowerFromList(_datePowerListMap[date]!, expMap['p2']);
+      p2Value = _energyMap[expMap['p2']];
     } else if (expMap['p2'] is Map<String, dynamic>) {
-      p2Value = getExpRecursive(expMap['p2'], date);
+      p2Value = getExpRecursive(expMap['p2']);
     } else if (expMap['p2'] is num) {
-      p2Value = createEmptyPower();
-      p2Value.powerW = expMap['p2'] * 1.0;
+      p2Value = createEmptyEnergyList();
+      p2Value[getPeriodIndex()] = expMap['p2'] * 1.0;
     }
 
-    DevPowerSummary? resultPower = createEmptyPower();
-
-    resultPower.lastUpdate = date.millisecondsSinceEpoch;
+    List<dynamic> resultPower = createEmptyEnergyList();
 
     var mathFunction = getMathFunction(expMap['op']);
     if (p1Value == null || p2Value == null) {
       return resultPower;
     }
-    resultPower.powerW = mathFunction(p1Value.powerW, p2Value.powerW);
-    resultPower.ratedPowerW =
-        mathFunction(p1Value.ratedPowerW, p2Value.ratedPowerW);
-    resultPower.dailyEnergyWh =
-        mathFunction(p1Value.dailyEnergyWh, p2Value.dailyEnergyWh);
-    resultPower.energyWh = mathFunction(p1Value.energyWh, p2Value.energyWh);
-    resultPower.voltageV = (p1Value.voltageV + p2Value.voltageV) / 2;
-    resultPower.currentA = mathFunction(p1Value.currentA, p2Value.currentA);
+    resultPower[getPeriodIndex()] =
+        mathFunction(p1Value[getPeriodIndex()], p2Value[getPeriodIndex()]);
+
     return resultPower;
   }
 
@@ -230,15 +202,8 @@ class PowerTypeChartDataManager extends ChangeNotifier {
     }
   }
 
-  DevPowerSummary createEmptyPower() {
-    DevPowerSummary p = DevPowerSummary();
-    p.powerW = 0;
-    p.ratedPowerW = 0;
-    p.dailyEnergyWh = 0;
-    p.monthlyEnergyWh = 0;
-    p.energyWh = 0;
-    p.voltageV = 0;
-    p.currentA = 0;
+  List<dynamic> createEmptyEnergyList() {
+    List<dynamic> p = [0.0, 0.0, 0.0, 0.0, 0.0];
     return p;
   }
 

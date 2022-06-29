@@ -4,9 +4,11 @@ import 'package:provider/provider.dart';
 import '../../../flutterFlow/flutter_flow_theme.dart';
 import '../../../providers/power_type_chart_manager.dart';
 
-class PowerChartDatePicker extends StatelessWidget {
-  const PowerChartDatePicker({
+class ChartDatePicker extends StatelessWidget {
+  final String selectedDate;
+  const ChartDatePicker({
     Key? key,
+    required this.selectedDate,
   }) : super(key: key);
 
   @override
@@ -26,8 +28,7 @@ class PowerChartDatePicker extends StatelessWidget {
             child: Row(
               children: [
                 Text(
-                  Provider.of<PowerTypeChartDataManager>(context, listen: false)
-                      .selectedDateStr,
+                  selectedDate,
                   style: FlutterFlowTheme.of(context).bodyText1.override(
                         fontFamily: 'Poppins',
                         color: FlutterFlowTheme.of(context).secondaryText,

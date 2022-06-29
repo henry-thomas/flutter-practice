@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:provider_test/api/api_controller.dart';
 import 'package:provider_test/providers/device_manager.dart';
+import 'package:provider_test/providers/energy_chart_manager.dart';
 import 'package:provider_test/providers/power_type_chart_manager.dart';
 import 'package:provider_test/providers/websocket/es_manager.dart';
 import 'package:provider_test/providers/websocket/ps_manager.dart';
@@ -64,6 +65,9 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider.value(
           value: PowerTypeChartDataManager(),
+        ),
+        ChangeNotifierProvider.value(
+          value: EnergyChartManager(),
         ),
         ChangeNotifierProvider.value(
           value: ChartActions(),

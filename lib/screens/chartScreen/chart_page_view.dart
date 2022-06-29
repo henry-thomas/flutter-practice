@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:provider/provider.dart';
 import 'package:provider_test/flutterFlow/flutter_flow_theme.dart';
-import 'package:provider_test/providers/device_manager.dart';
+import 'package:provider_test/providers/energy_chart_manager.dart';
 import 'package:provider_test/providers/power_type_chart_manager.dart';
+import 'package:provider_test/screens/chartScreen/energy_chart.dart';
 import 'package:provider_test/screens/chartScreen/power_type_chart.dart';
 
 import '../../flutterFlow/flutter_flow_util.dart';
@@ -31,6 +32,7 @@ class _ChartsPageViewState extends State<ChartsPageView> {
   @override
   Widget build(BuildContext context) {
     var ptcdm = Provider.of<PowerTypeChartDataManager>(context);
+    var ecm = Provider.of<EnergyChartManager>(context);
     var eStorageList = ptcdm.getEStorageList;
     var powerTypeMap = ptcdm.getPowerTypeMap;
     return Scaffold(
@@ -156,6 +158,37 @@ class _ChartsPageViewState extends State<ChartsPageView> {
                           DateFormat("MMMM d")
                               .format(ptcdm.selectedDate!)
                               .toString(),
+                          style: FlutterFlowTheme.of(context).bodyText1,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsetsDirectional.fromSTEB(0, 8, 0, 8),
+              child: ChartMenuItem(
+                chart: EnergyChart.buildChart(ecm.getEnergyTypeMap,
+                    Provider.of<EnergyChartManager>(context).selectedPeriod),
+                heading: "Energy Chart",
+                onTabCb: Provider.of<ChartActions>(context).onMenuOpen,
+                infoWgtList: [
+                  Row(
+                    children: [
+                      Text(
+                        'Showing Data For:',
+                        style: FlutterFlowTheme.of(context).bodyText1.override(
+                              fontFamily: 'Poppins',
+                              color: FlutterFlowTheme.of(context).secondaryText,
+                              fontSize: 11,
+                            ),
+                      ),
+                      Padding(
+                        padding:
+                            const EdgeInsetsDirectional.fromSTEB(5, 0, 0, 0),
+                        child: Text(
+                          ecm.selectedDateStr,
                           style: FlutterFlowTheme.of(context).bodyText1,
                         ),
                       ),

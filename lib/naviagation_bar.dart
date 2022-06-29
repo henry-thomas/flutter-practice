@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:provider_test/providers/device_manager.dart';
+import 'package:provider_test/providers/energy_chart_manager.dart';
 import 'package:provider_test/providers/power_type_chart_manager.dart';
 import 'package:provider_test/providers/websocket/es_manager.dart';
 import 'package:provider_test/providers/websocket/ps_manager.dart';
@@ -81,6 +82,9 @@ class _NavBarPageState extends State<NavBarPage> {
 
     Provider.of<PowerTypeChartDataManager>(context, listen: false)
         .getPowerTypesFromDateRange(
+            context, Provider.of<DeviceManager>(context).getSelectedLogger!);
+    Provider.of<EnergyChartManager>(context, listen: false)
+        .getEnergyDataForPeriod(
             context, Provider.of<DeviceManager>(context).getSelectedLogger!);
 
     _initPsManager(context);

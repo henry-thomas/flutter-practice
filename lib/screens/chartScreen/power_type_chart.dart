@@ -7,10 +7,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:provider_test/entities/dev_power_summary.dart';
 import 'package:provider_test/flutterFlow/flutter_flow_theme.dart';
-import 'package:provider_test/screens/chartScreen/chartComponents/power_chart_date_picker.dart';
+import 'package:provider_test/screens/chartScreen/chartComponents/chart_date_picker.dart';
 
 import '../../entities/energy_storage_db.dart';
 import '../../flutterFlow/flutter_flow_util.dart';
+import '../../providers/power_type_chart_manager.dart';
 import 'chartComponents/chart_actions.dart';
 
 class PowerTypeChart extends StatefulWidget {
@@ -236,7 +237,10 @@ class _PowerTypeChartState extends State<PowerTypeChart> {
 
     final children = <Widget>[
       Visibility(
-        child: PowerChartDatePicker(),
+        child: ChartDatePicker(
+            selectedDate:
+                Provider.of<PowerTypeChartDataManager>(context, listen: false)
+                    .selectedDateStr),
         visible: isOpen,
       ),
       SizedBox(
