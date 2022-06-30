@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../flutterFlow/flutter_flow_theme.dart';
 import '../../providers/websocket/ps_manager.dart';
-import '../dashboardScreen/dashboardComponents/liveCharts/live_chart.dart';
+import 'live_chart.dart';
 import 'chartComponents/chart_actions.dart';
 import 'chartComponents/chart_selector_card.dart';
 

@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import '../../../flutterFlow/flutter_flow_theme.dart';
 import '../../../providers/websocket/ps_manager.dart';
 import 'dash_info_data_field.dart';
-import 'liveCharts/live_chart.dart';
+import '../../chartScreen/live_chart.dart';
 
 class DailyEnergyCard extends StatefulWidget {
   const DailyEnergyCard({Key? key}) : super(key: key);

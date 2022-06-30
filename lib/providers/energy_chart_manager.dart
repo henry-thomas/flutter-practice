@@ -8,7 +8,6 @@ import 'package:provider_test/entities/dev_power_summary.dart';
 import 'package:provider_test/entities/logger.dart';
 import 'package:provider_test/flutterFlow/flutter_flow_util.dart';
 
-import '../entities/energy_storage_db.dart';
 import '../entities/logger_config.dart';
 import '../entities/power_type.dart';
 import 'device_manager.dart';
@@ -21,7 +20,7 @@ class EnergyChartManager extends ChangeNotifier {
     "yearly": "yyyy"
   };
 
-  String selectedPeriod = "daily";
+  String selectedPeriod = "monthly";
 
   Map<String, dynamic> _energyMap = {};
   final Map<String?, String?> _expressionPowerMap = {};

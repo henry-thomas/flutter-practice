@@ -4,24 +4,25 @@ import 'package:flutter/material.dart';
 
 class ChartActions extends ChangeNotifier {
   bool isPowerTypeChartMenuOpen = false;
+  bool isEnergyTypeChartMenuOpen = false;
+  bool isLiveChartMenuOpen = false;
 
   onPageLeave() {
     isPowerTypeChartMenuOpen = false;
+    isEnergyTypeChartMenuOpen = false;
     isLiveChartMenuOpen = false;
     notifyListeners();
   }
 
-  onMenuOpen() {
+  onPtChartOpen() {
     isPowerTypeChartMenuOpen = !isPowerTypeChartMenuOpen;
-    // if (isPowerTypeChartMenuOpen == false) {
-    //   isPowerTypeChartMenuOpen = true;
-    // } else {
-    //   isPowerTypeChartMenuOpen = false;
-    // }
     notifyListeners();
   }
 
-  bool isLiveChartMenuOpen = false;
+  onEtChartOpen() {
+    isEnergyTypeChartMenuOpen = !isEnergyTypeChartMenuOpen;
+    notifyListeners();
+  }
 
   liveChartMenuOpen() {
     if (isLiveChartMenuOpen == false) {

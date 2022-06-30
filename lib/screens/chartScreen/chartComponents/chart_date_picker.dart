@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 import '../../../flutterFlow/flutter_flow_theme.dart';
-import '../../../providers/power_type_chart_manager.dart';
 
 class ChartDatePicker extends StatelessWidget {
   final String selectedDate;
+  final Function onTap;
   const ChartDatePicker({
     Key? key,
     required this.selectedDate,
+    required this.onTap,
   }) : super(key: key);
 
   @override
@@ -18,14 +18,16 @@ class ChartDatePicker extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Container(
-          width: 70,
-          height: 1,
+          width: 80,
+          height: 3,
           color: FlutterFlowTheme.of(context).secondaryColor,
         ),
         InkWell(
           child: Padding(
-            padding: const EdgeInsetsDirectional.fromSTEB(0, 0, 0, 0),
+            padding: const EdgeInsetsDirectional.fromSTEB(5, 0, 5, 0),
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.max,
               children: [
                 Text(
                   selectedDate,
@@ -44,15 +46,14 @@ class ChartDatePicker extends StatelessWidget {
             ),
           ),
           highlightColor: FlutterFlowTheme.of(context).primaryBackground,
-          splashColor: FlutterFlowTheme.of(context).primaryBackground,
-          onTap: () async {
-            Provider.of<PowerTypeChartDataManager>(context, listen: false)
-                .onDatePickerOpen(context);
+          // splashColor: FlutterFlowTheme.of(context).primaryBackground,
+          onTap: () {
+            onTap(context);
           },
         ),
         Container(
-          width: 120,
-          height: 1,
+          width: 80,
+          height: 3,
           color: FlutterFlowTheme.of(context).secondaryColor,
         ),
       ],

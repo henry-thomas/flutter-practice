@@ -4,40 +4,47 @@ import 'package:provider/provider.dart';
 import 'package:provider_test/providers/energy_chart_manager.dart';
 import 'package:provider_test/screens/chartScreen/chartComponents/chart_date_picker.dart';
 
+import '../../flutterFlow/flutter_flow_theme.dart';
+import 'chartComponents/chart_actions.dart';
+
 class EnergyChart extends StatefulWidget {
   final List<BarChartGroupData> groupsList;
+  final String period;
+  final Map<String?, List<dynamic>> energyTypeMap;
 
-  const EnergyChart({Key? key, required this.groupsList}) : super(key: key);
+  const EnergyChart(
+      {Key? key,
+      required this.groupsList,
+      required this.period,
+      required this.energyTypeMap})
+      : super(key: key);
 
   @override
   State<StatefulWidget> createState() => EnergyChartState();
 
   factory EnergyChart.buildChart(
       Map<String?, List<dynamic>> energyTypeMap, String period) {
-    // ignore: unnecessary_new
-    return new EnergyChart(groupsList: _createData(energyTypeMap, period));
+    return EnergyChart(
+      energyTypeMap: energyTypeMap,
+      groupsList: _createData(energyTypeMap, period),
+      period: period,
+    );
   }
 
   static List<BarChartGroupData> _createData(
       Map<String?, List<dynamic>> energyTypeMap, String period) {
     List<BarChartGroupData> dataList = [];
-
+    int x = 0;
     energyTypeMap.forEach((eType, values) {
-      List<BarChartRodData> rodList = [];
-      double val = values[getPeriodIndex(period)];
-      if (val > 1000) {
-        val = val / 1000;
+      if (eType != 'other') {
+        List<BarChartRodData> rodList = [];
+        double val = values[getPeriodIndex(period)];
+        var barChartRodData =
+            BarChartRodData(toY: val, color: getSeriesColour(eType!), width: 8);
+        rodList.add(barChartRodData);
+        dataList.add(BarChartGroupData(barRods: rodList, x: x));
+        x++;
       }
-      if (val > 1000000) {
-        val = val / 1000000;
-      }
-      if (val > 1000000000) {
-        val = val / 1000000000;
-      }
-      var barChartRodData =
-          BarChartRodData(toY: val, color: getSeriesColour(eType!));
-      rodList.add(barChartRodData);
-      dataList.add(BarChartGroupData(barRods: rodList, x: 0));
     });
 
     return dataList;
@@ -48,19 +55,20 @@ class EnergyChart extends StatefulWidget {
       case "pv":
         return Colors.green;
       case "load":
-        return Colors.cyan;
+        return Colors.blue;
       case "gridConsume":
-        return Colors.red.shade700;
+      case "grid":
+        return Colors.red;
       case "gridFeed":
-        return Colors.red.shade300;
+        return const Color.fromARGB(255, 182, 36, 25);
       case "stCharge":
-        return Colors.lime;
+        return const Color.fromARGB(255, 238, 143, 0);
       case "stDischarge":
-        return Colors.deepOrange;
+        return const Color.fromARGB(255, 204, 123, 2);
       case "gen":
         return Colors.grey;
       default:
-        return Colors.grey.shade200;
+        return Colors.black;
     }
   }
 
@@ -85,22 +93,13 @@ class EnergyChart extends StatefulWidget {
 }
 
 class EnergyChartState extends State<EnergyChart> {
-  late List<BarChartGroupData> rawBarGroups;
-  late List<BarChartGroupData> showingBarGroups;
-
   int touchedGroupIndex = -1;
 
   @override
-  void initState() {
-    super.initState();
-
-    rawBarGroups = widget.groupsList;
-
-    showingBarGroups = rawBarGroups;
-  }
-
-  @override
   Widget build(BuildContext context) {
+    var chartsActions = Provider.of<ChartActions>(context);
+    bool isOpen = chartsActions.isEnergyTypeChartMenuOpen;
+
     double maxY = 0;
     for (var i = 0; i < widget.groupsList.length; i++) {
       for (var j = 0; j < widget.groupsList[i].barRods.length; j++) {
@@ -110,162 +109,131 @@ class EnergyChartState extends State<EnergyChart> {
       }
     }
 
-    if (maxY > 1000) {
-      maxY = maxY / 1000;
-    }
-    if (maxY > 1000000) {
-      maxY = maxY / 1000000;
-    }
-    if (maxY > 1000000000) {
-      maxY = maxY / 1000000000;
-    }
-
     return AspectRatio(
       aspectRatio: 1,
-      child: Card(
-        elevation: 0,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-        color: const Color(0xff2c4260),
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            mainAxisAlignment: MainAxisAlignment.start,
-            mainAxisSize: MainAxisSize.max,
-            children: <Widget>[
-              ChartDatePicker(
-                  selectedDate:
-                      Provider.of<EnergyChartManager>(context).selectedDateStr),
-              const SizedBox(
-                height: 38,
-              ),
-              Expanded(
-                child: BarChart(
-                  BarChartData(
-                    maxY: maxY,
-                    barTouchData: BarTouchData(
-                        touchTooltipData: BarTouchTooltipData(
-                          tooltipBgColor: Colors.grey,
-                          getTooltipItem: (_a, _b, _c, _d) => null,
-                        ),
-                        touchCallback: (FlTouchEvent event, response) {
-                          // if (response == null || response.spot == null) {
-                          //   setState(() {
-                          //     touchedGroupIndex = -1;
-                          //     showingBarGroups = List.of(rawBarGroups);
-                          //   });
-                          //   return;
-                          // }
-
-                          // touchedGroupIndex =
-                          //     response.spot!.touchedBarGroupIndex;
-
-                          // setState(() {
-                          //   if (!event.isInterestedForInteractions) {
-                          //     touchedGroupIndex = -1;
-                          //     showingBarGroups = List.of(rawBarGroups);
-                          //     return;
-                          //   }
-                          //   showingBarGroups = List.of(rawBarGroups);
-                          //   if (touchedGroupIndex != -1) {
-                          //     var sum = 0.0;
-                          //     for (var rod
-                          //         in showingBarGroups[touchedGroupIndex]
-                          //             .barRods) {
-                          //       sum += rod.toY;
-                          //     }
-                          //     final avg = sum /
-                          //         showingBarGroups[touchedGroupIndex]
-                          //             .barRods
-                          //             .length;
-
-                          //     showingBarGroups[touchedGroupIndex] =
-                          //         showingBarGroups[touchedGroupIndex].copyWith(
-                          //       barRods: showingBarGroups[touchedGroupIndex]
-                          //           .barRods
-                          //           .map((rod) {
-                          //         return rod.copyWith(toY: avg);
-                          //       }).toList(),
-                          //     );
-                          //   }
-                          // });
-                        }),
-                    titlesData: FlTitlesData(
-                      show: true,
-                      rightTitles: AxisTitles(
-                        sideTitles: SideTitles(showTitles: false),
-                      ),
-                      topTitles: AxisTitles(
-                        sideTitles: SideTitles(showTitles: false),
-                      ),
-                      bottomTitles: AxisTitles(
-                        sideTitles: SideTitles(
-                          showTitles: true,
-                          getTitlesWidget: bottomTitles,
-                          reservedSize: 42,
-                        ),
-                      ),
-                      leftTitles: AxisTitles(
-                        sideTitles: SideTitles(
-                          showTitles: true,
-                          reservedSize: 28,
-                          interval: maxY / 10,
-                          getTitlesWidget: leftTitles,
-                        ),
-                      ),
-                    ),
-                    borderData: FlBorderData(
-                      show: false,
-                    ),
-                    barGroups: showingBarGroups,
-                    gridData: FlGridData(show: false),
-                  ),
-                ),
-              ),
-              const SizedBox(
-                height: 12,
-              ),
-            ],
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisSize: MainAxisSize.max,
+        children: <Widget>[
+          Visibility(
+            visible: isOpen,
+            child: ChartDatePicker(
+                selectedDate:
+                    Provider.of<EnergyChartManager>(context).selectedDateStr,
+                onTap: Provider.of<EnergyChartManager>(context, listen: false)
+                    .onDatePickerOpen),
           ),
-        ),
+          const SizedBox(
+            height: 20,
+          ),
+          Expanded(
+            child: BarChart(
+              BarChartData(
+                maxY: maxY + maxY * 0.2,
+                barTouchData: BarTouchData(
+                  touchTooltipData: BarTouchTooltipData(
+                      tooltipBgColor: FlutterFlowTheme.of(context)
+                          .loadingBoxColor
+                          ?.withOpacity(0.2),
+                      getTooltipItem: (group, groupIndex, rod, rodIndex) {
+                        if (isOpen) {
+                          return BarTooltipItem(
+                            widget.period.toUpperCase() + '\n',
+                            FlutterFlowTheme.of(context).bodyText1.override(
+                                  fontFamily: 'Poppins',
+                                  color: FlutterFlowTheme.of(context)
+                                      .secondaryText,
+                                  fontSize: 11,
+                                ),
+                            children: <TextSpan>[
+                              TextSpan(
+                                text: (rod.toY / 1000).toStringAsFixed(1) +
+                                    " kWh",
+                                style: FlutterFlowTheme.of(context)
+                                    .bodyText1
+                                    .override(
+                                      fontFamily: 'Poppins',
+                                      color: FlutterFlowTheme.of(context)
+                                          .primaryText,
+                                      fontSize: 13,
+                                    ),
+                              ),
+                            ],
+                          );
+                        }
+                      }),
+                ),
+                titlesData: FlTitlesData(
+                  show: true,
+                  rightTitles: AxisTitles(
+                    sideTitles: SideTitles(showTitles: false),
+                  ),
+                  topTitles: AxisTitles(
+                    sideTitles: SideTitles(showTitles: false),
+                  ),
+                  bottomTitles: AxisTitles(
+                    sideTitles: SideTitles(
+                      showTitles: isOpen,
+                      getTitlesWidget: bottomTitles,
+                      reservedSize: 42,
+                    ),
+                  ),
+                  leftTitles: AxisTitles(
+                      sideTitles: SideTitles(
+                    showTitles: isOpen,
+                    reservedSize: maxY.toStringAsFixed(1).length * 8,
+                    interval: maxY / 4,
+                    getTitlesWidget: leftTitles,
+                  )),
+                ),
+                borderData: FlBorderData(
+                  show: false,
+                ),
+                barGroups: widget.groupsList,
+                gridData: FlGridData(show: true, horizontalInterval: maxY / 5),
+              ),
+            ),
+          ),
+          const SizedBox(
+            height: 12,
+          ),
+        ],
       ),
     );
   }
 
   Widget leftTitles(double value, TitleMeta meta) {
-    const style = TextStyle(
-      color: Color(0xff7589a2),
-      fontWeight: FontWeight.bold,
-      fontSize: 11,
-    );
-    String text = value.toStringAsFixed(0);
-    // if (value > 1000000) {
-    //   text = (value / 1000000).toStringAsFixed(2);
-    // } else if (value > 1000) {
-    //   text = (value / 1000).toStringAsFixed(2);
-    // } else {
-    //   text = (value).toStringAsFixed(0);
-    // }
+    var textWidget = Text((value / 1000).toStringAsFixed(1) + " kWh",
+        style: FlutterFlowTheme.of(context).bodyText1.override(
+              fontFamily: 'Poppins',
+              color: FlutterFlowTheme.of(context).secondaryText,
+              fontSize: 11,
+            ));
+
     return SideTitleWidget(
       axisSide: meta.axisSide,
       space: 0,
-      child: Text(text, style: style),
+      child: textWidget,
     );
   }
 
   Widget bottomTitles(double value, TitleMeta meta) {
-    var getEnergyTypeMap =
-        Provider.of<EnergyChartManager>(context).getEnergyTypeMap;
+    List<String> titles = [];
 
-    List<String> titles = ["Mn", "Te", "Wd", "Tu", "Fr", "St", "Su"];
+    widget.energyTypeMap.forEach((key, value) {
+      if (key != 'other') {
+        titles.add(key.toString());
+      }
+    });
 
     Widget text = Text(
-      titles[value.toInt()],
-      style: const TextStyle(
-        color: Color(0xff7589a2),
-        fontWeight: FontWeight.bold,
-        fontSize: 14,
-      ),
+      getReadablePowerTypeName(titles[value.toInt()]),
+      style: FlutterFlowTheme.of(context).bodyText1.override(
+            fontFamily: 'Poppins',
+            color: FlutterFlowTheme.of(context).secondaryText,
+            fontSize: 11,
+          ),
     );
 
     return SideTitleWidget(
@@ -273,5 +241,26 @@ class EnergyChartState extends State<EnergyChart> {
       space: 16, //margin top
       child: text,
     );
+  }
+
+  String getReadablePowerTypeName(String pType) {
+    switch (pType) {
+      case "pv":
+        return "PV";
+      case "load":
+        return "Load";
+      case "gridConsume":
+        return "Grid";
+      case "gridFeed":
+        return "Grid Exp";
+      case "stCharge":
+        return "Charge";
+      case "stDischarge":
+        return "Discharge";
+      case "gen":
+        return "Gen";
+      default:
+        return "Other";
+    }
   }
 }

@@ -4,9 +4,9 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../flutterFlow/flutter_flow_theme.dart';
-import '../../../../providers/websocket/ps_manager.dart';
-import '../../../chartScreen/chartComponents/chart_actions.dart';
+import '../../flutterFlow/flutter_flow_theme.dart';
+import '../../providers/websocket/ps_manager.dart';
+import 'chartComponents/chart_actions.dart';
 
 class LiveChart extends StatefulWidget {
   const LiveChart({Key? key}) : super(key: key);
@@ -137,6 +137,7 @@ class _LiveChartState extends State<LiveChart> {
                   leftTitles: AxisTitles(
                       sideTitles: SideTitles(
                           showTitles: isOpen,
+                          interval: absMax / 5,
                           getTitlesWidget: (value, meta) => Text(
                               (value / 1000).toStringAsFixed(1) + "kW",
                               style: FlutterFlowTheme.of(context)

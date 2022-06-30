@@ -240,7 +240,10 @@ class _PowerTypeChartState extends State<PowerTypeChart> {
         child: ChartDatePicker(
             selectedDate:
                 Provider.of<PowerTypeChartDataManager>(context, listen: false)
-                    .selectedDateStr),
+                    .selectedDateStr,
+            onTap:
+                Provider.of<PowerTypeChartDataManager>(context, listen: false)
+                    .onDatePickerOpen),
         visible: isOpen,
       ),
       SizedBox(

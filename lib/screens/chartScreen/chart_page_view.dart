@@ -139,7 +139,7 @@ class _ChartsPageViewState extends State<ChartsPageView> {
               child: ChartMenuItem(
                 chart: PowerTypeChart.buildChart(powerTypeMap, eStorageList),
                 heading: "Power Chart",
-                onTabCb: Provider.of<ChartActions>(context).onMenuOpen,
+                onTabCb: Provider.of<ChartActions>(context).onPtChartOpen,
                 infoWgtList: [
                   Row(
                     children: [
@@ -169,10 +169,10 @@ class _ChartsPageViewState extends State<ChartsPageView> {
             Padding(
               padding: const EdgeInsetsDirectional.fromSTEB(0, 8, 0, 8),
               child: ChartMenuItem(
-                chart: EnergyChart.buildChart(ecm.getEnergyTypeMap,
-                    Provider.of<EnergyChartManager>(context).selectedPeriod),
+                chart: EnergyChart.buildChart(
+                    ecm.getEnergyTypeMap, ecm.selectedPeriod),
                 heading: "Energy Chart",
-                onTabCb: Provider.of<ChartActions>(context).onMenuOpen,
+                onTabCb: Provider.of<ChartActions>(context).onEtChartOpen,
                 infoWgtList: [
                   Row(
                     children: [

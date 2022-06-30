@@ -105,6 +105,8 @@ class _NavBarPageState extends State<NavBarPage> {
               //     .getPowerTypesFromDateRange(context);
               _currentPage = tabs.keys.toList()[i];
               Provider.of<ChartActions>(context, listen: false).onPageLeave();
+              Provider.of<DeviceManager>(context, listen: false)
+                  .updateLoggerStat(context);
             });
           },
           backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
