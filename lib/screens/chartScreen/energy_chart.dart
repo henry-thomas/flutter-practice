@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:provider_test/providers/energy_chart_manager.dart';
 import 'package:provider_test/screens/chartScreen/chartComponents/chart_date_picker.dart';
+import 'package:provider_test/screens/chartScreen/chartComponents/period_selector.dart';
 
 import '../../flutterFlow/flutter_flow_theme.dart';
 import 'chartComponents/chart_actions.dart';
@@ -124,6 +125,7 @@ class EnergyChartState extends State<EnergyChart> {
                 onTap: Provider.of<EnergyChartManager>(context, listen: false)
                     .onDatePickerOpen),
           ),
+          Visibility(visible: isOpen, child: PeriodSelector()),
           const SizedBox(
             height: 20,
           ),
